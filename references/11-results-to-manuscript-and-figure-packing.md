@@ -16,8 +16,10 @@ When the user provides **data files, analysis summaries, or a Results descriptio
 ### Stage 2 — Study Archetype Lock & Initial Main/Supp Triage
 - Classify the work into one of the **5 Study Archetypes** ([00-strategic-narrative-design.md](./00-strategic-narrative-design.md)) and lock the **Target Journal** (`nature`, `nat_med`, `cell`, `cancer_cell`, `science`, `nat_cancer`, `nat_commun`, `clin_cancer_res`).
 - Triage every atomic finding into **Main Figure (`Fig. 1–N`)** vs **Extended Data / Supplementary (`ED Fig. 1–M` / `Fig. S1–SN`)** using the empirical 3-Second Triage Law ([10-figure-and-supplement-architecture.md](./10-figure-and-supplement-architecture.md)):
-  - **Main**: Schematic/working model, headline UMAP/spatial discovery, core crosstalk/pathway, decisive *in vivo* KO/rescue/ICB synergy, primary clinical validation.
-  - **Supp/ED**: QC/batch metrics, flow gating, KO/KD efficiency, toxicity/body weight, negative/null controls, exhaustive marker dotplots, per-patient/subgroup splits, secondary model repeats, algorithm ablations.
+  - **Main**: Schematic/working model, **flagship real visual anchors (`MRI/CT`, `H&E`, `IHC`, `mIF/CODEX`, `gross excised tumors / IVIS`, `organoids` — reserving `35–55%` of the Main Figure's physical space!)**, headline UMAP/spatial discovery, core crosstalk/pathway, decisive *in vivo* KO/rescue/ICB synergy, primary clinical validation.
+  - **Proactive Visual Anchor Recommendation (When Unclear)**: If the user's source document contains ONLY statistical/omics outputs without mentioning real imaging, explicitly recommend `1–3` concrete "Seeing-is-Believing" visual anchors (clinical MRI/CT, H&E, mIF/IHC boundary FOV, gross tumor/IVIS photos) suited to the study archetype, and reserve exact Hero Visual placeholder frames if the user plans to insert them!
+  - **Strict `1-Panel = 1-Unique-Letter` Synchronization**: Every independent statistical/omics chart MUST be its own panel entry receiving its own unique letter (`a, b, c...` / `A, B, C...`) — NEVER bundle multiple distinct charts under one index (`Fig. 1a`). Pair a real image (`a`) with its cohort quantification (`b`) as adjacent separate letters.
+  - **Supp/ED**: QC/batch metrics, flow gating, KO/KD efficiency, toxicity/body weight, negative/null controls, exhaustive marker dotplots, extra patient imaging replicates / single-channel splits, per-patient/subgroup splits, secondary model repeats, algorithm ablations.
 
 ### Stage 3 — Physical Millimeter Page-Budget Check & Overflow Rebalancing (`sci-plot` Linkage!)
 **CRITICAL**: Journals enforce strict full-page physical width and height ceilings. Cramming 12–15 complex panels into one Main Figure destroys typography (`< 5 pt` unreadable labels) and triggers editorial revision.
@@ -43,8 +45,10 @@ python scripts/audit_manuscript.py plan-figures --journal nature --input draft_s
 | Chart Type (`chart_type` key) | Minimum Readable `(W × H mm)` | Typical Row Slot (`180 mm` wide) | Space-Saving `sci-plot` Upgrade When Tight |
 | :--- | :---: | :---: | :--- |
 | `schematic` / `working_model` | **`88 × 46 mm`** *(or full-width `176 × 42`)* | 1/2 or Full row | Compress timeline horizontally; keep crisp icon labels |
+| **`hero_pathology_strip` / `hero_mif_codex_panel` / `hero_radiology_mri_ct`** | **`174–180 × 66–78 mm`** *(Full-Width Hero Band!)* | **Full row (`35–45%` height!)** | Never squish! Multi-group H&E/IHC/mIF + zoom or Pre/Post MRI/CT (`create_visual_hero_layout()`) |
+| **`pathology_he_ihc` / `mif_hero` / `radiology_mri_ct` / `gross_tumor_ivis`** | **`115 × 58–68 mm`** *(2/3-Width Visual Hero!)* | **2/3 row** (pair w/ 1/3 quant!) | Representative H&E/mIF/MRI/excised tumors with ruler; never shrink `< 80 mm` wide! |
+| `spatial_zoom_mif` / `histology` / `ihc` / `organoid_microscopy` / `western_blot` | **`86–88 × 52–60 mm`** | **1/2 row** | Minimum readable single-FOV histology/organoid/blot; move single-channel splits & extra patient slides to Supp |
 | `umap` / `spatial_map` | **`58 × 55 mm`** | 1/3 row | Use `add_umap_corner_axes()` (recovers ~12 mm!) + inline labels |
-| `spatial_zoom_mif` / `histology` | **`62 × 52 mm`** | 1/3–1/2 row | Move single-channel splits & extra patient slides to Supp |
 | `heatmap` / `pseudotime_cascade` | **`86 × 60 mm`** | 1/2 row | Show top 20–30 genes; put full gene matrix in Supp |
 | `dotplot` (grouped markers) | **`88 × 55 mm`** | 1/2 row | Use `+90°` tilted italic genes; full 40-gene panel → `Fig. S1` |
 | `oncoprint` / `km_risk_table` | **`86 × 68 mm`** | 1/2 row | Merge clinical tracks cleanly; secondary cohorts → Supp |

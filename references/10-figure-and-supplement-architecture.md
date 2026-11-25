@@ -71,3 +71,25 @@ Empirically, Main Figures follow a strict **Discovery → Mechanism → Causal I
 | **`Fig. 7` *(optional in 6–7 Fig journals)*** | **8** (`6–11`) | **Human Clinical Validation, Biomarker Prognosis & Working Model**: Multi-cohort KM survival, multivariable Cox, ICB responder ROC/AUC, human mIF confirmation + **final graphical working model (`last panel`)**. | **`Fig. S7 / ED Fig. 10`**: Additional independent cohorts (TCGA/GEO), subgroup/stage/sex stratification, biomarker cutpoint sensitivity, comparison against PD-L1/TMB. |
 
 > **Compression Rule for 5-Figure *Nature / Nat Med* Papers**: Merge `Fig. 2+3` (Subpopulation + Spatial Niche) and `Fig. 5+6` (Genetic KO + Therapeutic Blockade), and lean heavily on **`8–10` full-page Extended Data Figures** to house orthogonal mechanistic assays, second models, and human cohort validations!
+
+---
+
+## 4. Real Visual / Imaging Evidence ("Seeing is Believing") & Strict `1-Panel = 1-Letter` Law
+
+Empirically audited across **`2,091` CNS Main Figures (`8,852` panel descriptions)**:
+
+### 4.1 Real Visual Evidence Quota (`65.1%` of Manuscripts; `39–49%` of Flagship Main Figures!)
+Reviewers and readers trust direct physical visual evidence far more than abstract statistical plots alone:
+- **`65.1%` (`235/361`) of CNS manuscripts** anchor key Main Figures with real visual imaging (`Cancer Cell 42.4%`, `Nature 39.4%`, `Nat Commun 44.7%`, `Cell Reports 48.7%` of all Main Figures!).
+- Modality breakdown: **mIF / CODEX / IMC / confocal (`25.2%`)**, **gross excised tumors / IVIS bioluminescence / organoid / colony photos (`8.5%`)**, **H&E histopathology (`7.3%`)**, **immunoblots (`4.4%`)**, **IHC (`2.9%`)**, and **clinical radiology (MRI / CT / PET-CT)** in clinical/neoadjuvant/metastasis cohorts.
+- **Planning Rules (Synced with `sci-plot`)**:
+  1. **When the user HAS real imaging data**: Protect `1–2` flagship representative real-image panels per relevant Main Figure at **Tier-1 Hero Priority** (NEVER demote representative MRI/H&E/mIF/gross-tumor photos to Supplement while keeping dry barplots in Main!), and **reserve `35–55%` of the Main Figure's physical area** (`174–180 × 65–92 mm` full-width band or `115–122 × 58–82 mm` 2/3-width hero block) so morphology, lesions, and scale bars remain crystal-clear. Move extra patient slides, single-channel fluorescence splits, and uncropped blots cleanly to paired `ED Fig. / Fig. S`.
+  2. **When it is UNCLEAR whether the user has real imaging**: Proactively **recommend `1–3` highest-impact "Seeing-is-Believing" visual anchors** matched to their study type:
+     - *Clinical / Neoadjuvant / Response Cohort* → Paired **Pre- vs Post-treatment tumor MRI / CT / PET-CT** + matched **H&E pathologic response (pCR/MPR vs non-MPR)**;
+     - *Single-Cell / Spatial TME Study* → **H&E whole-slide overview + magnified tumor–stroma boundary mIF / CODEX / IHC FOV** (`50–100 μm` scale bar) paired with adjacent cohort quantification;
+     - *In Vivo Mouse / Preclinical Efficacy* → **Gross excised tumors (with physical ruler) or IVIS bioluminescence images** + representative **IHC/mIF** (`CD8`, `Ki67`, `CC3`) of Control vs Treated;
+     - *Organoid / Mechanistic / AI-Pathology* → **Brightfield/IF organoid morphology**, **Western blot**, or **WSI H&E paired with AI attention/predicted spatial overlay**.
+
+### 4.2 Strict `1-Panel = 1-Unique-Letter` Indexing Law (`90.4%` CNS Standard)
+- Across `8,852` CNS panel descriptions, **`90.4%`** map **1 unique letter (`a, b, c...` / `A, B, C...`) to 1 independent plot** (pure multi-chart bundling under one letter is only `3.0%`).
+- **Rule**: NEVER bundle two distinct analytical plots under a single panel index (e.g., `Fig. 1a` = UMAP + barplot is FORBIDDEN; assign `a` = UMAP, `b` = barplot!). Even for **Real Image + Quantification**, assign **adjacent separate letters** (`a` = representative MRI/H&E/mIF hero image, `b` = quantification across `n` samples). Reserve shared letters strictly for paired overview + ROI zoom / split channels of the *exact same* tissue FOV, identical-assay small-multiple strips sharing one scale/colorbar, or inseparable widgets (`KM + risk table`, `OncoPrint`).

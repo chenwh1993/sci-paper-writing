@@ -808,10 +808,17 @@ FIGURE_PAGE_SPECS = {
 }
 
 # Minimum readable physical panel footprints (w_mm, h_mm), synced 1:1 with sci-plot
+# Note: Real visual evidence (MRI/CT, H&E, IHC, mIF/CODEX, gross tumor/IVIS) receives generous Hero Space
+# (35-55% of Main Figure area: 174-180 mm full-width hero bands or 115 mm 2/3-width blocks)!
 PANEL_FOOTPRINTS_MM = {
     "schematic": (88, 46), "working_model": (88, 46),
+    # Real visual / imaging / pathology / radiology Hero footprints (synced with sci-plot)
+    "hero_pathology_strip": (174, 72), "hero_mif_codex_panel": (174, 78), "hero_radiology_mri_ct": (174, 66),
+    "pathology_he_ihc": (115, 64), "mif_hero": (115, 68), "radiology_mri_ct": (115, 60),
+    "gross_tumor_ivis": (115, 58), "organoid_microscopy": (88, 58), "western_blot": (86, 52),
+    "spatial_zoom_mif": (88, 60), "histology": (88, 60), "ihc": (88, 60),
+    # Analytical single-cell / spatial / clinical / statistical panels (strictly 1 panel = 1 unique letter!)
     "umap": (58, 55), "spatial_map": (58, 55), "atlas_umap": (88, 60),
-    "spatial_zoom_mif": (62, 52), "histology": (62, 52), "ihc": (62, 52),
     "heatmap": (86, 60), "pseudotime_cascade": (86, 60), "dotplot": (88, 55),
     "oncoprint": (86, 68), "km_risk_table": (86, 68), "km": (54, 52),
     "forest_plot": (86, 54), "swimmer": (86, 54),
@@ -825,13 +832,21 @@ PANEL_FOOTPRINTS_MM = {
     "waterfall": (58, 46), "spider": (58, 46), "milo": (58, 46), "shap": (58, 46), "radar": (52, 52),
 }
 
+REAL_VISUAL_TYPES = {
+    "hero_pathology_strip", "hero_mif_codex_panel", "hero_radiology_mri_ct",
+    "pathology_he_ihc", "mif_hero", "radiology_mri_ct", "gross_tumor_ivis",
+    "organoid_microscopy", "western_blot", "spatial_zoom_mif", "histology", "ihc",
+}
+
 # Lower triage score = demote to Extended Data / Supplementary FIRST (based on 1,215-paper empirical ratios)
+# Note: Flagship representative real images ('visual_hero_image') are protected at priority 93!
 ROLE_PRIORITY = {
-    "schematic": 100, "working_model": 98, "in_vivo_rescue": 95, "core_discovery": 92,
+    "schematic": 100, "working_model": 98, "in_vivo_rescue": 95, "visual_hero_image": 93, "core_discovery": 92,
     "clinical_primary": 88, "spatial_headline": 85, "mechanism_key": 82, "crosstalk_hub": 80,
     "pathway_key": 76, "trajectory_key": 72, "in_vitro_key": 70,
     "marker_dotplot_full": 45, "subgroup_breakdown": 40, "secondary_cohort": 38,
-    "method_ablation": 35, "negative_control": 25, "qc_batch": 15, "gating_toxicity_ko_check": 10,
+    "extra_imaging_replicates": 36, "method_ablation": 35, "negative_control": 25,
+    "qc_batch": 15, "gating_toxicity_ko_check": 10,
 }
 
 
@@ -925,6 +940,23 @@ def plan_and_rebalance_figures(data: dict, journal: str, do_rebalance: bool = Fa
                 print(f"          [TIP sci-plot] {ctypes.count('volcano')} separate volcanoes -> merge into 1 plot_multi_cluster_volcano() (88x48 mm)!")
             if ctypes.count("violin") >= 3:
                 print(f"          [TIP sci-plot] {ctypes.count('violin')} violins -> consider plot_split_violin() to halve panel width!")
+            # Check strict 1-Panel = 1-Unique-Letter law (ban multi-chart shared indexing!)
+            explicit_letters = [str(p["panel_letter"]).lower() for p in ps if p.get("panel_letter")]
+            if len(explicit_letters) != len(set(explicit_letters)):
+                print(f"          [WARN 1:1-LETTER] Duplicate panel letter detected in Fig. {fn}! CNS 90.4% rule: 1 independent plot = 1 unique letter (never bundle distinct charts under Fig. {fn}a).")
+            for p in ps:
+                if int(p.get("bundled_subcharts", 1)) > 1 and p.get("chart_type", "").lower() not in REAL_VISUAL_TYPES:
+                    print(f"          [WARN 1:1-LETTER] Panel '{p.get('id','?')}' bundles {p.get('bundled_subcharts')} subcharts under ONE letter; split into separate sequential letters!")
+            # Check Real Visual Hero Space Reservation (35-55% of Main Figure!)
+            vis_ps = [p for p in ps if p.get("chart_type", "").lower() in REAL_VISUAL_TYPES]
+            if vis_ps:
+                vis_area = sum(p["w_mm"] * p["h_mm"] for p in vis_ps)
+                plate_area = max(1.0, page_w * max(h, page_h * 0.60))
+                vis_pct = round(100.0 * vis_area / plate_area, 1)
+                print(f"          [VISUAL HERO] {len(vis_ps)} real-image panel(s) reserving ~{vis_pct}% of plate area (CNS visual-hero target: 35-55%).")
+                for vp in vis_ps:
+                    if vp["w_mm"] < 80.0 or vp["h_mm"] < 50.0:
+                        print(f"          [WARN VISUAL SIZE] Real image '{vp.get('id','?')}' ({vp['w_mm']:.0f}x{vp['h_mm']:.0f} mm) is too small! Reserve >=88x60 mm (or 115-174 mm Hero Band) in sci-plot.")
         for fn in sorted(s_dict.keys()):
             ps = s_dict[fn]
             h, rows = shelf_pack_height(ps, page_w)
@@ -1029,10 +1061,31 @@ def plan_and_rebalance_figures(data: dict, journal: str, do_rebalance: bool = Fa
 
         ov_after = report_layout("REBALANCED STORYBOARD", main_by_fig, supp_by_fig)
 
+        # Real Visual Evidence ("Seeing is Believing") Audit & Proactive Recommendation
+        all_main_ps = [p for ps in main_by_fig.values() for p in ps]
+        vis_figs = sorted({fn for fn, ps in main_by_fig.items() if any(p.get("chart_type", "").lower() in REAL_VISUAL_TYPES for p in ps)})
+        n_vis_main = sum(1 for p in all_main_ps if p.get("chart_type", "").lower() in REAL_VISUAL_TYPES)
+        if n_vis_main == 0:
+            print("\n[VISUAL ANCHOR RECOMMENDATION ('Seeing is Believing' — 65.1% of CNS Manuscripts!)]")
+            print("  0 real visual/imaging panels detected in Main Figures. Readers & reviewers trust direct physical images far more than statistics alone:")
+            all_types = {p.get("chart_type", "").lower() for p in all_main_ps}
+            all_roles = {p.get("role", "").lower() for p in all_main_ps}
+            if all_types & {"km", "km_risk_table", "swimmer", "waterfall", "forest_plot"} or "clinical_primary" in all_roles:
+                print("    -> Clinical/Cohort Anchor : Recommend pairing pre/post tumor MRI/CT ('radiology_mri_ct' 115x60mm) or H&E pathologic response ('pathology_he_ihc' 115x64mm).")
+            if all_types & {"umap", "atlas_umap", "spatial_map", "boundary_gradient", "neighborhood_matrix"} or "spatial_headline" in all_roles:
+                print("    -> Spatial/TME Anchor     : Recommend representative H&E + magnified mIF/CODEX/IHC boundary FOV ('hero_mif_codex_panel' 174x78mm or 'mif_hero' 115x68mm).")
+            if "in_vivo_rescue" in all_roles:
+                print("    -> In Vivo Efficacy Anchor: Recommend gross excised tumors with ruler / IVIS bioluminescence ('gross_tumor_ivis' 115x58mm) + IHC/mIF ('pathology_he_ihc' 115x64mm).")
+            print("    -> Layout Guard (sci-plot): Reserve 35-55% of Main Figure area via create_visual_hero_layout() / compose_visual_hero_r() and keep 1 panel = 1 unique letter!")
+        else:
+            print(f"\n[VISUAL ANCHOR STATUS] {n_vis_main} real visual/imaging panel(s) across {len(vis_figs)}/{len(main_by_fig)} Main Figures (Figs {vis_figs}; CNS benchmark: 39-49% of flagship Main Figs).")
+
         if out_path:
             final_obj = {
                 "journal": journal,
                 "canvas_mm": {"w_mm": page_w, "h_mm": page_h},
+                "strict_1to1_panel_letters": True,
+                "visual_hero_figs": vis_figs,
                 "rebalancing_actions": actions,
                 "main_figures": {
                     f"Fig. {fn}": [
@@ -1053,6 +1106,51 @@ def plan_and_rebalance_figures(data: dict, journal: str, do_rebalance: bool = Fa
             print(f"\nSaved synchronized storyboard (for both sci-paper-writing & sci-plot) to: {out_path}")
         return 0 if ov_after == 0 else 1
 
+    # Also assign 1-to-1 panel letters, print Visual Anchor check & save --out when 0 overflow (or no --rebalance)
+    for fn, ps in main_by_fig.items():
+        assign_panel_letters(ps, fspec["panel_case"])
+        for p in ps:
+            p["fig"] = fn
+            p["tier"] = "main"
+    for fn, ps in supp_by_fig.items():
+        assign_panel_letters(ps, fspec["panel_case"])
+        for p in ps:
+            p["fig"] = fn
+            p["tier"] = "supp"
+    all_main_ps = [p for ps in main_by_fig.values() for p in ps]
+    vis_figs = sorted({fn for fn, ps in main_by_fig.items() if any(p.get("chart_type", "").lower() in REAL_VISUAL_TYPES for p in ps)})
+    n_vis_main = sum(1 for p in all_main_ps if p.get("chart_type", "").lower() in REAL_VISUAL_TYPES)
+    if n_vis_main == 0:
+        print("\n[VISUAL ANCHOR RECOMMENDATION ('Seeing is Believing' — 65.1% of CNS Manuscripts!)]")
+        print("  0 real visual/imaging panels detected in Main Figures! If you have (or can acquire) clinical MRI/CT, H&E, IHC, mIF/CODEX, or gross tumor/IVIS photos, reserve 35-55% Hero Visual Space in 1-2 Main Figures.")
+        all_types = {p.get("chart_type", "").lower() for p in all_main_ps}
+        all_roles = {p.get("role", "").lower() for p in all_main_ps}
+        if all_types & {"km", "km_risk_table", "swimmer", "waterfall", "forest_plot"} or "clinical_primary" in all_roles:
+            print("    -> Clinical/Cohort Anchor : Pair pre/post tumor MRI/CT ('radiology_mri_ct' 115x60mm) or H&E pathologic response ('pathology_he_ihc' 115x64mm).")
+        if all_types & {"umap", "atlas_umap", "spatial_map", "boundary_gradient", "neighborhood_matrix"} or "spatial_headline" in all_roles:
+            print("    -> Spatial/TME Anchor     : Add representative H&E + magnified mIF/CODEX/IHC boundary FOV ('hero_mif_codex_panel' 174x78mm or 'mif_hero' 115x68mm).")
+        if "in_vivo_rescue" in all_roles:
+            print("    -> In Vivo Efficacy Anchor: Add gross excised tumors with ruler / IVIS bioluminescence ('gross_tumor_ivis' 115x58mm) + IHC/mIF ('pathology_he_ihc' 115x64mm).")
+    else:
+        print(f"\n[VISUAL ANCHOR STATUS] {n_vis_main} real visual/imaging panel(s) across {len(vis_figs)}/{len(main_by_fig)} Main Figures (Figs {vis_figs}; CNS benchmark: 39-49% of flagship Main Figs).")
+    if out_path:
+        final_obj = {
+            "journal": journal,
+            "canvas_mm": {"w_mm": page_w, "h_mm": page_h},
+            "strict_1to1_panel_letters": True,
+            "visual_hero_figs": vis_figs,
+            "rebalancing_actions": actions,
+            "main_figures": {
+                f"Fig. {fn}": [{k: v for k, v in p.items() if k != "_orig_idx"} for p in main_by_fig[fn]]
+                for fn in sorted(main_by_fig.keys())
+            },
+            "supp_figures": {
+                f"{supp_prefix} {fn}": [{k: v for k, v in p.items() if k != "_orig_idx"} for p in supp_by_fig[fn]]
+                for fn in sorted(supp_by_fig.keys())
+            },
+        }
+        Path(out_path).write_text(json.dumps(final_obj, ensure_ascii=False, indent=2), encoding="utf-8")
+        print(f"\nSaved synchronized storyboard (for both sci-paper-writing & sci-plot) to: {out_path}")
     return 0 if ov_before == 0 else 1
 
 
