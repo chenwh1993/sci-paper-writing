@@ -24,36 +24,42 @@ JOURNAL_SPECS = {
         "abs_min_w": 130, "abs_max_w": 250,
         "intro_max_w": 550, "sub_max_w": 9,
         "disc_lim_mandatory": False, "cap_max_w": 350, "spelling": "UK",
+        "main_ref_min": 46, "main_ref_target": "50-58 (+~27 Methods)", "intro_ref_min": 14, "res_ref_min": 16, "disc_ref_min": 10,
     },
     "nature_sister": {
         "title_max_w": 16, "title_colon_ok": True,
         "abs_min_w": 110, "abs_max_w": 165,
         "intro_max_w": 750, "sub_max_w": 13,
         "disc_lim_mandatory": False, "cap_max_w": 350, "spelling": "UK",
+        "main_ref_min": 46, "main_ref_target": "52-65 (+~18 Methods)", "intro_ref_min": 14, "res_ref_min": 16, "disc_ref_min": 10,
     },
     "nat_med": {
         "title_max_w": 18, "title_colon_ok": True,
         "abs_min_w": 140, "abs_max_w": 240,
         "intro_max_w": 650, "sub_max_w": 13,
         "disc_lim_mandatory": True, "cap_max_w": 350, "spelling": "US",
+        "main_ref_min": 42, "main_ref_target": "48-58 (+~17 Methods)", "intro_ref_min": 12, "res_ref_min": 14, "disc_ref_min": 10,
     },
     "cell": {
         "title_max_w": 15, "title_colon_ok": True,
         "abs_min_w": 100, "abs_max_w": 160,
         "intro_max_w": 700, "sub_max_w": 16,
         "disc_lim_mandatory": True, "cap_max_w": 350, "spelling": "US",
+        "main_ref_min": 52, "main_ref_target": "62-84 (+~16 STAR)", "intro_ref_min": 15, "res_ref_min": 22, "disc_ref_min": 12,
     },
     "cancer_cell": {
         "title_max_w": 16, "title_colon_ok": True,
         "abs_min_w": 100, "abs_max_w": 160,
         "intro_max_w": 700, "sub_max_w": 16,
         "disc_lim_mandatory": True, "cap_max_w": 350, "spelling": "US",
+        "main_ref_min": 52, "main_ref_target": "60-80 (+~16 STAR)", "intro_ref_min": 15, "res_ref_min": 20, "disc_ref_min": 12,
     },
     "science": {
         "title_max_w": 13, "title_colon_ok": False,
         "abs_min_w": 85, "abs_max_w": 140,
         "intro_max_w": 650, "sub_max_w": 14,
         "disc_lim_mandatory": False, "cap_max_w": 300, "spelling": "US",
+        "main_ref_min": 50, "main_ref_target": "58-78 (+~16 Supp)", "intro_ref_min": 15, "res_ref_min": 20, "disc_ref_min": 12,
     },
 }
 
@@ -86,6 +92,63 @@ def scan_chinglish(text: str, findings: list):
     for pat, msg in CHINGLISH_PATTERNS:
         if re.search(pat, text, re.I):
             findings.append(("WARN", f"Style/Chinglish: {msg}"))
+
+
+def extract_citations(text: str):
+    """
+    Extract inline references across numeric ([1], [1,2], [1-4], (1,2)), author-year
+    ((Smith et al., 2024; Lee et al., 2025)), and verifiable draft placeholders ([CITE: ...]).
+    Returns (unique_id_set, total_mentions_int, cluster_sizes_list).
+    """
+    mentions = []
+    clusters = []
+
+    def expand_num(s: str):
+        s = s.replace("–", "-").replace("—", "-").replace("−", "-")
+        out = []
+        for part in re.split(r"[,;\s]+", s.strip()):
+            if not part:
+                continue
+            m = re.fullmatch(r"(\d{1,3})-(\d{1,3})", part)
+            if m:
+                a, b = int(m.group(1)), int(m.group(2))
+                if 1 <= a <= b <= 300 and (b - a) <= 30:
+                    out.extend([f"num:{x}" for x in range(a, b + 1)])
+            elif re.fullmatch(r"\d{1,3}", part):
+                v = int(part)
+                if 1 <= v <= 300:
+                    out.append(f"num:{v}")
+        return out
+
+    # 1. Bracket numeric citations: [1], [1, 2], [3-5]
+    for m in re.finditer(r"\[(\d{1,3}(?:\s*[,–—\-]\s*\d{1,3})*)\]", text):
+        ids = expand_num(m.group(1))
+        if ids:
+            mentions.extend(ids)
+            clusters.append(len(ids))
+
+    # 2. Structured verifiable draft placeholders: [CITE: topic/author]
+    for m in re.finditer(r"\[CITE:\s*([^\]]{3,120})\]", text, re.I):
+        key = "cite:" + re.sub(r"\s+", " ", m.group(1).strip().lower())
+        mentions.append(key)
+        clusters.append(1)
+
+    # 3. Parenthetical author-year: (Smith et al., 2024; Jones and Lee, 2025)
+    for m in re.finditer(r"\(([A-Z][A-Za-z\-]+(?:\s+et\s+al\.|\s+(?:and|&)\s+[A-Z][A-Za-z\-]+)?,?\s*(?:19|20)\d\d[a-z]?(?:;\s*[A-Z][^)]{4,80})*)\)", text):
+        parts = [p.strip() for p in m.group(1).split(";") if re.search(r"(?:19|20)\d\d", p)]
+        if parts:
+            ids = ["ay:" + re.sub(r"[^a-z0-9]", "", p.lower())[:28] for p in parts]
+            mentions.extend(ids)
+            clusters.append(len(ids))
+
+    # 4. Science-style parenthetical numeric (1, 2) or (3-5) — exclude Fig./Table/n=/year
+    for m in re.finditer(r"(?<!Fig\.\s)(?<!Figure\s)(?<!Table\s)(?<!n\s=\s)\((\d{1,3}(?:\s*[,–—\-]\s*\d{1,3})+)\)", text):
+        ids = expand_num(m.group(1))
+        if ids:
+            mentions.extend(ids)
+            clusters.append(len(ids))
+
+    return set(mentions), len(mentions), clusters
 
 
 def audit_title(text: str, spec: dict, journal: str):
@@ -156,6 +219,12 @@ def audit_intro(text: str, spec: dict, journal: str):
         if int(m.group(2)) - int(m.group(1)) >= 4:
             findings.append(("WARN", f"Citation range stuffing '{m.group(0)}' ({int(m.group(2))-int(m.group(1))+1} refs in one cluster); split into specific claims with 1-3 refs each."))
             break
+    iu, im, _ = extract_citations(text)
+    idens = round(100.0 * im / max(1, wc), 2)
+    if im > 0 or wc >= 280:
+        findings.append(("INFO", f"Introduction citations: {len(iu)} unique refs ({im} mentions, {idens}/100w; CNS median: 21 unique, 4.5/100w)."))
+    if wc >= 280 and len(iu) < spec["intro_ref_min"]:
+        findings.append(("WARN", f"Introduction is under-cited ({len(iu)} unique refs < {journal} floor {spec['intro_ref_min']}; CNS median 21, 62-69% of P1-P3 sentences cited). Cite disease burden, key axes, and every Gap claim."))
     scan_chinglish(text, findings)
     return findings
 
@@ -195,6 +264,12 @@ def audit_results(text: str, spec: dict, journal: str):
     # Overclaiming on computational inference
     if re.search(r"\b(cellchat|nichenet|pseudotime|monocle|trajectory|correlation|kaplan|cox|tcga|bioinformatic)[^\.]{0,80}\b(proved|demonstrated causality|caused|drove)\b", text, re.I):
         findings.append(("FAIL", "Certainty Verb Ladder violation: strong causal verb ('proved/caused/drove') paired with correlative/computational analysis; downgrade to Tier 3/4 ('predicted/indicated/associated with')."))
+    ru, rm, _ = extract_citations(text)
+    rdens = round(100.0 * rm / max(1, wc), 2)
+    if rm > 0 or wc >= 600:
+        findings.append(("INFO", f"Results citations: {len(ru)} unique refs ({rm} mentions, {rdens}/100w; CNS 2024-26 median: 31 unique / +27 NEW, ~4/subheading)."))
+    if wc >= 600 and len(ru) < spec["res_ref_min"]:
+        findings.append(("WARN", f"Results is under-cited ({len(ru)} unique refs < {journal} floor {spec['res_ref_min']}; CNS median 31, 85.3% of subheadings cite >=1 ref!). Cite published signatures/markers, named tools on first use, external cohorts, mouse/assay models, premise pivots & prior concordance."))
     scan_chinglish(text, findings)
     return findings
 
@@ -219,6 +294,12 @@ def audit_discussion(text: str, spec: dict, journal: str):
         findings.append(("WARN", "Cell Press expects the exact subheading 'Limitations of the study'."))
     if not re.search(r"\b(therapeutic|clinical|trial|patient stratification|biomarker|target|future studies|prospective|translation)\b", text, re.I):
         findings.append(("WARN", "No forward-looking clinical/translational or future-extension statement detected (present in 76.8% of oncology Discussions)."))
+    du, dm, _ = extract_citations(text)
+    ddens = round(100.0 * dm / max(1, wc), 2)
+    if dm > 0 or wc >= 350:
+        findings.append(("INFO", f"Discussion citations: {len(du)} unique refs ({dm} mentions, {ddens}/100w; CNS median: 20 unique / +12 NEW, 1.9/100w)."))
+    if wc >= 350 and len(du) < spec["disc_ref_min"]:
+        findings.append(("WARN", f"Discussion is under-cited ({len(du)} unique refs < {journal} floor {spec['disc_ref_min']}; CNS median 20 including +11-14 NEW trial/cross-cancer/reconciliation refs)."))
     scan_chinglish(text, findings)
     return findings
 
@@ -538,6 +619,35 @@ def run_audit(section: str, journal: str, text: str) -> int:
                 total_fail += 1
             elif level == "WARN":
                 total_warn += 1
+
+    # Full-manuscript Main-Text Reference Waterfall Audit (2024-2026 empirical floor: med=62 main refs!)
+    if section == "all" and all(k in parts for k in ("intro", "results", "discussion")):
+        main_wc = sum(count_words(parts[k]) for k in ("intro", "results", "discussion"))
+        iu, _, ic = extract_citations(parts["intro"])
+        ru, _, rc = extract_citations(parts["results"])
+        du, _, dc = extract_citations(parts["discussion"])
+        mu, _, mc = extract_citations(parts.get("methods", ""))
+        main_u = iu | ru | du
+        all_u = main_u | mu
+        res_new = len(ru - iu)
+        disc_new = len(du - iu - ru)
+        meth_new = len(mu - main_u)
+        all_clusters = ic + rc + dc + mc
+        if main_wc >= 1000 or len(main_u) > 0:
+            print("\n[CITATIONS & REFERENCE WATERFALL]")
+            print(f"  [INFO] Waterfall: Intro={len(iu)} | Results={len(ru)} (+{res_new} NEW) | Discussion={len(du)} (+{disc_new} NEW) => MAIN-TEXT UNIQUE={len(main_u)} (target for {journal}: {spec['main_ref_target']}) | Methods=+{meth_new} NEW => TOTAL={len(all_u)}")
+            if all_clusters:
+                stuffed = sum(1 for c in all_clusters if c >= 5)
+                if stuffed > 0:
+                    print(f"  [WARN] {stuffed} citation anchor(s) stuff >=5 refs together (95.1% of CNS citations use 1-3 targeted refs per claim).")
+                    total_warn += 1
+            if main_wc >= 1200 and len(main_u) < spec["main_ref_min"]:
+                lvl = "FAIL" if (main_wc >= 2200 and len(main_u) < max(25, spec["main_ref_min"] // 2)) else "WARN"
+                print(f"  [{lvl:4s}] Main-Text unique refs ({len(main_u)}) below {journal} empirical floor ({spec['main_ref_min']}; 2024-26 CNS median=62, 75.8% >=50!). Check Intro (>={spec['intro_ref_min']}), Results (>={spec['res_ref_min']}, ~4/subheading across 7 triggers), and Discussion (>={spec['disc_ref_min']}, +11-14 NEW refs). Never fabricate refs; use verifiable [CITE: ...] slots until matched.")
+                if lvl == "FAIL":
+                    total_fail += 1
+                else:
+                    total_warn += 1
 
     print(f"\n--- SUMMARY: {total_fail} FAIL(s), {total_warn} WARN(s) ---")
     return 1 if total_fail > 0 else 0

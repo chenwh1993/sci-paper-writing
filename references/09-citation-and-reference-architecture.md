@@ -45,6 +45,43 @@ Overall corpus median: **`71` total references** (IQR `56–84`, P10–P90 `45�
 | **Science Family** | `22.0%` | **`33.8%`** | `21.6%` | `22.5%` | Dense mechanistic Results citations + balanced Intro/Discussion/Methods. |
 | **Oncology Specialists** (*Cancer Discov*, *JCI*, *CR/CCR*) | **`28.5%`** | `26.5%` | **`22.4%`** | `22.6%` | Heavier clinical/trial framing in Introduction (`28.5%`) and clinical-trial comparison in Discussion (`22.4%`). |
 
+### 2.3 The 2024–2026 Main-Text Reference Waterfall & Anti-Under-Citation Law (`n = 256` Lossless HTMLs, `1,849` Results Subheadings)
+
+> **Why ~40 Main-Text References Feels Thin**: Across **`256` lossless 2024–2026 high-IF oncology manuscripts**, the **Main Text ALONE (`Intro ∪ Results ∪ Discussion`, excluding Methods)** contains a median of **`62.0` unique references** (`IQR 50–77`, `P10 = 39`, `P90 = 92`). **`75.8%`** cite **`≥ 50`** unique references in the Main Text and **`54.7%`** cite **`≥ 60`**. Only **`12.1%`** have `≤ 40` main-text references (`0.0%` in *Immunity*, `8.5%` in *Cell*, `10.0%` in *Nat Cancer*, `11.1%` in *Cancer Cell*; only *Clin Cancer Res* has a ~40–50 editorial cap).
+
+#### Exact Sequential Buildup Waterfall (`Intro` → `+ Results NEW` → `+ Discussion NEW` = `Main-Text Unique`)
+
+| Journal (2024–2026 HTMLs) | Intro Unique (Med) | Results Total (`+ NEW`) | Discussion Total (`+ NEW`) | **Main-Text Unique Med (IQR)** | `≤ 40` Main Refs | Recommended Main-Text Floor |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Cell** (`n=47`) | `21.0` | **`42.0` (`+32.0 new`)** | `17.0` (`+11.0 new`) | **`69.0` (`53–84`)** | `8.5%` | **`≥ 55`** *(target `62–82`)* |
+| **Immunity** (`n=21`) | `22.0` | **`34.0` (`+30.0 new`)** | `27.0` (`+14.0 new`) | **`68.0` (`57–81`)** | **`0.0%`** | **`≥ 56`** *(target `62–80`)* |
+| **Cancer Cell** (`n=72`) | `22.0` | **`32.0` (`+27.5 new`)** | `22.0` (`+14.0 new`) | **`66.0` (`52–84`)** | `11.1%` | **`≥ 52`** *(target `60–80`)* |
+| **Sci Immunol** (`n=20`) | `29.5` | `29.0` (`+22.0 new`) | `22.0` (`+10.0 new`) | **`66.0` (`52–77`)** | `15.0%` | **`≥ 50`** *(target `58–75`)* |
+| **Nat Cancer** (`n=20`) | `20.0` | `24.5` (`+21.5 new`) | `16.5` (`+11.0 new`) | **`54.0` (`49–59`)** | `10.0%` | **`≥ 48`** *(target `52–60`)* |
+| **Nature** *(full audit `n=87`)* | `~18–22` | `~20–26` (`+18–22 new`) | `~14–18` (`+10–13 new`) | **`53.0`** *(+`~27` Methods)* | — | **`≥ 46`** *(target `50–58` main)* |
+| **Sci Transl Med** (`n=26`) | `19.0` | `24.5` (`+18.5 new`) | `16.5` (`+11.5 new`) | **`51.0` (`44–60`)** | `19.2%` | **`≥ 45`** *(target `50–60`)* |
+| **Nat Med** *(full audit `n=39`)* | `~16–20` | `~18–24` | `~14–18` | **`50.0`** *(+`~17` Methods)* | — | **`≥ 42`** *(target `48–58` main)* |
+| **Clin Cancer Res** (`n=11`) | `15.0` | `12.0` (`+8.0 new`) | `13.0` (`+11.0 new`) | **`41.0` (`30–45`)** | `36.4%` | `35–50` *(50-ref cap)* |
+| **Overall 2024–2026 (`n=256`)** | **`21.0`** (`16–29`) | **`31.0` (`+27.0 new`!)** | **`20.0` (`+12.0 new`)** | **`62.0` (`50–77`)** | `12.1%` | **`≥ 50`** *(+`12–25` Methods)* |
+
+#### Exact Sentence-Level Citation Coverage & Per-Subheading Rhythm (`n = 1,849` Results Subheadings)
+- **Introduction (`52.3%` of all sentences cited)**: **`68.8%`** of P1 sentences and **`61.6%`** of Middle P2–P3 sentences carry citations (dropping to `23.4%` in the final `Here, we...` paragraph). **Rule**: Never write 3+ consecutive uncited background/gap sentences in Intro P1–P3!
+- **Results (`17.0%` of all sentences cited — ~1 in every 6 sentences!)**:
+  - **THE #1 REASON DRAFTS FALL SHORT AT 40 REFS**: Writers mistakenly treat Results as citation-free! In real 2024–2026 CNS papers, **Results introduces MORE brand-new references (`+27.0` new!) than Introduction (`21.0`) or Discussion (`+12.0` new)**!
+  - Across `1,849` Results subheadings: median **`4` unique references PER subheading** (`IQR 1–7`), **`85.3%`** carry `≥ 1` citation, **`73.6%`** carry `≥ 2`, and **`62.8%`** carry `≥ 3`!
+- **Discussion (`29.1%` of all sentences cited)**: **`27.0%`** in P1, **`31.9%`** in Middle comparative/translational paragraphs (adding **`+11–14` BRAND-NEW refs** beyond Intro/Results), and **`12.6%`** in the closing/limitations paragraph.
+
+#### Seven Empirical Inline Citation Triggers Inside Results (How to Naturally Reach `24–35` Results Refs Without Padding)
+1. **Published Signatures, Canonical Markers, Subtypes & Reference Atlases (`14.4%`)**: Cite the defining paper whenever scoring a gene module or naming a canonical state (*"comparison to Hallmark TNFα/IFNγ gene sets [Ref]"*, *"resembling previously defined `SPP1+` TAMs / `Tpex` / `myCAF` programs [Ref]"*).
+2. **Experimental Models, Genetic Lines, Assays & Protocols (`13.5%`)**: Cite the source paper on first use of mouse models (`KPC`, `B16-OVA`, `MC38`), organoids, Perturb-map, CODEX/IMC panels, or `"as previously described [Ref]"`.
+3. **Direct Concordance or Contrast with Prior Studies (`9.6%`)**: Anchor your observation in one concise clause (*"Consistent with prior observations in melanoma [Ref]"*, *"as previously demonstrated [Ref]"*, *"in contrast to earlier bulk profiles [Ref]"*).
+4. **Drug, Target & Clinical Benchmark Precedents (`7.1%`)**: Cite foundational trials/mechanisms when introducing `anti-PD-1`, `KRAS G12D inhibitor`, `RECIST v1.1`, or `PD-L1/TMB` comparators.
+5. **One-Clause Premise Motivating the Next Pivot (`5.3%`)**: Justify experimental escalation cleanly (*"Given that X regulates Y [Ref], we next tested whether..."*).
+6. **Named Computational / Spatial Algorithms on First Mention (`4.3%`)**: Cite `Milo [Ref]`, `CellChat [Ref]`, `NicheNet [Ref]`, `SCENIC [Ref]`, `inferCNV [Ref]`, `RCTD [Ref]`, `Monocle3 [Ref]`, `Squidpy [Ref]` on first appearance in Results (not only buried in Methods!).
+7. **External / Public Validation Cohorts & Published Datasets (`3.1%`)**: Cite EVERY external cohort (`TCGA [Ref]`, `IMvigor210 [Ref]`, `OAK/POPLAR [Ref]`, `CheckMate [Ref]`, published scRNA/spatial cohorts `[Ref]`).
+
+> **Zero-Fabrication Rule for Drafting**: **NEVER invent fake authors, PMIDs, or DOIs** just to raise the reference count! When drafting before bibliographic verification, insert explicit structured citation placeholders at every genuine trigger above — e.g., `[CITE: Hallmark gene sets, Liberzon et al. Cell Syst 2015]` or `[CITE: Milo neighborhood abundance test]` — then resolve every slot against real PubMed/DOI records or the user's reference library before submission!
+
 ---
 
 ## 3. What Exactly Should Be Cited in Each Section? (Zero Misplaced Citations)
