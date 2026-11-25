@@ -11,7 +11,7 @@ Distilled and out-of-time cross-validated across **2020–2026**:
 
 ---
 
-## Three Operating Modes
+## Four Operating Modes
 
 1. **Storyline Architect Mode (Reverse-Engineering from Results)**:
    - Given a set of Results / figures, classifies the paper into one of **5 empirical Study Archetypes** (*Mechanistic Axis + Perturbation*, *Clinical Biomarker / Immunotherapy*, *Single-Cell / Spatial Atlas Resource*, *Clonal Evolution / Metastasis*, *Computational / AI Method*), locks target journal constraints, and reverse-engineers:
@@ -25,14 +25,18 @@ Distilled and out-of-time cross-validated across **2020–2026**:
    - Enforces authentic CNS grammar, tense discipline (`4.93:1` Results past tense; `5:1` `-ing` figure captions; `9.89:1` past-passive Methods), inline parenthetical figure citations (`765.3:1` `(Fig. 1a)` vs `"Fig. 1a shows"`), the **4-Tier Certainty Verb Ladder**, **5 Precision Verb Confusion Matrices**, and **12 micro-scenario ready-to-migrate sentence banks**.
 3. **Automated Pre-Submission Audit & Scaffolding CLI (`scripts/audit_manuscript.py`)**:
    - Zero-dependency Python linter auditing any single section or full Markdown manuscript (`title`, `abstract`, `highlights`, `in_brief`, `intro`, `results`, `subheadings`, `discussion`, `cover_letter`, `caption`, `methods`, `all`) plus an interactive archetype scaffolder.
+4. **Data/Results-Doc → Millimeter-Bounded Figure Packing → Full Manuscript Expansion (`sci-plot` Linkage!)**:
+   - Turns raw data/results notes into an atomic evidence table, checks physical full-page millimeter budgets (*Nature* `180×220 mm`, *Cell* `174×215 mm`, *Science* `184×218 mm`) via `plan-figures --rebalance`, automatically demotes/splits/consolidates overflowing panels into paired Extended Data / Supplementary Figures (exporting a shared `final_storyboard.json` with exact `(w_mm, h_mm)` dimensions for `sci-plot`), and expands the locked storyboard into a synchronized full manuscript with zero fabricated statistics.
 
 ```bash
 # Audit an entire Markdown manuscript against Cancer Cell / Nature / Science rules
 python scripts/audit_manuscript.py audit --section all --journal cancer_cell --file manuscript.md
 
-# Audit a single section (e.g., Abstract, Highlights, Cover Letter)
-python scripts/audit_manuscript.py audit --section abstract --journal nature --file abstract.txt
-python scripts/audit_manuscript.py audit --section highlights --journal cell --file highlights.txt
+# Match your existing results/notes against 30 6-year CNS oncology entry points & Intro Part-2 Gaps
+python scripts/audit_manuscript.py match-storyline --file my_results_notes.md
+
+# Check millimeter page-size overflow & auto-rebalance Main vs Extended Data/Supp figures
+python scripts/audit_manuscript.py plan-figures --journal nature --input draft_storyboard.json --rebalance --out final_storyboard.json
 
 # Generate a journal-calibrated storyline scaffold from Study Archetype
 python scripts/audit_manuscript.py scaffold --archetype mechanistic --journal nature
@@ -58,9 +62,12 @@ sci-paper-writing/
 │   ├── 07-methods-and-star.md                                  # 307-Methods corpus: Nature/Cell STAR+KRT/Science schemas, 9.89:1 past-passive & reproducibility
 │   ├── 08-comprehensive-phrasebank-and-collocations.md         # 1,960-paper corpus: 5 verb confusion matrices, top 4-gram openers & 12 micro-scenario banks
 │   ├── 09-citation-and-reference-architecture.md               # 20-journal reference budgets, Intro/Results/Discussion/Methods split, 95% 1–3 anti-stuffing & recency
-│   └── 10-figure-and-supplement-architecture.md                # 20-journal Main/ED/Supp figure & subpanel budgets, Main-vs-Supp triage matrix & Fig 1–7 pairing
+│   ├── 10-figure-and-supplement-architecture.md                # 20-journal Main/ED/Supp figure & subpanel budgets, Main-vs-Supp triage matrix & Fig 1–7 pairing
+│   ├── 11-results-to-manuscript-and-figure-packing.md          # Mode D end-to-end Results->Manuscript expansion & millimeter figure-overflow rebalancing (sci-plot linkage)
+│   ├── 12-oncology-storyline-and-gap-playbooks.md              # 30-Entry-Point 6-year oncology encyclopedia (6,665 papers): Intro Part-2 Gaps, H1->H7 chains & Discussion elevation
+│   └── 13-novelty-engineering-and-reviewer-defense.md          # Entry-Point <-> Novelty <-> Results Proof Triangle (1,960 papers): Hype Inversion Law, 6 Proof Modules & 'No-Novelty' Rescue
 └── scripts/
-    └── audit_manuscript.py                                     # Zero-dependency full-manuscript linter & storyline scaffolder
+    └── audit_manuscript.py                                     # Zero-dependency full-manuscript linter, 30-entry-point storyline + novelty matcher, scaffolder & millimeter figure rebalancer
 ```
 
 ---

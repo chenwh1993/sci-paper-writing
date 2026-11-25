@@ -11,8 +11,11 @@ Usage:
   python audit_manuscript.py scaffold --archetype mechanistic --journal cancer_cell
 """
 import argparse
+import json
+import math
 import re
 import sys
+from collections import defaultdict
 from pathlib import Path
 
 JOURNAL_SPECS = {
@@ -64,7 +67,8 @@ CHINGLISH_PATTERNS = [
     (r"\bas can be seen from (fig|figure)\b", "Chinglish figure reference ('As can be seen from Fig.'); state the biological result as subject and cite '(Fig. Xa)' parenthetically."),
     (r"\bproved that\b|\bproves that\b", "Overclaiming verb ('proved'); biological data rarely 'prove'—use 'demonstrated', 'established', or 'indicated' per the 4-tier certainty ladder."),
     (r"\bplay(s)? a very important role\b|\bhas (great|important) clinical significance\b", "Empty significance cliché; name the concrete biological function or translational utility."),
-    (r"\bnovel\b.*\bfirst\b|\bfor the first time\b", "Editorial red flag ('for the first time' / 'novel...first'); let specific findings convey novelty without self-praise."),
+    (r"\bnovel\b.*\bfirst\b|\bfor the first time\b", "Editorial red flag ('for the first time' / 'novel...first', only 0.1-1.0% in Tier-1 CNS vs 2.7x higher in lower tiers); prove conceptual delta via 'X, rather than Y' instead of self-praise."),
+    (r"\b(first (?:study|report|investigation) to|to the best of our knowledge|never been (?:studied|reported|explored))\b", "Empty priority/novelty claim ('first study to / never been studied' is 2.8-5.0x more common in lower tiers and triggers 'no novelty' scrutiny); replace with explicit prior-art contrast ('Whereas prior studies..., our data show...')."),
 ]
 
 
@@ -539,8 +543,521 @@ def run_audit(section: str, journal: str, text: str) -> int:
     return 1 if total_fail > 0 else 0
 
 
+# ---------------------------------------------------------------------------
+# 30-Entry-Point 6-Year Oncology Storyline Matcher (6,665 papers, 2020-2026)
+# ---------------------------------------------------------------------------
+ONCOLOGY_ENTRY_POINTS = [
+    ("01_ICB_Resistance_Response", "ICB Primary/Acquired Resistance & Response Prediction", 1.16,
+     r"\b(checkpoint blockade|anti-?pd-?1|anti-?pd-?l1|anti-?ctla-?4|immunotherap|\bicb\b|\bici\b|pembrolizumab|nivolumab|atezolizumab|responder|non-?responder)\b",
+     "Despite durable responses in a subset of patients, primary/acquired resistance limits ICB efficacy in most cases, yet causal TME/tumor drivers of failure remain unclear.",
+     "H1 R vs NR cohort contrast -> H2 Resistant cell state/factor -> H3 Immune exclusion mechanism -> H4 Resistant mouse model -> H5 KO/blockade synergizes with anti-PD-1 -> H6 Multi-cohort response prediction.",
+     "Compare directly against PD-L1/TMB; propose biomarker-guided combination sequence."),
+    ("02_Spatial_Niche_Exclusion", "Spatial Niche Architecture & Localized Immune Exclusion [HOT 2.28x]", 2.28,
+     r"\b(spatial|niches?|cellular neighbou?rhood|invasive margin|tumou?r[- ]stroma|immune exclus|immune[- ]excluded|ecotypes?|visium|xenium|cosmx|merscope|codex|mibi|\bimc\b|\bmif\b)\b",
+     "Dissociated scRNA-seq destroys tissue topology, leaving unresolved whether immune suppression is a global tumor state or organized within spatially restricted cellular niches.",
+     "H1 Spatial+scRNA atlas -> H2 Cellular neighborhoods (CNs) -> H3 Invasive-margin CD8 exclusion gradient -> H4 Niche L-R hub confirmed by mIF -> H5 Perturbation dismantles barrier in vivo -> H6 Spatial niche prognosis.",
+     "Elevate from abundance to spatial topology; reconcile bulk vs spatial studies; caveat gene-panel coverage."),
+    ("03_Myeloid_TAM_Neutrophil_CAF", "Myeloid / TAM / Neutrophil / CAF Plasticity & Reprogramming", 1.29,
+     r"\b(macrophages?|\btams?\b|myeloid|mdscs?|neutrophils?|\btans?\b|fibroblasts?|\bcafs?\b|dendritic cells?|cdc1|mregdc|microglia|monocytes?|spp1|c1q|trem2)\b",
+     "Broad myeloid/CAF depletion strategies have largely failed clinically; what local cues polarize specific suppressive subsets—and how to selectively reprogram rather than deplete them—remains poorly understood.",
+     "H1 Focal myeloid/CAF subcluster -> H2 Lineage/trajectory origin -> H3 Spatial/metabolic polarizing cue -> H4 T-cell suppression mechanism -> H5 Selective reprogramming boosts immunity in vivo -> H6 Human survival validation.",
+     "Contrast selective reprogramming vs pan-depletion (e.g., CSF1R); align human/mouse nomenclature."),
+    ("04_T_Cell_Exhaustion_Tpex_TLS_LN", "T Cell Exhaustion, Tpex Stemness, B Cells/TLS & Draining Lymph Nodes", 1.28,
+     r"\b(exhaustion|exhausted|tpex|stem[- ]like t|progenitor exhausted|tcf1|tcf7|tregs?|regulatory t|lymph node|tdln|b cells?|plasma cells?|tertiary lymphoid|\btls\b|tcr repertoire|clonal expansion)\b",
+     "Durable antitumor immunity depends on Tpex stemness and TLS/tdLN reservoirs, yet how extra-tumoral niches replenish effectors or why immature TLSs stall in cold tumors remains elusive.",
+     "H1 Paired tumor+tdLN/blood scRNA+TCR-seq -> H2 Clonal Tpex->Tex trajectory -> H3 Spatial Tpex/TLS maturation states -> H4 Molecular/metabolic brake -> H5 Intervention preserves stemness/matures TLS + ICB -> H6 Patient durability.",
+     "Frame immunity as a multi-organ systemic loop (tdLN+TLS+tumor); discuss surgical timing implications."),
+    ("05_Neoadjuvant_Longitudinal_Trial", "Neoadjuvant / Window-of-Opportunity Longitudinal Dynamics [HOT 1.78x]", 1.78,
+     r"\b(neoadjuvant|adjuvant|window[- ]of[- ]opportunity|phase [123i]+|clinical trial|on[- ]treatment|pre[- ] and post|paired biops|pathologic(?:al)? (?:complete )?response|\bpcr\b|\bmpr\b|residual disease)\b",
+     "Baseline cross-sectional biopsies miss therapy-induced remodeling; paired pre/on-treatment profiling is needed to separate baseline predictors from dynamic mechanisms of pathologic response vs residual disease.",
+     "H1 Trial design & pCR/MPR outcomes -> H2 Baseline correlates -> H3 Paired Pre->Post cellular & TCR remodeling -> H4 Residual tumor-bed spatial niche -> H5 Blood correlate -> H6 Preclinical target in non-responders.",
+     "Guide adaptive escalation/de-escalation trials; candidly discuss small arm size and biopsy timing."),
+    ("06_Precancer_Evolution_Interception", "Precancer -> Invasive Evolution & Early Interception", 0.89,
+     r"\b(precancer|pre-?malignant|premalignant|preinvasive|precursor|carcinogenesis|tumou?r initiation|dysplasia|interception|barrett|adenoma|\baah\b|\bais\b|\bmia\b|\bdcis\b|clonal hematopoiesis)\b",
+     "Scarcity of premalignant specimens and bulk profiling have left early epithelial-immune co-evolution—and stage-specific targets for precancer interception—poorly charted.",
+     "H1 Normal->precancer->invasive atlas -> H2 Early epithelial plasticity -> H3 Innate-to-adaptive immune switch -> H4 Precancer-enriched target -> H5 Early-window (not late) blockade halts progression -> H6 Risk stratification.",
+     "Champion the stage-specific interception window; note non-linear progression caveats."),
+    ("07_Organ_Metastasis_Systemic", "Organ-Specific Metastasis Tropism & Systemic Host Macroenvironment", 1.08,
+     r"\b(metastas|metastatic|brain metast|bone metast|liver metast|lung metast|leptomeningeal|disseminat|organotrop|tropism|colonization|anemia|cachexia|emergency granulopoiesis)\b",
+     "How disseminated tumor cells hijack organ-specific resident niches (brain/bone/liver/lung) and reciprocally disrupt systemic host physiology (anemia/myelopoiesis/cachexia) remains poorly understood.",
+     "H1 Primary vs organ-metastasis atlas -> H2 Hijacked resident niche cell -> H3 Metabolic/paracrine hijacking axis -> H4 Systemic host pathology -> H5 Niche-specific perturbation blocks colonization -> H6 Human metastasis risk.",
+     "Reframe metastasis as organ-ecosystem co-option + systemic disease; contrast site-specific vs pan-metastatic rules."),
+    ("08_NonGenetic_Plasticity_DTP_Resistance", "Non-Genetic Plasticity, DTP Persisters & Targeted/Chemo/RT Resistance", 1.23,
+     r"\b(plasticity|drug[- ]tolerant|persister|\bdtp\b|targeted therap|tyrosine kinase|\btki\b|\begfr\b|\bkras\b|\balk\b|\bbraf\b|\bparp\b|chemotherap|cisplatin|radiotherap|radioresist|chemoresist|neuroendocrine|transdifferentiation|\bemt\b|stemness)\b",
+     "Many tumors relapse on targeted therapy, chemo, or RT without secondary resistance mutations; how reversible non-genetic plasticity and DTP states license escape remains unclear.",
+     "H1 Longitudinal mutation-free resistant/DTP state -> H2 Plastic transcriptional/EMT program -> H3 Master TF/signaling driver -> H4 Reversibility/lineage proof -> H5 Synthetic-lethal combo eradicates DTPs -> H6 Relapsed patient validation.",
+     "Target transient plasticity before genetic fixation; propose intermittent/combination schedules."),
+    ("09_Clonal_Evolution_CIN_ecDNA_cfDNA", "Clonal Evolution, CIN/ecDNA & Liquid Biopsy (cfDNA) Tracking", 1.09,
+     r"\b(clonal evolution|subclon|phylogen|chromosomal instability|\bcin\b|aneuploid|whole[- ]genome doubling|\becdna\b|extrachromosomal|structural variant|cell[- ]free dna|\bcfdna\b|\bctdna\b|liquid biopsy|chromothripsis|tracerx)\b",
+     "Whether resistant subclones pre-exist at diagnosis or arise de novo—and how CIN/ecDNA/SVs govern fitness dynamically in patients—has been limited by single-timepoint invasive biopsies.",
+     "H1 Longitudinal WGS/scWGS phylogeny -> H2 Clone-specific SV/ecDNA cfDNA tracking -> H3 Selective expansion of pre-existing clone -> H4 Matched scRNA phenotype -> H5 Fitness modeling -> H6 Adaptive clinical monitoring.",
+     "Contrast pre-existing selection vs de novo mutagenesis; advocate cfDNA-guided adaptive trials."),
+    ("10_Antigen_Escape_Immunoediting", "Antigenic Heterogeneity, Neoantigen Loss & Subclonal Immunoediting", 1.26,
+     r"\b(neoantigen|antigen presentation|mhc class|\bhla\b|hla[- ]loh|immunoediting|immune escape|immune evasion|antigen loss|immunogenicity|b2m)\b",
+     "High TMB fails to ensure durable ICB response when subclonal neoantigens, HLA LOH, or MHC defects allow antigen-negative clones to escape; strategies restoring presentation or bystander killing remain needed.",
+     "H1 Clonal vs subclonal neoantigen & HLA editing -> H2 Mechanism of MHC loss/escape -> H3 Mixed-clone in vivo barcoding -> H4 Intervention restores MHC or IFN-g bystander killing -> H5 ICB cohort validation.",
+     "Connect genomic neoantigen architecture to epigenetic MHC visibility and antigen-low clone clearance."),
+    ("11_Metabolism_Hypoxia_Cell_Death", "Tumor Metabolism, Hypoxia & Novel Cell Death (Ferro/Cuproptosis) [HOT 1.50x]", 1.50,
+     r"\b(metabol|lactate|lipid|cholesterol|iron|copper|cuproptosis|ferroptosis|pyroptosis|amino acid|arginine|leucine|tryptophan|aspartate|polyamine|mitochondri|oxphos|glycolys|hypoxi|glutathione|\bros\b|autophagy)\b",
+     "How tumor metabolic rewiring and true intratumoral hypoxia couple to regulated cell death (cuproptosis/ferroptosis) or exert dual effects on therapy response vs resistance remains poorly understood.",
+     "H1 Metabolic/RCD signature in human tumors -> H2 Spatial co-localization with hypoxic niches -> H3 Enzyme/transporter mechanism -> H4 Genetic+chemical rescue confirms RCD -> H5 Metabolic/diet intervention synergizes with RT/ICB -> H6 Clinical prognosis.",
+     "Address tumor-vs-immune metabolic duality and therapeutic safety window."),
+    ("12_Epigenetics_Chromatin_Enhancer", "Epigenetic Rewiring, Chromatin Accessibility (scATAC) & Super-Enhancers", 0.85,
+     r"\b(epigenet|chromatin|scatac|atac[- ]seq|multiome|enhancer|super[- ]enhancer|methylation|histone|ezh2|ezh1|kdm|dnmt|hdac|swi/snf|arid1a|bivalent|regulon)\b",
+     "RNA profiling alone misses cis-regulatory chromatin accessibility and enhancer rewiring that lock in malignant plasticity or T-cell exhaustion.",
+     "H1 Multiome (scRNA+scATAC) chromatin map -> H2 Motif/TF footprinting & enhancer-gene links -> H3 CUT&Tag/Hi-C locus proof -> H4 Epigenetic inhibitor reverses exhaustion/boosts immunogenicity -> H5 In vivo CAR-T/ICB synergy.",
+     "Highlight reversible epigenetic druggability; caveat spike-in normalization and systemic off-target effects."),
+    ("13_RNA_Splicing_Translation_Neoantigen", "RNA Splicing, Translation Rewiring & Cryptic Neoantigens [HOT 1.58x]", 1.58,
+     r"\b(splicing|intron retention|translation|ribosom|eif5a|trna|codon|rna modification|m6a|non[- ]canonical|cryptic peptide|frameshift|aberrant peptide)\b",
+     "Steady-state mRNA overlooks selective translational control, ribosome pausing, and aberrant splicing that rewire oncogenic proteomes and create shared non-canonical neoantigens.",
+     "H1 Ribo-seq/splicing/tRNA screen -> H2 Codon/splice mechanism -> H3 Immunopeptidomics confirms MHC presentation -> H4 Perturbation disrupts oncogenic translation/boosts immunogenicity -> H5 CD8-dependent ICB synergy.",
+     "Expand immunotherapy beyond canonical SNV neoantigens into shared translation/splicing antigens."),
+    ("14_PTM_Proteogenomics_Secretome", "PTMs, Proteogenomics & Druggable Secretome / Surfaceome", 0.86,
+     r"\b(proteogenom|phosphoproteom|proteomic|phosphorylat|ubiquitin|acetylat|lactylat|glycosylat|post[- ]?translational|secreted protein|secretome|surfaceome)\b",
+     "Transcriptomic and cell-autonomous genetic screens miss post-translational signaling switches and secreted/surface regulators with direct biologic druggability.",
+     "H1 Phosphoproteomic/secretome clinical screen -> H2 Enzyme-substrate/ligand mechanism -> H3 Downstream metabolic/immune cascade -> H4 Phospho-mutant or recombinant biologic validation in vivo -> H5 Human tumor specimens.",
+     "Emphasize direct druggability (biologics, ADCs, PROTACs); discuss systemic vs intratumoral delivery."),
+    ("15_Cancer_Neuroscience_Innervation", "Cancer Neuroscience, Tumor Innervation & Neuro-Immune Axis [HOT 1.90x]", 1.90,
+     r"\b(innervat|neuron|neuronal|nerve|denervat|synap|astrocyte|glioma[- ]neuron|neuro[- ]immune|neurotransmitter|nociceptor|sympathetic|schwann|axon)\b",
+     "Tumors are extensively innervated, yet the transcriptional states of tumor-infiltrating nerves and how neural signaling reprograms immune/stromal niches remain uncharted.",
+     "H1 Neural tracing+scRNA maps tumor-specific neurons -> H2 3D/spatial nerve-TME colocalization -> H3 Neurotransmitter/synaptic immune-suppression mechanism -> H4 Denervation/receptor blockade sensitizes to ICB -> H5 Neuro-drug repurposing.",
+     "Spotlight neuro-oncology drug repurposing while addressing autonomic off-target safety."),
+    ("16_Aging_Senescence_SASP", "Aging, Cellular Senescence (SASP) & Aged Microenvironment [HOT 4.07x #1!]", 4.07,
+     r"\b(aging|ageing|aged |elderly|senescen|\bsasp\b|p16|p21|inflammaging|age[- ]related|immunosenescence|telomere)\b",
+     "Age is the top cancer risk factor, yet preclinical oncology relies on young hosts; how host aging and reversible cellular senescence remodel stromal metabolism and immune escape remains poorly understood.",
+     "H1 Young vs aged multi-omics -> H2 Reversible senescence / aged-stroma lipid-SASP cue -> H3 Mechanistic checkpoint/driver -> H4 Age-matched perturbation/senolytic rescue -> H5 Age-stratified clinical prognosis.",
+     "Challenge young-mouse bias; advocate age-stratified clinical trials and senomorphic combinations."),
+    ("17_Microbiome_Diet_Host_Axis", "Gut/Intratumoral Microbiome, Diet & Microbial Metabolites [HOT 3.30x #2!]", 3.30,
+     r"\b(microbio|gut micro|intratumoral bacter|bacteria|fungal|mycobiome|virome|bile acid|short[- ]chain fatty|dietary|diet\b|fasting|\bfmt\b|probiotic)\b",
+     "Microbiome associations with cancer and ICB are widespread, yet moving from correlation to causal effector strains, defined microbial metabolites, and host immune sensors remains a key bottleneck.",
+     "H1 Multi-cohort metagenomics or spatial intratumoral bacteria -> H2 Causal strain/diet in germ-free/murine models -> H3 Microbial gene/metabolite identification -> H4 Host receptor & immune circuit -> H5 ICB synergy + human validation.",
+     "Translate modernized Koch's postulates into defined diets/postbiotics vs variable FMT."),
+    ("18_Vascular_Angiogenesis_Pericyte", "Tumor Vasculature, Vascular Normalization & Endothelial/Pericyte Niche", 1.08,
+     r"\b(angiogen|vascul|endothelial|\bvegf\b|vegfr|anti[- ]vegf|pericyte|blood[- ]brain barrier|blood[- ]tumor barrier|lymphangiogen|\bhev\b)\b",
+     "Anti-VEGF/VEGFR-TKI plus ICB improves initial responses, yet how vascular remodeling balances immune trafficking against hypoxia-induced resistance remains unclear.",
+     "H1 EC/pericyte/HEV spatial-single-cell atlas -> H2 Normalization vs hypoxia shift under therapy -> H3 Immune trafficking/Treg/B-cell circuit -> H4 Endothelial/immune Vegfr2 cKO -> H5 Clinical trial translation.",
+     "Reconcile vascular normalization vs hypoxia-driven metastasis; optimize combination dosing windows."),
+    ("19_ECM_Fibrosis_Mechanics_Coagulation", "ECM Remodeling, Fibrosis Mechanics & Coagulation/Fibrin Barriers [HOT 1.69x]", 1.69,
+     r"\b(extracellular matrix|\becm\b|collagen|fibrosis|fibrotic|desmoplas|stiffness|mechanotransduction|yap/taz|fibrin|coagulation|serpin|pai1|integrin)\b",
+     "Whether dense ECM, tissue stiffness, and fibrin deposition act solely as passive physical walls or actively signal to organize localized immunosuppressive niches—and how to dismantle them safely—remains unclear.",
+     "H1 Spatial/proteomic link of ECM/fibrin to T-cell exclusion -> H2 Tumor vs CAF source -> H3 Mechanical/receptor macrophage programming -> H4 Targeted ECM/PAI1 dismantling restores T cells -> H5 Anti-PD-1 synergy + patient cohort.",
+     "Contrast targeted niche dismantling against earlier failed pan-stromal ablation trials."),
+    ("20_Sex_Hormone_Obesity_Comorbidity", "Sex Differences, Sex Hormones, Obesity & Metabolic Comorbidities", 0.87,
+     r"\b(sex difference|sex[- ]specific|sexual dimorphism|androgen|estrogen|testosterone|y chromosome|loss of y|obesity|obese|adipocyte|adipose|\bmash\b|\bnash\b|fatty liver|colitis[- ]associated|\bibd\b)\b",
+     "Biological sex, sex hormones/LOY, and comorbidities (obesity, MASH, IBD) strongly sway cancer outcomes and ICB efficacy, yet the cell-intrinsic immune/stromal circuits remain underexplored.",
+     "H1 Sex/comorbidity-stratified clinical disparity -> H2 Divergent immune/stromal scRNA/spatial state -> H3 Hormonal/LOY/adipokine mechanism -> H4 Receptor cKO/hormone blockade reverses disparity -> H5 Stratified therapeutic strategy.",
+     "Champion sex- and comorbidity-aware precision oncology (e.g., repurposing anti-androgens with ICB)."),
+    ("21_Cell_Virus_Vaccine_ADC_Engineering", "Engineered Cell Therapy (CAR-T/TCR-T/NK), Virus, Vaccine & ADCs [HOT 1.85x]", 1.85,
+     r"\b(car[- ]?t|tcr[- ]?t|adoptive t cell|adoptive cell|engineered t|til therapy|nk cell therapy|car[- ]?nk|oncolytic virus|cancer vaccine|neoantigen vaccine|mrna vaccine|bispecific|\badc\b)\b",
+     "Adoptive cell therapies and biologics stall in solid tumors due to poor trafficking, hostile TMEs, tonic exhaustion, and dose-limiting systemic toxicities.",
+     "H1 Rational engineering design -> H2 In vitro potency/stemness -> H3 Solid-tumor infiltration & TME remodeling in vivo -> H4 Multi-model superiority -> H5 Safety/toxicology & human primary cell/Phase 1 proof.",
+     "Address GMP manufacturing scalability, lymphodepletion burden, and localized vs systemic safety."),
+    ("22_PanCancer_Atlas_Taxonomy_Biomarker", "Pan-Cancer / Multi-Center Atlas, Ecotypes & Deployable Biomarkers", 1.23,
+     r"\b(pan-?cancer|multi-?omic|compendium|reference atlas|molecular subtyp|taxonomy|stratification|prognostic signature|biomarker|real[- ]world|multi-?center)\b",
+     "Prior small single-center or single-omic studies lacked scale to separate lineage-specific noise from shared pan-cancer hallmarks and clinically deployable ecotypes.",
+     "H1 Multi-cohort atlas integration -> H2 Shared malignant metaprograms -> H3 Conserved TME ecotypes -> H4 Histological/clinical outcome links -> H5 Compact external-validated classifier -> H6 Orthogonal mIF/target validation.",
+     "Highlight open portal community utility and shared pan-cancer dependencies; note batch/treatment-naive caveats."),
+    ("23_AI_Foundation_Models_Comp_Methods", "AI Foundation Models, H&E-to-Omics Bridges & Comp Algorithms [HOT 1.77x]", 1.77,
+     r"\b(foundation model|deep learning|graph neural|transformer|histopatholog|whole[- ]slide|h&e image|computational framework|algorithm|deconvolution|benchmark|multimodal ai|machine learning|generative model)\b",
+     "High-plex spatial/single-cell profiling is too costly for routine clinics, while existing algorithms trade off accuracy, cross-cohort generalization, and scalability.",
+     "H1 Architecture & pretraining scale -> H2 Benchmarks outperforming SOTA -> H3 Zero-shot external generalization & ablations -> H4 Modular downstream tasks -> H5 Novel biological/clinical discovery on slides -> H6 Speed & open-source release.",
+     "Devote >=30% of Discussion to clinical H&E deployment, domain-shift failure modes, and scalability."),
+    ("24_Pediatric_Rare_Organoid_Models", "Pediatric/Rare Cold Tumors & Faithful Organoid/GEMM Models", 0.96,
+     r"\b(pediatric|paediatric|childhood|neuroblastoma|medulloblastoma|rhabdomyosarcoma|osteosarcoma|ewing|dipg|schwannomatosis|rare cancer|organoid|\bpdo\b|gemm|synthetic mouse|ipsc)\b",
+     "Pediatric and rare tumors driven by developmental arrest or undruggable fusions suffer from a severe shortage of faithful immunocompetent or developmental preclinical models.",
+     "H1 Model/organoid engineering -> H2 Histological & scRNA fidelity vs human tumors -> H3 Developmental/fusion vulnerability mechanism -> H4 Drug/CRISPR screen -> H5 In vivo survival rescue + patient validation.",
+     "Emphasize dual value (enabling model platform + actionable therapeutic lead); discuss subtype generalizability."),
+    ("25_Ancestry_Ethnic_Exposure_Germline", "Ethnic/Ancestry Disparities, Environmental Exposure & Germline Risk", 0.91,
+     r"\b(ancestr|ethnic|east asian|african|hispanic|disparit|germline|hereditary|predisposition|susceptibility|gwas|never[- ]smoker|non[- ]smoker|air pollution|tobacco)\b",
+     "Existing atlases underrepresent non-European and never-smoker populations, obscuring ancestry-specific driver interactions and exposure-driven TME trajectories.",
+     "H1 Diverse ancestry/exposure multi-omics cohort -> H2 Ancestry/exposure mutational & clonal patterns -> H3 Distinct TME remodeling -> H4 Functional/germline mechanism -> H5 Equitable biomarker/screening impact.",
+     "Advocate ancestry-calibrated precision oncology while accounting for environmental confounders."),
+    ("26_Oncogene_DDR_cGAS_STING_CRISPR", "Oncogene Signaling, DNA Repair (DDR), cGAS-STING & CRISPR Screens", 0.85,
+     r"\b(synthetic lethal|crispr screen|genetic screen|functional screen|dna damage|dna repair|\bddr\b|homologous recombination|replication stress|cgas|sting|interferon|micronuclei|tp53|p53|myc\b|pi3k|akt|mtor|wnt|notch|hippo|yap\b|nf-?kb|stat3|tgf[- ]?β|tgfb|jak/stat|cdk4|rb1|pten|brca)\b",
+     "Undruggable oncogenes and DDR defects produce context-dependent survival/immune switches (e.g., chronic cGAS-STING); unbiased functional screens are required to expose synthetic lethalities.",
+     "H1 Unbiased CRISPR/drug screen -> H2 Mutant-selective specificity -> H3 Biochemical/DDR/cGAS-STING mechanism -> H4 Epistatic rescue -> H5 In vivo PDX/GEMM efficacy + biomarker-selected human cohort.",
+     "Pinpoint exact genetic selection biomarkers and explain context-dependent signaling duality."),
+    ("27_Hematologic_Malignancy_BM_Niche", "Hematologic Malignancies (AML/DLBCL/MM/MDS) & Bone Marrow Niche", 0.81,
+     r"\b(leukemia|leukaemia|\baml\b|\ball\b|\bcll\b|\bcml\b|lymphoma|\bdlbcl\b|\blbcl\b|myeloma|myelodysplastic|\bmds\b|hematopoie|haematopoie|bone marrow|hspc|\bhsc\b)\b",
+     "Hematologic cancers co-opt specialized bone-marrow and lymphoid niches protecting stem clones from therapy, yet non-hematopoietic niche remodeling remains far less charted than malignant genetics.",
+     "H1 Malignant+stromal BM/LN atlas -> H2 Spatial LSC/lymphoma microanatomy -> H3 Niche-driven drug/CAR-T resistance axis -> H4 Niche disruption restores sensitivity -> H5 Clinical trial risk stratification.",
+     "Integrate malignant genetics with microenvironmental archetypes for frontline stratification."),
+    ("28_Innate_NK_gdT_ILC_Platelet_EV", "Non-Classical Innate Immunity (NK/gdT/ILC/Platelet) & EVs [HOT 1.62x]", 1.62,
+     r"\b(nk cell|natural killer|γδ t|gamma[- ]delta|ilc\d?|innate lymphoid|nkt cell|mait cell|mast cell|eosinophil|basophil|platelet|complement|extracellular vesicle|exosome)\b",
+     "Immuno-oncology focuses heavily on CD8 T cells and TAMs, overlooking innate lymphocytes (NK, ILC, gdT, NKT), platelets, and EVs that can mediate MHC-independent control in cold tumors.",
+     "H1 Unbiased enrichment of overlooked innate subset/EV -> H2 Human tumor specialization -> H3 Recruitment/activation/EV cargo circuit -> H4 Lineage depletion/transfer proves causality -> H5 MHC-independent therapy + survival.",
+     "Highlight MHC-independent rescue opportunities in cold/MHC-I-deficient tumors."),
+    ("29_Therapy_Toxicity_irAE_Decoupling", "Decoupling Therapy Toxicity & irAEs from Anti-Tumor Efficacy", 0.84,
+     r"\b(iraes?|immune[- ]related adverse|toxicity|adverse event|cytokine release|\bcrs\b|neurotoxicity|colitis|myocarditis|cardiotoxicity|safety profile|decoupl)\b",
+     "Severe irAEs/CRS force therapy discontinuation while broad steroids risk blunting antitumor immunity; targets that selectively decouple toxicity from efficacy remain urgently needed.",
+     "H1 Head-to-head human irAE tissue vs responding tumor -> H2 Toxicity-selective mediator -> H3 Dual tumor+toxicity murine model -> H4 Targeted blockade prevents toxicity while preserving/boosting ICB -> H5 Clinical safety+efficacy signal.",
+     "Champion targeted anti-cytokine prophylaxis over blunt steroids; outline safety trial endpoints."),
+    ("30_Malignant_Heterogeneity_Metaprogram", "Malignant Intratumoral Heterogeneity, Metaprograms & Developmental Hijacking", 0.81,
+     r"\b(intratumou?ral heterogeneity|tumou?r heterogeneity|metaprogram|meta[- ]program|malignant states?|developmental program|fetal[- ]like|regenerative[- ]like|hybrid state|cancer stem cell|\bcsc\b)\b",
+     "Inter-patient genomic noise obscures recurrent malignant states that converge on conserved developmental/regenerative metaprograms; how these states organize spatially and interconvert remains unclear.",
+     "H1 Pan-sample NMF metaprograms -> H2 Developmental/regenerative trajectory alignment -> H3 Spatial co-localization with distinct TME niches -> H4 Master TF/niche transition switch -> H5 State-specific vulnerability & prognosis.",
+     "Contrast static subtypes vs plastic metaprogram ecosystems; argue for blocking state transitions."),
+]
+
+
+def match_oncology_storyline(text: str, top_k: int = 3) -> int:
+    low = text.lower()
+    scored = []
+    for eid, name, growth, pat, gap, chain, disc in ONCOLOGY_ENTRY_POINTS:
+        matches = re.findall(pat, low, re.I)
+        if not matches:
+            continue
+        uniq = len({m.lower() if isinstance(m, str) else m[0].lower() for m in matches})
+        raw_hits = len(matches)
+        # Reward keyword breadth (uniq) + depth (log hits) + mild bonus for high-velocity 2024-2026 CNS frontier
+        score = round(uniq * 3.0 + math.log1p(raw_hits) * 2.0 + (1.2 if growth >= 1.5 else 0.0), 2)
+        scored.append((score, eid, name, growth, uniq, raw_hits, gap, chain, disc))
+
+    scored.sort(key=lambda x: -x[0])
+    print("=== 6-Year High-IF Oncology Storyline & Entry-Point Matcher (30 Empirical Playbooks, n=6,665) ===")
+    if not scored:
+        print("[WARN] No oncology keywords matched; include biological entities, assays, cell types, or clinical endpoints.")
+        return 1
+
+    top = scored[:top_k]
+    for rank, (sc, eid, name, gr, uq, rh, gap, chain, disc) in enumerate(top, 1):
+        badge = "HOT FRONTIER" if gr >= 1.5 else "MAINSTREAM"
+        print(f"\n#{rank} [{eid}] {name}  (Score={sc} | {uq} distinct signals, {rh} hits | 6yr growth={gr:.2f}x [{badge}])")
+        print(f"  Intro Part-2 Gap   : {gap}")
+        print(f"  Results Chain H1->H: {chain}")
+        print(f"  Discussion Angle   : {disc}")
+
+    # Suggest Double-Axis CNS Elevation Combo if >= 2 distinct entry points matched
+    if len(top) >= 2:
+        p1, p2 = top[0], top[1]
+        print(f"\n[DOUBLE-AXIS CNS ELEVATION COMBO (Nature/Cell/Cancer Cell Framing)]")
+        print(f"  Combine Anchor '{p1[2]}' + Secondary Axis '{p2[2]}':")
+        print(f"  -> Position Introduction P2-P3 directly at the INTERSECTION of both axes (never treat them as two separate background paragraphs!),")
+        print(f"     chain Results from Axis 1 discovery -> Axis 2 causal mechanism -> In vivo rescue/clinical payoff,")
+        print(f"     and close Discussion by resolving how this dual axis generalizes beyond a single tumor type.")
+
+    # Empirical 6-Pillar Proof-of-Novelty Audit (1,960 high-IF papers: CNS vs Tier-3 chasm)
+    PROOF_PILLARS = [
+        ("P4", "Alternative-Hypothesis Disproof & Specificity Control", "CNS 73.7% vs Tier-3 56.7% (+17.0% #1 chasm!)",
+         r"\b(ruling out|exclud(?:ed|ing) the possibility|independent of|unaffected by|did not (?:affect|alter|change)|specific(?:ally)?|selective(?:ly)?|rather than|isotype|multivariate|multivariable|adjust(?:ed|ing) for|not driven by|align(?:ed|ment) (?:with|to) reference)\b",
+         "[Zero-Wet-Lab Rescue] Add explicit confounder/alternative-explanation exclusion (e.g., prove signal is independent of total abundance, tumor purity, stage, PD-L1/TMB, or canonical myCAF/TAM labels)."),
+        ("P1", "Causal LOF / GOF & Genetic Rescue", "CNS 65.5% vs Tier-3 55.9% (+9.6%)",
+         r"\b(knockout|\bko\b|knockdown|crispr|shrna|sirna|genetic (?:ablation|deletion|depletion)|conditional knockout|\bcko\b|dtr|adoptive transfer|overexpress|rescued|abolished|abrogated|restored|depletion)\b",
+         "[Targeted Wet-Lab Rescue] Add 1 causal perturbation + rescue pair (KO/shRNA or selective blockade + genetic/ligand rescue) to lift paper from correlative atlas to mechanistic causality."),
+        ("P2", "In Vivo Functional / Therapeutic Synergy", "CNS 77.7%",
+         r"\b(in vivo|syngeneic|orthotopic|gemm|pdx|xenograft|mice|mouse|murine|anti-?pd-?1|anti-?pd-?l1|synergiz|sensitiz|tumor (?:burden|growth|regression)|prolonged survival|senolytic|denervat)\b",
+         "[Targeted Wet-Lab Rescue] Validate functional impact or therapeutic sensitization (e.g., +/- anti-PD-1 or standard-of-care) in an immunocompetent/orthotopic murine or PDO model."),
+        ("P5", "Orthogonal Spatial / Protein-Level Validation", "CNS 76.6% / Flagship 78.6%",
+         r"\b(multiplex(?:ed)? (?:immunofluorescence|ihc)|\bmif\b|codex|\bimc\b|immunohistochemistry|\bihc\b|flow cytometry|facs|western blot|mass spectrometry|proteomic|rnascope|fish|visium|xenium|cosmx|merscope|tma)\b",
+         "[Tissue/Assay Rescue] Confirm lead mRNA/computational finding at protein or intact tissue spatial level (mIF/IHC TMA or FACS) to defeat 'mRNA-only artifact' criticism."),
+        ("P3", "Head-to-Head Superiority vs Existing Standard", "Flagship 29.9% (Nat Med/Cancer Cell/Methods)",
+         r"\b(outperform|superior to|compared with (?:existing|current|standard|pd-?l1|tmb|tide|bulk|sota)|multivariable|multivariate|independent of pd-?l1|auc|roc|c-?index|benchmark|ablation)\b",
+         "[Zero-Wet-Lab Rescue] Add head-to-head benchmark (ROC/C-index/multivariable Cox) directly vs PD-L1, TMB, TNM stage, or published signatures/SOTA models to prove quantifiable incremental gain."),
+        ("P6", "Multi-Cohort / Pan-Cancer / Cross-Species Generality", "CNS 37.1% vs Tier-3 27.1% (+10.0%)",
+         r"\b(independent (?:validation )?cohorts?|validation cohorts?|external cohorts?|multi-?cohort|pan-?cancer|across (?:multiple|\d+) (?:cancer|tumou?r)|conserved (?:across|between)|human and mouse|patient-derived organoids?|\bpdo\b)\b",
+         "[Zero-Wet-Lab Rescue] Validate in >=1 truly external non-TCGA cohort or run pan-cancer specificity analysis (proving either conserved cross-cancer law OR true organ-specific divergence)."),
+    ]
+    present, missing = [], []
+    for code, label, stat, pat, fix in PROOF_PILLARS:
+        if re.search(pat, low, re.I):
+            present.append((code, label, stat))
+        else:
+            missing.append((code, label, stat, fix))
+
+    print(f"\n[NOVELTY & 'NO-NOVELTY' REVIEWER RISK AUDIT (1,960 High-IF Papers Benchmark)]")
+    print(f"  Proof-of-Novelty Pillars Detected: {len(present)}/6  (Tier-1 CNS >=4/6 threshold: 56.5%; mean CNS=3.53 vs Tier-3=3.13)")
+    if present:
+        print("  [+] PRESENT : " + ", ".join(f"{c} {lbl}" for c, lbl, _ in present))
+    if missing:
+        print("  [!] MISSING : " + ", ".join(f"{c} {lbl} ({st})" for c, lbl, st, _ in missing))
+    if len(present) <= 2:
+        print("  [HIGH RISK] <=2 proof pillars detected! Reviewers are highly likely to label this 'descriptive / incremental / lacks novelty' unless you add missing controls below.")
+    elif len(present) == 3:
+        print("  [MODERATE RISK] 3/6 pillars present (solid Tier-2/3 base). Adding 1-2 missing pillars below unlocks Flagship/CNS conceptual novelty.")
+    else:
+        print("  [STRONG] >=4/6 proof pillars present — meets Tier-1 CNS multi-pillar novelty proof threshold; focus on explicit 'X, rather than Y' framing!")
+
+    # Flag empty novelty hype if present in user's draft notes
+    hype_hits = re.findall(r"\b(for the first time|first (?:study|report) to|never been (?:studied|reported)|few studies have|novel|groundbreaking|unprecedented)\b", low, re.I)
+    if hype_hits:
+        uniq_hype = sorted({h.lower() for h in hype_hits})
+        print(f"  [HYPE WARNING] Empty novelty claim(s) detected: {uniq_hype} -> Hype Inversion Law: CNS uses 'novel'/'first study' 2.2-5.0x LESS than lower tiers! Replace with structural 'X, rather than Y' contrast.")
+
+    # Print top 3 highest-ROI rescue moves
+    if missing:
+        print("  Recommended Highest-ROI Anti-'No-Novelty' Additions:")
+        for code, label, _, fix in missing[:3]:
+            print(f"    - Add {code} ({label}): {fix}")
+
+    print("  4-Point Novelty Echo Formula (Make Novelty Unmissable Without Saying 'Novel'):")
+    print("    -> Frame Intro P2-P3, Intro Final Para, Results Proof Pivot, and Discussion P1-P2 around ONE sharp delta:")
+    print("       'Whereas prior studies attributed [phenotype] to [existing view Y], our findings establish that [X, rather than Y] governs [outcome] (independent of [Y]).'")
+    return 0
+
+
+# ---------------------------------------------------------------------------
+# Physical Millimeter Figure Page-Budget & Overflow Rebalancer (sci-plot linkage)
+# ---------------------------------------------------------------------------
+FIGURE_PAGE_SPECS = {
+    "nature":        {"w_mm": 180, "h_mm": 220, "max_main_figs": 5, "hard_max_figs": 6, "ideal_panels": 8,  "max_panels": 10, "supp_prefix": "Extended Data Fig.", "panel_case": "lower"},
+    "nature_sister": {"w_mm": 180, "h_mm": 220, "max_main_figs": 7, "hard_max_figs": 8, "ideal_panels": 8,  "max_panels": 10, "supp_prefix": "Extended Data Fig.", "panel_case": "lower"},
+    "nat_med":       {"w_mm": 180, "h_mm": 215, "max_main_figs": 5, "hard_max_figs": 6, "ideal_panels": 6,  "max_panels": 8,  "supp_prefix": "Extended Data Fig.", "panel_case": "lower"},
+    "cell":          {"w_mm": 174, "h_mm": 215, "max_main_figs": 7, "hard_max_figs": 7, "ideal_panels": 9,  "max_panels": 11, "supp_prefix": "Figure S",           "panel_case": "upper"},
+    "cancer_cell":   {"w_mm": 174, "h_mm": 215, "max_main_figs": 7, "hard_max_figs": 7, "ideal_panels": 9,  "max_panels": 11, "supp_prefix": "Figure S",           "panel_case": "upper"},
+    "science":       {"w_mm": 184, "h_mm": 218, "max_main_figs": 6, "hard_max_figs": 7, "ideal_panels": 9,  "max_panels": 10, "supp_prefix": "Fig. S",             "panel_case": "upper"},
+}
+
+# Minimum readable physical panel footprints (w_mm, h_mm), synced 1:1 with sci-plot
+PANEL_FOOTPRINTS_MM = {
+    "schematic": (88, 46), "working_model": (88, 46),
+    "umap": (58, 55), "spatial_map": (58, 55), "atlas_umap": (88, 60),
+    "spatial_zoom_mif": (62, 52), "histology": (62, 52), "ihc": (62, 52),
+    "heatmap": (86, 60), "pseudotime_cascade": (86, 60), "dotplot": (88, 55),
+    "oncoprint": (86, 68), "km_risk_table": (86, 68), "km": (54, 52),
+    "forest_plot": (86, 54), "swimmer": (86, 54),
+    "chord": (64, 56), "alluvial": (64, 56), "upset": (68, 54),
+    "bar": (43, 42), "box": (43, 42), "violin": (43, 42), "split_violin": (56, 42),
+    "raincloud": (48, 44), "paired_slope": (44, 44),
+    "lollipop": (62, 46), "diverging_enrichment": (68, 48),
+    "volcano": (46, 46), "multi_cluster_volcano": (88, 48),
+    "scatter": (46, 46), "roc": (46, 46), "boundary_gradient": (54, 45), "ripley": (52, 45),
+    "roe_matrix": (54, 52), "corr_matrix": (54, 52), "neighborhood_matrix": (54, 52),
+    "waterfall": (58, 46), "spider": (58, 46), "milo": (58, 46), "shap": (58, 46), "radar": (52, 52),
+}
+
+# Lower triage score = demote to Extended Data / Supplementary FIRST (based on 1,215-paper empirical ratios)
+ROLE_PRIORITY = {
+    "schematic": 100, "working_model": 98, "in_vivo_rescue": 95, "core_discovery": 92,
+    "clinical_primary": 88, "spatial_headline": 85, "mechanism_key": 82, "crosstalk_hub": 80,
+    "pathway_key": 76, "trajectory_key": 72, "in_vitro_key": 70,
+    "marker_dotplot_full": 45, "subgroup_breakdown": 40, "secondary_cohort": 38,
+    "method_ablation": 35, "negative_control": 25, "qc_batch": 15, "gating_toxicity_ko_check": 10,
+}
+
+
+def shelf_pack_height(panels: list, page_w: float, gap_mm: float = 4.0) -> tuple:
+    """2D row shelf-packing simulator returning (total_height_mm, list_of_rows)."""
+    if not panels:
+        return 0.0, []
+    # Sort wide panels first within a figure or preserve narrative order? Preserve narrative order (real figures read a->h!)
+    rows = []
+    cur_row = []
+    cur_w = 0.0
+    cur_h = 0.0
+    for p in panels:
+        pw, ph = p["w_mm"], p["h_mm"]
+        need_w = pw if not cur_row else (cur_w + gap_mm + pw)
+        if cur_row and need_w > page_w + 0.5:
+            rows.append((cur_row, cur_w, cur_h))
+            cur_row = [p]
+            cur_w = pw
+            cur_h = ph
+        else:
+            cur_row.append(p)
+            cur_w = need_w
+            cur_h = max(cur_h, ph)
+    if cur_row:
+        rows.append((cur_row, cur_w, cur_h))
+    total_h = sum(r[2] for r in rows) + gap_mm * max(0, len(rows) - 1)
+    return round(total_h, 1), rows
+
+
+def assign_panel_letters(panels: list, case: str = "lower"):
+    for idx, p in enumerate(panels):
+        ch = chr((ord("a") if case == "lower" else ord("A")) + idx)
+        p["panel_letter"] = ch
+
+
+def plan_and_rebalance_figures(data: dict, journal: str, do_rebalance: bool = False, out_path: str = None) -> int:
+    fspec = FIGURE_PAGE_SPECS[journal]
+    page_w, page_h = fspec["w_mm"], fspec["h_mm"]
+    max_p, max_f = fspec["max_panels"], fspec["max_main_figs"]
+    supp_prefix = fspec["supp_prefix"]
+
+    raw_panels = data.get("panels", [])
+    main_by_fig = defaultdict(list)
+    supp_by_fig = defaultdict(list)
+
+    for idx, item in enumerate(raw_panels):
+        ctype = item.get("chart_type", "bar").lower()
+        def_w, def_h = PANEL_FOOTPRINTS_MM.get(ctype, (48, 45))
+        p = dict(item)
+        p["w_mm"] = float(item.get("w_mm", def_w))
+        p["h_mm"] = float(item.get("h_mm", def_h))
+        role = item.get("role", "mechanism_key")
+        p["priority"] = int(item.get("priority", ROLE_PRIORITY.get(role, 60)))
+        p["_orig_idx"] = idx
+        tier = item.get("tier", "main").lower()
+        fnum = int(item.get("fig", 1))
+        if tier == "main":
+            main_by_fig[fnum].append(p)
+        else:
+            supp_by_fig[fnum].append(p)
+
+    print(f"=== Physical Millimeter Figure Budget & Packing Audit | Journal: {journal} ({page_w}x{page_h} mm, max {max_f} Main Figs, <={max_p} panels/fig) ===")
+
+    overflows = 0
+    actions = []
+
+    def report_layout(label, m_dict, s_dict):
+        nonlocal overflows
+        ov = 0
+        print(f"\n[{label}] Main Figures: {len(m_dict)} (target <={max_f}) | Paired {supp_prefix}: {len(s_dict)}")
+        if len(m_dict) > fspec["hard_max_figs"]:
+            print(f"  [FAIL] Total Main Figure count ({len(m_dict)}) exceeds {journal} cap ({max_f}, hard {fspec['hard_max_figs']}).")
+            ov += 1
+        elif len(m_dict) > max_f:
+            print(f"  [WARN] Total Main Figure count ({len(m_dict)}) above {journal} typical median ({max_f}); consider compressing.")
+        for fn in sorted(m_dict.keys()):
+            ps = m_dict[fn]
+            h, rows = shelf_pack_height(ps, page_w)
+            fill_pct = round(100 * h / page_h, 1)
+            status = "OK"
+            if h > page_h or len(ps) > max_p:
+                status = "OVERFLOW"
+                ov += 1
+            elif h < page_h * 0.38 and len(ps) <= 3:
+                status = "UNDERFILL"
+            print(f"  Fig. {fn:2d}: {len(ps):2d} panels | packed={h:5.1f}/{page_h} mm ({fill_pct:5.1f}%) across {len(rows)} row(s) -> [{status}]")
+            # Detect sci-plot Track-B merge opportunities
+            ctypes = [p.get("chart_type", "") for p in ps]
+            if ctypes.count("volcano") >= 3:
+                print(f"          [TIP sci-plot] {ctypes.count('volcano')} separate volcanoes -> merge into 1 plot_multi_cluster_volcano() (88x48 mm)!")
+            if ctypes.count("violin") >= 3:
+                print(f"          [TIP sci-plot] {ctypes.count('violin')} violins -> consider plot_split_violin() to halve panel width!")
+        for fn in sorted(s_dict.keys()):
+            ps = s_dict[fn]
+            h, rows = shelf_pack_height(ps, page_w)
+            st = "OVERFLOW" if h > page_h else "OK"
+            print(f"  {supp_prefix} {fn}: {len(ps):2d} panels | packed={h:5.1f}/{page_h} mm ({round(100*h/page_h,1):5.1f}%) -> [{st}]")
+        overflows = ov
+        return ov
+
+    ov_before = report_layout("INITIAL DRAFT", main_by_fig, supp_by_fig)
+
+    if do_rebalance and ov_before > 0:
+        print("\n=== RUNNING 4-TIER AUTOMATIC OVERFLOW REBALANCING ===")
+        # Step A: Within every overflowing Main Fig, demote lowest-priority panels to paired Supp/ED Fig until height <= page_h and count <= max_p
+        for fn in sorted(list(main_by_fig.keys())):
+            ps = main_by_fig[fn]
+            while True:
+                h, _ = shelf_pack_height(ps, page_w)
+                if h <= page_h and len(ps) <= max_p:
+                    break
+                # Pick lowest priority panel; if still >75 priority and spare Main Fig slot exists, split module instead!
+                cand = min(ps, key=lambda x: (x["priority"], -x["w_mm"] * x["h_mm"]))
+                if cand["priority"] >= 75 and len(main_by_fig) < max_f:
+                    # Split this Main Fig cleanly into two consecutive Main Figs!
+                    mid = len(ps) // 2
+                    keep, move = ps[:mid], ps[mid:]
+                    # Shift all figs > fn up by +1
+                    new_m = defaultdict(list)
+                    new_s = defaultdict(list)
+                    for k in sorted(main_by_fig.keys(), reverse=True):
+                        if k > fn:
+                            new_m[k + 1] = main_by_fig[k]
+                        elif k == fn:
+                            new_m[fn] = keep
+                            new_m[fn + 1] = move
+                        else:
+                            new_m[k] = main_by_fig[k]
+                    for k in sorted(supp_by_fig.keys(), reverse=True):
+                        new_s[k + 1 if k > fn else k] = supp_by_fig[k]
+                    main_by_fig, supp_by_fig = new_m, new_s
+                    actions.append(f"SPLIT Fig. {fn} (all high-priority panels) into Fig. {fn} ({len(keep)}p) + Fig. {fn+1} ({len(move)}p) using spare journal Main Fig slot.")
+                    break
+                else:
+                    ps.remove(cand)
+                    cand["tier"] = "supp"
+                    # Find a non-overflowing paired Supp Fig slot
+                    target_s = fn
+                    while shelf_pack_height(supp_by_fig[target_s] + [cand], page_w)[0] > page_h:
+                        target_s += 1
+                    supp_by_fig[target_s].append(cand)
+                    actions.append(f"DEMOTE '{cand.get('id', cand.get('label', '?'))}' ({cand.get('role')}, {cand['w_mm']}x{cand['h_mm']}mm, prio={cand['priority']}) from Fig. {fn} -> {supp_prefix} {target_s}.")
+
+        # Step B: If total Main Figures STILL exceed journal hard cap (e.g., 6-7 figs -> Nature 5 figs), merge two lightest adjacent figures & demote spillover
+        while len(main_by_fig) > max_f:
+            fkeys = sorted(main_by_fig.keys())
+            # Pick adjacent pair with smallest combined priority sum (excluding Fig. 1)
+            best_pair = min(
+                [(fkeys[i], fkeys[i + 1]) for i in range(1, len(fkeys) - 1)],
+                key=lambda pair: sum(p["priority"] for p in main_by_fig[pair[0]]) + sum(p["priority"] for p in main_by_fig[pair[1]]),
+            )
+            a, b = best_pair
+            merged = main_by_fig[a] + main_by_fig[b]
+            # Demote lowest-priority panels from merged until it fits one page!
+            demoted_cnt = 0
+            while shelf_pack_height(merged, page_w)[0] > page_h or len(merged) > max_p:
+                cand = min(merged, key=lambda x: (x["priority"], -x["w_mm"] * x["h_mm"]))
+                merged.remove(cand)
+                cand["tier"] = "supp"
+                ts = max(supp_by_fig.keys(), default=0)
+                if ts == 0 or shelf_pack_height(supp_by_fig[ts] + [cand], page_w)[0] > page_h:
+                    ts += 1
+                supp_by_fig[ts].append(cand)
+                demoted_cnt += 1
+            # Re-index Main Figs consecutively 1..K
+            new_m = defaultdict(list)
+            idx_new = 1
+            for k in fkeys:
+                if k == a:
+                    new_m[idx_new] = merged
+                    idx_new += 1
+                elif k == b:
+                    continue
+                else:
+                    new_m[idx_new] = main_by_fig[k]
+                    idx_new += 1
+            main_by_fig = new_m
+            actions.append(f"COMPRESS Main Fig count -> {max_f} ({journal} limit): merged old Fig. {a}+Fig. {b} ({demoted_cnt} lower-priority panels moved to {supp_prefix}).")
+
+        for act in actions:
+            print("  ->", act)
+
+        # Assign crisp final panel letters a..h / A..I
+        for fn, ps in main_by_fig.items():
+            assign_panel_letters(ps, fspec["panel_case"])
+            for p in ps:
+                p["fig"] = fn
+                p["tier"] = "main"
+        for fn, ps in supp_by_fig.items():
+            assign_panel_letters(ps, fspec["panel_case"])
+            for p in ps:
+                p["fig"] = fn
+                p["tier"] = "supp"
+
+        ov_after = report_layout("REBALANCED STORYBOARD", main_by_fig, supp_by_fig)
+
+        if out_path:
+            final_obj = {
+                "journal": journal,
+                "canvas_mm": {"w_mm": page_w, "h_mm": page_h},
+                "rebalancing_actions": actions,
+                "main_figures": {
+                    f"Fig. {fn}": [
+                        {k: v for k, v in p.items() if k != "_orig_idx"}
+                        for p in main_by_fig[fn]
+                    ]
+                    for fn in sorted(main_by_fig.keys())
+                },
+                "supp_figures": {
+                    f"{supp_prefix} {fn}": [
+                        {k: v for k, v in p.items() if k != "_orig_idx"}
+                        for p in supp_by_fig[fn]
+                    ]
+                    for fn in sorted(supp_by_fig.keys())
+                },
+            }
+            Path(out_path).write_text(json.dumps(final_obj, ensure_ascii=False, indent=2), encoding="utf-8")
+            print(f"\nSaved synchronized storyboard (for both sci-paper-writing & sci-plot) to: {out_path}")
+        return 0 if ov_after == 0 else 1
+
+    return 0 if ov_before == 0 else 1
+
+
 def main():
-    p = argparse.ArgumentParser(description="CNS Scientific Manuscript Auditor & Storyline Scaffolder")
+    p = argparse.ArgumentParser(description="CNS Scientific Manuscript Auditor, Storyline Scaffolder & Figure Page-Budget Rebalancer")
     sub = p.add_subparsers(dest="cmd", required=True)
 
     pa = sub.add_parser("audit", help="Audit a manuscript section or full markdown manuscript")
@@ -552,6 +1069,17 @@ def main():
     ps.add_argument("--archetype", required=True, choices=list(SCAFFOLDS.keys()))
     ps.add_argument("--journal", default="cancer_cell", choices=list(JOURNAL_SPECS.keys()))
 
+    pf = sub.add_parser("plan-figures", help="Check millimeter page-size budgets & rebalance overflowing Main Figures to Extended Data/Supp")
+    pf.add_argument("--journal", default="nature", choices=list(FIGURE_PAGE_SPECS.keys()))
+    pf.add_argument("--input", required=True, help="JSON file with 'panels' list")
+    pf.add_argument("--rebalance", action="store_true", help="Automatically demote/split/compress overflowing Main Figures")
+    pf.add_argument("--out", default=None, help="Optional path to save finalized storyboard JSON (shared with sci-plot)")
+
+    pm = sub.add_parser("match-storyline", help="Match existing data/results notes against 30 6-year CNS oncology entry points")
+    pm.add_argument("--file", default=None, help="Path to results description / notes file")
+    pm.add_argument("--text", default=None, help="Inline text summary of existing data and results")
+    pm.add_argument("--top", type=int, default=3, help="Number of top entry-point playbooks to return")
+
     args = p.parse_args()
     if args.cmd == "scaffold":
         spec = JOURNAL_SPECS[args.journal]
@@ -561,6 +1089,12 @@ def main():
             abs_w=spec["abs_max_w"],
         ))
         return 0
+    elif args.cmd == "plan-figures":
+        data = json.loads(Path(args.input).read_text(encoding="utf-8"))
+        return plan_and_rebalance_figures(data, args.journal, do_rebalance=args.rebalance, out_path=args.out)
+    elif args.cmd == "match-storyline":
+        txt = Path(args.file).read_text(encoding="utf-8") if args.file else (args.text or "")
+        return match_oncology_storyline(txt, top_k=args.top)
     else:
         txt = Path(args.file).read_text(encoding="utf-8")
         return run_audit(args.section, args.journal, txt)

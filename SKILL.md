@@ -26,13 +26,15 @@ Empirically distilled and cross-validated across **2020–2026**:
 
 ---
 
-## Three Operating Modes (Pick Based on User Request)
+## Four Operating Modes (Pick Based on User Request)
 
 ### Mode A — Storyline Architect Mode (When Starting from Results / Outline / Revision)
 **Always execute before drafting prose when the user shares experimental/omics Results or asks how to frame a paper:**
+0. **Match Optimal Oncology Entry Point, Intro Part-2 Gap & Novelty Proof Triangle FIRST (`match-storyline`)** (see [references/12-oncology-storyline-and-gap-playbooks.md](./references/12-oncology-storyline-and-gap-playbooks.md) and [references/13-novelty-engineering-and-reviewer-defense.md](./references/13-novelty-engineering-and-reviewer-defense.md)):
+   - Run `python scripts/audit_manuscript.py match-storyline --file results_notes.md` to pinpoint the **Top 2–3 sharpest scientific entry angles** across the **30-Entry-Point 6-Year Oncology Encyclopedia** (`n = 6,665`), check for a **Double-Axis CNS Elevation Combo** (Mainstream Anchor + `🔥 1.5–4.1×` growth frontier), **audit all 6 Proof-of-Novelty Results Modules (`P1–P6`) to preempt *"lacks novelty"* reviewer rejections**, lock the **`X, rather than Y`** conceptual delta + **Introduction Part-2 Gap**, and map the canonical `H1 → H7` Results chain + aligned Discussion elevation!
 1. **Classify the Study Archetype** (see [references/00-strategic-narrative-design.md](./references/00-strategic-narrative-design.md)):
    - `Mechanistic Axis + Perturbation` | `Clinical Biomarker / Therapy` | `Atlas / Spatial Resource` | `Evolution / Metastasis` | `Computational / Tech Method`
-2. **Identify the Target Journal Tier** (`nature`, `nature_sister`, `nat_med`, `cell`, `cancer_cell`, `science`) because journal rules strictly govern Title length/colons, Abstract word caps (`150` vs `200` words), Subheading style (`5w` phrase vs `10w` full clause), and Limitations placement.
+2. **Identify the Target Journal Tier** (`nature`, `nature_sister`, `nat_med`, `cell`, `cancer_cell`, `science`) because journal rules strictly govern Title length/colons, Abstract word caps (`150` vs `200` words), Subheading style (`5w` phrase vs `10w` full clause), Main Figure caps (`5` vs `7`), and Limitations placement.
 3. **Reverse-Engineer the Whole Manuscript from Results** (never draft Intro from textbook background!):
    - Extract the **2–3 core tension entities** from the Results → prune Introduction down to ONLY those entities (`P1` broad hook `10%` overlap → `P2–P3` focused tension `37%` overlap → strong non-trivial Gap → `Here, we...` preview).
    - Propose **3 ranked Title candidates** (Conceptual Causal vs Discovery-Target Hybrid vs Clinical/Tool Brand) matched to the journal.
@@ -49,6 +51,15 @@ python scripts/audit_manuscript.py audit --section all --journal nature --file m
 python scripts/audit_manuscript.py audit --section abstract --journal cell --file abstract.txt
 python scripts/audit_manuscript.py scaffold --archetype mechanistic --journal cancer_cell
 ```
+
+### Mode D — Data/Results-Doc → Millimeter-Bounded Storyboard → Full Manuscript Expansion (`sci-plot` Linkage!)
+**Use whenever the user supplies raw data tables, analysis outputs, or a Results description document and asks to plan Main/Supplementary figures AND expand into a full manuscript** (see [references/11-results-to-manuscript-and-figure-packing.md](./references/11-results-to-manuscript-and-figure-packing.md)):
+1. **Extract Atomic Findings (Zero Fabrication)**: Parse every finding, sample size `n`, quantitative stat, assay, and causal tier (Tier 1–4); insert `[TODO: confirm ...]` for any missing stat rather than fabricating numbers.
+2. **Triage Main vs Extended Data/Supp + Run Physical Millimeter Packing Check (`plan-figures`)**:
+   - Every journal caps physical full-page canvas size (*Nature* `180×220 mm`, max `5` Main Figs; *Cell/Cancer Cell* `174×215 mm`, max `7` Main Figs; *Science* `184×218 mm`, max `6` Main Figs) and panel footprints (synced 1:1 with `sci-plot`).
+   - Run `python scripts/audit_manuscript.py plan-figures --journal <target> --input draft_storyboard.json --rebalance --out final_storyboard.json` to detect page-height overflow and execute the **4-Tier Rebalancing Protocol**: (1) Demote QC/gating/toxicity/null/full-dotplot panels to paired `ED Fig. / Fig. S`, (2) Recommend `sci-plot` high-density Track-B merges (e.g., ≥3 volcanoes → 1 `plot_multi_cluster_volcano`), (3) Split overflowing high-priority modules into a spare Main Fig slot, or (4) Compress Main Figs when converting 7-fig drafts to 5-fig *Nature*.
+3. **Lock Shared `final_storyboard.json` → Expand Full Manuscript Synchronously**:
+   - Once `0 OVERFLOW` is confirmed, expand `Results` → `Figure Captions` → `Introduction` → `Discussion` → `Title/Abstract/Highlights/In brief` → `Methods/STAR` → `Cover Letter` with 1:1 synchronized panel IDs (`Fig. 1a`, `Extended Data Fig. 2b`), and pass the same `final_storyboard.json` `(w_mm, h_mm)` dimensions straight to `sci-plot` for 1:1 millimeter plotting!
 
 ---
 
@@ -82,4 +93,7 @@ python scripts/audit_manuscript.py scaffold --archetype mechanistic --journal ca
 | [references/08-comprehensive-phrasebank-and-collocations.md](./references/08-comprehensive-phrasebank-and-collocations.md) | **Exhaustive 1,960-paper Phrasebank & Verb Precision Guide**: 5 verb confusion matrices (evidence, positive/negative causation, state-change, spatial), top 4-gram openers, and 12 ready-to-migrate micro-scenario sentence frame banks |
 | [references/09-citation-and-reference-architecture.md](./references/09-citation-and-reference-architecture.md) | Planning **Reference Budgets & Per-Section Citation Distribution** (journal caps across 20 journals, Intro/Results/Discussion/Methods exact share & density, `95.1%` 1–3 anti-stuffing law, Intro↔Discussion reuse, reference recency) |
 | [references/10-figure-and-supplement-architecture.md](./references/10-figure-and-supplement-architecture.md) | Planning **Main vs Extended Data/Supp Figure Counts, Subpanel Budgets & Content Triage** (20-journal exact figure/panel caps, Main-vs-Supp empirical enrichment matrix, `Fig. 1 → Fig. 7` storyboard, 1:1 `Main ↔ Supp/ED` pairing map) |
-| [scripts/audit_manuscript.py](./scripts/audit_manuscript.py) | Running automated grammar, rule-compliance, and reproducibility audits or generating journal-calibrated manuscript scaffolds |
+| [references/11-results-to-manuscript-and-figure-packing.md](./references/11-results-to-manuscript-and-figure-packing.md) | **End-to-End Expansion & `sci-plot` Linkage (Mode D)**: turning raw data/results docs into millimeter-bounded figure plans, resolving Main Figure page-size overflow (4-tier demote/merge/split/compress), and expanding into a full synchronized manuscript |
+| [references/12-oncology-storyline-and-gap-playbooks.md](./references/12-oncology-storyline-and-gap-playbooks.md) | **30-Entry-Point 6-Year Oncology Encyclopedia (`n = 6,665` tumor papers)**: matching existing results/data to the sharpest scientific entry angle, Double-Axis CNS combos, Intro Part-2 Gaps, canonical `H1 → H7` Results chains, and aligned Discussion elevation |
+| [references/13-novelty-engineering-and-reviewer-defense.md](./references/13-novelty-engineering-and-reviewer-defense.md) | **Novelty Engineering & Defeating *"Lacks Novelty"* Rejections (`n = 1,960` full-text papers)**: Hype Inversion Law, 8 valid conceptual novelty archetypes (`X, rather than Y`), 5 fake-novelty traps, Entry-Point ↔ Novelty ↔ 6 Results Proof Modules (`P1–P6`) linkage, and zero-wet-lab + wet-lab rescue protocols |
+| [scripts/audit_manuscript.py](./scripts/audit_manuscript.py) | Running automated audits (`audit`), matching results to 30 oncology storylines + auditing novelty proof pillars (`match-storyline`), generating storyline scaffolds (`scaffold`), or checking millimeter figure page-size overflow & auto-rebalancing (`plan-figures`) |
