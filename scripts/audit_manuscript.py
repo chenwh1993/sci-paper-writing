@@ -1765,7 +1765,7 @@ def plan_and_rebalance_figures(data: dict, journal: str, do_rebalance: bool = Fa
             if "km" in ctypes:
                 print(f"          [TIP HIGH-DENSITY] Bare 'km' detected in Fig. {fn}; upgrade to 'km_risk_table' (95% CI ribbon + aligned Number at risk + HR [95% CI]).")
             if any(c in ("schematic", "working_model", "mouse_timeline_schematic", "cell_assay_schematic", "spatial_workflow_schematic") for c in ctypes):
-                print(f"          [TIP SCHEMATIC] Draw schematic/timeline/working_model in Fig. {fn} as biological cell/organ vector art (Illustrator/BioRender) — NEVER plain matplotlib text-boxes + straight arrows; cross-check 100% of numbers against data panels!")
+                print(f"          [TIP SCHEMATIC] Build schematic/timeline/working_model in Fig. {fn} strictly via editable vector graphics (programmatic SVG / R grid / Illustrator / BioRender) — NEVER plain text-box flowcharts AND NEVER direct LLM/diffusion image generation; cross-check 100% of numbers against data panels!")
             # Multi-figure experimental-design / mouse-timeline / spatial-workflow schematic nudge (52-59% of CNS papers have >=2 schematics!)
             has_schem = any(c in ("schematic", "working_model", "mouse_timeline_schematic", "cell_assay_schematic", "spatial_workflow_schematic") for c in ctypes)
             roles_f = {str(p.get("role", "")).lower() for p in ps}
