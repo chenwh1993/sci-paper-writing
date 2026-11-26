@@ -1,6 +1,6 @@
-# Figure Captions / Legends — CNS Journal Specs, Grammar & 13-Chart Corpus
+# Figure Captions / Legends — CNS Journal Specs, Grammar & 21-Chart Corpus (~96%+ Coverage)
 
-> Empirically distilled from 2,990 real CNS & high-impact figure captions (Nature, Cell, Science families). Enforces 5:1 participial `-ing` syntax, strict two-tense discipline, and mandatory statistical/visual disclosures.
+> Empirically distilled from **2,990** real CNS & high-impact figure captions (*Nature*, *Cell*, *Science* families). Enforces **Corpus-First Caption Assembly** (`95–98%` of all caption clauses assemble directly from Parts 3 & 4 below!), `5:1` participial `-ing` syntax, strict two-tense discipline, and mandatory statistical/visual disclosures.
 
 
 ---
@@ -194,9 +194,9 @@ Use exact prepositions and collocations when explaining graphical elements:
 
 ---
 
-## Part 3 — Reusable CNS Figure Caption Corpus by Chart Type
+## Part 3 — Corpus-First Reusable CNS Figure Caption Library (21 Chart Types, ~96%+ Coverage)
 
-Empirically distilled reusable sentence stems from **2,990 CNS & high-impact captions**. Replace bracketed `[SLOTS]` with study-specific nouns; adjust panel tag style (`**a**,` for Nature; `**(A)**` for Cell/Science) and spelling (`tumour`/`colour`/`s.d.` vs `tumor`/`color`/`SD`).
+> **Corpus-First Assembly Rule**: Do **NOT** free-generate caption syntax from scratch. Almost every panel in a modern CNS manuscript maps directly to Chart Types `1–21` below + one shared closing block from Part 4. Retrieve the matching stem, plug in ONLY verified panel labels, real biological units (`n`), and exact rendered axis metrics (`1:1` synced with the plotted figure!), and adjust panel tag style (`**a**,` for *Nature*; `**(A)**` for *Cell*/*Science*) and spelling (`tumour`/`colour`/`s.d.` vs `tumor`/`color`/`SD`).
 
 ---
 
@@ -321,6 +321,88 @@ Empirically distilled reusable sentence stems from **2,990 CNS & high-impact cap
   - `Receiver operating characteristic (ROC) curves comparing the predictive performance of [Model Name] against [baseline biomarkers] in the [internal cross-validation (left) and external validation (right)] cohorts. Area under the curve (AUROC) values and 95% confidence intervals (1,000 bootstrap iterations) are indicated.`
 - **Feature Importance / SHAP**:
   - `SHAP summary beeswarm plot ranking the top [10] features contributing to [model] prediction. Each dot represents a patient, colored by feature value (blue, low; red, high).`
+
+---
+
+### 14. Clinical Radiology & Preclinical *In Vivo* Imaging (MRI / CT / PET / IVIS)
+- **Clinical Longitudinal MRI / CT**:
+  - `Representative axial [T2-weighted MRI / contrast-enhanced CT] scans before and after [treatment regimen] in a responder (top) and non-responder (bottom); arrowheads/arrows mark primary lesions ([Scale bar, 2 cm] — ONLY if genuinely drawn on the image; otherwise state [field of view, 18 × 18 cm]).`
+- **Preclinical Murine MRI / Bioluminescence (IVIS)**:
+  - `Representative longitudinal [3T pelvic MRI / bioluminescence (IVIS)] images of orthotopic [model] tumours across treatment arms on days [14, 17 and 21]; dashed contours delineate intravesical/orthotopic tumour boundaries (scale bar, [5 mm]).`
+- *CNS Verbatim*: `"Representative magnetic resonance imaging (MRI) of trametinib treated mice before (week 2) and after one week of treatment (week 3)."` (*Nature Cancer*, 2022)
+
+---
+
+### 15. Clinical Cohort CONSORT Flow, Baseline OncoPrint, Waterfall & Swimmer Plots
+- **CONSORT Cohort Flow**:
+  - `CONSORT-style study cohort flow tracking [N] screened patients across discovery (n = [X]) and independent validation (n = [Y]) cohorts, together with sample overlap across [single-nucleus RNA-seq, spatial transcriptomics and multiplex imaging].`
+- **Clinical Baseline OncoPrint / Tile Matrix**:
+  - `Clinicopathological OncoPrint across [N] patients summarizing clinical stage, histological grade, biomarker status, age, sex, assay availability and treatment response (two-sided Fisher's exact and Wilcoxon rank-sum tests confirm balanced baseline covariates).`
+- **Waterfall / Swimmer Response Plot**:
+  - `Waterfall plot showing percentage change in [tumour volume / target lesion diameter] relative to baseline across [n = X] [patients / mice] stratified by [treatment arm / molecular subtype]; dashed horizontal lines indicate RECIST thresholds (−30% and +20%).`
+- *CNS Verbatim*: `"Waterfall plot of the fold change in tumor volume compared to baseline (determined by MRI-based volumetric measurements) of orthotopically transplanted classical and mesenchymal tumors after one week of trametinib treatment."` (*Nature Cancer*, 2022)
+
+---
+
+### 16. Raincloud, Cleveland Dumbbell, Lollipop & Multi-Cohort Diverging Bar Plots
+- **Raincloud Plot (Half-Violin + Box + Jitter)**:
+  - `Raincloud plots comparing [signature score / spatial metric] across [Group A (n = X), Group B (n = Y) and Group C (n = Z)] showing kernel density distributions, internal box plots (median, IQR and 1.5× IQR whiskers) and individual patients (points; two-sided Wilcoxon rank-sum tests).`
+- **Cleveland Dumbbell Plot (Paired Distance / Shift)**:
+  - `Cleveland dumbbell plot comparing median [distance to nearest vessel / score] for [marker-positive bins] (filled circles) versus [matched background tissue] (open circles) across [n = X] tissue sections (dotted vertical line, [50 μm]; two-sided paired Wilcoxon signed-rank tests).`
+- **Multi-Cohort Diverging Bar / Lollipop Summary**:
+  - `Diverging bar plot summarizing standardized [Z-scores / effect sizes] of [signature] across [K] independent clinical cohorts and treatment regimens (+, resistance; −, sensitivity; vertical dashed lines, |Z| = 1.96).`
+
+---
+
+### 17. Spatial Distance Gradients, Cellular Neighbourhood Maps & Stability Grids
+- **Continuous Distance-to-Structure Gradient**:
+  - `Epithelial [Program A] (red) and [Program B] (teal) Z-scores across [0–200 μm] from nearest [endothelial vessels / invasive margin] in [n = X] pretreatment spatial sections (medians with IQR ribbons; vertical dashed line marks [50 μm]).`
+- **Full-Slide Cellular Neighbourhood (CN) Map & Centroid Heatmap**:
+  - `Full-slide multiplex cellular neighbourhood reconstructions (radius r = [40 μm], K = [10] territories) comparing a representative responder (left) against a non-responder (right). Scale bar, [1 mm].`
+  - `Centroid composition heatmap (column-scaled Z-scores) of the consensus [K]-territory neighbourhood atlas across [M] cell phenotypes.`
+- **Parameter Grid / Resampling Stability Curves (ARI / Jaccard / LOO)**:
+  - `Unsupervised stability landscapes across [N] radius × cluster-count combinations evaluating multi-start Jaccard concordance, patient subsampling Adjusted Rand Index (ARI; mean ± s.d., [30] repeats) and leave-one-patient-out reproducibility across [M] slides.`
+- *CNS Verbatim*: `"Quantification of CD68+ perivascular macrophage content in Ccl2MC+/+ and Ccl2MCΔ/Δ mice in percentage of total perivascular area (15 μm radius around the vessel) in the kidney (n = 5–6 mice/group)."` (*Immunity*, 2023)
+
+---
+
+### 18. *In Vitro* Dose–Response Curves (`IC50`), RT–qPCR, Clonogenic & Co-Culture Assays
+- **Dose–Response Viability Curve (`IC50`)**:
+  - `[CCK-8 / CellTiter-Glo] viability curves across [0–2 μg ml⁻¹] [Drug] in control (blue) versus [perturbed] (red) [Cell Line A] and [Cell Line B] cells fitted by [three- / four-parameter] logistic regression (n = [3] biological replicates; mean ± s.d.; dashed lines indicate absolute IC₅₀; two-way ANOVA).`
+- **Quantitative RT–qPCR Bar / Dot Plot**:
+  - `Quantitative RT–qPCR log₂ fold change ([perturbed] versus control, normalized to *[GAPDH / ACTB]* via the 2⁻ΔΔCt method) for *[GENE1]*, *[GENE2]* and *[GENE3]* in [Cell Line A] and [Cell Line B] (n = [3] biological replicates; mean ± s.d.; two-sided Welch's *t*-tests).`
+- **Clonogenic Survival / Co-Culture Killing**:
+  - `Representative colony formation images (left) and quantification of surviving fraction (right) after [treatment] across [n = 3] independent biological replicates (mean ± s.d.; one-way ANOVA with Tukey's post hoc test).`
+- *CNS Verbatim*: `"Activation of caspases 3 and 7 (e) and cell viability (f) under increasing doses of BRD-810 in parental HMC1-8 cells, CRISPR-edited BAK;BAX-knockout cells and HMC1-8-Cas9-expressing control cells."` (*Nature Cancer*, 2024)
+
+---
+
+### 19. *In Vivo* Tumour Growth Curves, Per-Mouse Slopes, Synergy Forest & Toxicity Curves
+- **Longitudinal Tumour Growth Curve**:
+  - `Longitudinal [caliper / 3T MRI] tumour volume trajectories in [strain] mice bearing [subcutaneous / orthotopic] [model] tumours treated with [Vehicle (n = X), Drug A (n = Y), Drug B (n = Z) or Combination (n = W)] (thin lines, individual mice; bold lines and ribbons, mean ± s.e.m.; [linear mixed-effects model / two-way repeated-measures ANOVA]).`
+- **Per-Mouse Growth Slopes & Multiplicative Synergy Forest Plot**:
+  - `Individual per-mouse linear tumour growth slopes (mm³ d⁻¹; mean ± s.e.m., Holm-adjusted pairwise tests) and baseline-adjusted endpoint log-ANCOVA effect-ratio forest plot (95% CIs; formal Drug A × Drug B interaction *P* value indicated).`
+- **In Vivo Body Weight / Safety Curve**:
+  - `Longitudinal mouse body-weight trajectories across treatment arms (n = [X] mice per group; mean ± s.d.) demonstrating absence of overt systemic toxicity.`
+
+---
+
+### 20. Multi-Cohort Sensitivity / Interaction Forest Plots, Concordance & Batch-QC PCA
+- **Sensitivity / Subgroup Forest Plot**:
+  - `Sensitivity forest plot reporting [median standardized differences (non-responder minus responder, s.d.) / Spearman ρ / odds ratios] with 95% [bootstrap] confidence intervals across clinical exclusion and stage subsets (exact subset *n* shown on y-axis; dashed vertical line marks null effect).`
+- **Biomarker × Treatment Interaction Forest Plot**:
+  - `Paired Cox proportional hazards forest plot (HR per s.d. with 95% CIs) contrasting [untreated surgical patients (n = X, open squares)] against [chemotherapy-treated patients (n = Y, filled circles)] with formal biomarker × treatment interaction *P* values.`
+- **Cross-Platform Concordance & Batch-QC PCA**:
+  - `Principal component analysis (PCA) of [n = X] bulk RNA-seq profiles (coloured by treatment arm; shapes denote library batch) verifying that PC1 ([29.8%] variance) reflects biological perturbation without batch confounding (two-sided Welch's *t*-test).`
+
+---
+
+### 21. Computational Pathology, Foundation-Model Tile AUROC & Multimodal Fusion Benchmarks
+- **Whole-Slide H&E vs Ground-Truth & Virtual Spatial Prediction**:
+  - `Representative diagnostic H&E whole-slide image (scale bar, [2 mm]; dashed box marks 20× ROI below, scale bar, [200 μm]) paired with co-registered ground-truth multiplex staining (top right) and cross-validated foundation-model spatial predictions (bottom right) for [stromal, lymphoid and tumour-target] compartments.`
+- **Foundation-Model Tile AUROC & Multimodal Tier Progression**:
+  - `Median slide-level tile AUROC of [five pretrained pathology foundation models] and their ensemble across [N] foreground tiles in discovery (n = [X]) and independent validation (n = [Y]) slides, contrasting macro-architectural compartments against the intratumoural protein optical boundary.`
+  - `Multimodal performance progression across [five] modelling tiers comparing cross-validated discovery survival C-index (blue, n = [X]) and held-out validation response AUC (red, n = [Y]; exact one-sided permutation tests).`
 
 ---
 

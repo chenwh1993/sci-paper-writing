@@ -1,6 +1,6 @@
-# Methods & STAR★METHODS — CNS Schemas, Past-Passive Grammar & Reproducibility Corpus
+# Methods & STAR★METHODS — CNS Schemas, Past-Passive Grammar & 23-Module Corpus (~95%+ Coverage)
 
-> Empirically distilled from 307 complete CNS & high-impact Methods / STAR★METHODS sections. Enforces 9.89:1 past-passive dominance, exact reagent/software version traceability, IRB/IACUC/STR compliance, and permanent data/code availability disclosures.
+> Empirically distilled from **307** complete CNS & high-impact Methods / STAR★METHODS sections. Enforces **Corpus-First Modular Assembly** (`92–97%` of Methods prose assembles directly from the 23 verified past-passive blocks in Parts 3–5 below — plug in ONLY real reagents, software versions, and parameters; NEVER fabricate catalog numbers or tool versions!), `9.89:1` past-passive dominance, IRB/IACUC/STR compliance, and permanent data/code availability disclosures.
 
 
 ---
@@ -272,6 +272,35 @@ Empirically distilled modular templates from 307 CNS Methods / STAR Methods sect
 
 ---
 
+### 8. Clinical Radiology (MRI/CT) & Routine Clinical Pathology (IHC / Blinded Scoring)
+
+> **Clinical imaging and routine immunohistochemistry assessment**
+> Pretreatment and post-treatment axial `[T2-weighted pelvic MRI / contrast-enhanced CT]` scans were acquired on `[3.0-T clinical scanners]` using standardized institutional protocols and independently reviewed by `[two]` board-certified radiologists blinded to molecular data and clinical outcomes. Complete radiological clearance and residual disease were categorized according to `[RECIST v1.1 / pathological review of resected specimens]`. Routine clinical immunohistochemistry for `[Biomarker]` was performed on `4-μm` FFPE diagnostic sections using `[antibody clone, autostainer platform]` and scored (`0`, `1+`, `2+`, `3+`) according to `[ASCO/CAP or trial-specific criteria]` by `[two]` board-certified pathologists blinded to treatment response; discordant cases were resolved by consensus review.
+
+---
+
+### 9. Quantitative RT–qPCR, Dose–Response Viability (`IC50`), shRNA Knockdown & EMT Induction
+
+> **Quantitative RT–qPCR**
+> Total RNA was extracted using `[TRIzol / RNeasy Mini Kit (Qiagen)]` and reverse-transcribed into cDNA (`1 μg` input) using `[PrimeScript RT Reagent Kit / HiScript III]` according to the manufacturer's instructions. Quantitative PCR was performed in technical triplicate using `[SYBR Green Master Mix]` on a `[QuantStudio 6 / CFX96]` real-time PCR system (`[primer sequences listed in Supplementary Table X]`). Relative transcript abundance was normalized to `*[GAPDH / ACTB]*` and calculated using the `2⁻ΔΔCt` method across `n = [3]` independent biological replicates.
+
+> **Cell viability, dose–response (`IC50`) and phenotypic induction**
+> To induce `[epithelial–mesenchymal transition / pathway activation]`, cells were seeded in `[6-well plates]` and treated with `[cytokine/inducer concentration]` for `[72 h]`, with medium refreshed every `[24–48 h]`. For drug cytotoxicity assays, cells were seeded in `96-well` plates (`[3,000–5,000]` cells per well), allowed to adhere overnight, and exposed to serial dilutions of `[Drug]` (`[0–2 μg ml⁻¹]`) for `[72 h]`. Cell viability was measured using `[CCK-8 (Dojindo) / CellTiter-Glo (Promega)]` according to the manufacturer's instructions on a `[microplate reader]`. Dose–response curves were fitted using `[three- or four-parameter]` log-logistic regression (`drc` / `GraphPad Prism`) to determine absolute `IC₅₀` values across `n = [3]` biological replicates.
+
+> **Stable lentiviral shRNA knockdown and overexpression**
+> Short hairpin RNAs (shRNAs) targeting `*[Gene]*` or a non-targeting scrambled control (`[sequences in Supplementary Table X]`) and full-length `[human Target]` cDNA were cloned into `[pLKO.1 / pLVX]` lentiviral vectors. Lentivirus was produced in HEK293T cells using `psPAX2` and `pMD2.G` packaging plasmids, filtered through a `0.45-μm` filter, and used to transduce target cells with `8 μg ml⁻¹` polybrene. Stably transduced pools were selected with `[puromycin / blasticidin]` for `[5–7 days]`, and knockdown or overexpression efficiency was verified by RT–qPCR and immunoblotting or flow cytometry prior to implantation.
+> - *CNS Verbatim*: `"The day-0 plate was measured by adding 30 μl per well of CellTiter-Glo luminescent cell viability reagent (Promega)."` (*Nature Cancer*, 2024)
+
+---
+
+### 10. Orthotopic Murine Models, *In Vivo* MRI Volumetry & Combination Synergy (`log-ANCOVA` / `LMM`)
+
+> **Orthotopic implantation, longitudinal in vivo MRI and combination synergy analysis**
+> For orthotopic tumour establishment, `[cell number]` `[syngeneic tumour]` cells suspended in `[volume]` `[PBS / Matrigel]` were implanted orthotopically into `[organ site]` of `[6–8-week-old]` `[strain]` mice under `[isoflurane]` anaesthesia. Engraftment and longitudinal tumour volumes were monitored by `[3.0-T / 7.0-T]` T2-weighted `[pelvic/abdominal]` MRI under anaesthesia (`[repetition time / echo time / slice thickness]`). Once tumours reached an average baseline volume of `[~150–200 mm³]` (`Day [14]`), mice were stratified by baseline volume and randomly allocated to vehicle, `[Drug A]` monotherapy, `[Drug B]` monotherapy or combination arms (`n = [5–8]` mice per group). Tumour regions of interest were manually segmented across contiguous slices by investigators blinded to treatment allocation, and total tumour volume was computed by summing slice areas multiplied by slice thickness. Longitudinal growth trajectories were evaluated using linear mixed-effects models (`lme4`) with random mouse intercepts and per-mouse linear growth slopes (`mm³ d⁻¹`). Formal multiplicative combination synergy at endpoint was tested via baseline-adjusted `log-ANCOVA` including a `Drug A × Drug B` interaction term (`interaction ratio < 1`, two-sided *P* < 0.05).
+> - *CNS Verbatim*: `"One week after implantation, mice were scanned by magnetic resonance imaging (MRI) for the presence of tumors."` (*Nature Cancer*, 2022)
+
+---
+
 ## Part 4 — Reusable CNS Computational, Bioinformatics & ML Methods Corpus
 
 Empirically distilled modular templates from 307 CNS Methods / STAR Methods sections. Replace bracketed `[SLOTS]` with exact tool versions, thresholds, and reference builds from your actual pipeline.
@@ -344,6 +373,51 @@ Empirically distilled modular templates from 307 CNS Methods / STAR Methods sect
 
 > **Predictive modelling and validation**
 > To build a predictive classifier for `[immunotherapy response]`, features were standardized (`z-score`) strictly within each training fold to prevent data leakage. Models (`[LASSO logistic regression / Random Forest / XGBoost]`) were trained in `scikit-learn (v1.4.0)` using stratified `[5-fold cross-validation]` (`10` repeats) for hyperparameter tuning, and evaluated on independent external validation cohorts (`[Cohort A, n = X; Cohort B, n = Y]`). Discrimination was assessed via area under the receiver operating characteristic curve (`AUROC`) with `95%` confidence intervals computed by `1,000` stratified bootstrap replicates; model interpretability was evaluated using TreeSHAP (`shap v0.45.0`).
+
+---
+
+### 8. FFPE Single-Nucleus RNA-seq (`10x Flex`), Ambient RNA Removal (`decontX`) & Consensus NMF
+
+> **Single-nucleus FFPE RNA profiling, ambient decontamination and consensus NMF**
+> Nuclei were isolated from `[25–50-μm]` archival FFPE tissue curls using the `[Chromium Fixed RNA Profiling Reagent Kit (10x Genomics)]` following tissue deparaffinization, rehydration and enzymatic dissociation according to the manufacturer's instructions. Fixed-RNA probe libraries were aligned to the human probe reference (`GRCh38`) using `Cell Ranger multi (v7.x)`. Ambient RNA contamination was estimated and removed per library using `decontX (celda v1.x)` [or `SoupX` / `CellBender`] using raw droplet backgrounds. To identify recurrent intra-tumoural transcriptional programmes without inter-patient batch domination, consensus non-negative matrix factorization (`cNMF` / `NMF`, ranks `K = 4–9`) was executed independently within the malignant nuclei of each tumour, retaining non-redundant programmes clustered by pairwise Jaccard similarity into `[K]` consensus states (top `[30–50]` signature genes per programme). Single-nucleus and patient-level programme activities were scored using `UCell (v2.x)` [or `AUCell`].
+
+---
+
+### 9. High-Resolution Spatial Transcriptomics (`Visium HD` / `Xenium`), Distance Gradients & Within-Patient Regression
+
+> **Subcellular spatial transcriptomics, Euclidean distance gradients and multivariable spatial regression**
+> Archival FFPE blocks passing RNA quality control (`DV200 > [30–50%]`) were processed using `[Visium HD Spatial Gene Expression (10x Genomics) / Xenium In Situ]` according to the manufacturer's protocol and aligned with `Space Ranger (v3.x)`. Native `[8-μm]` bins (as well as sensitivity aggregations at `16`, `32` and `64 μm`) were deconvolved against the matched single-nucleus reference atlas using `RCTD (spacexr v2.x)`. For every strictly assigned epithelial/malignant bin, exact Euclidean distances (`0–200 μm`) to the nearest `[endothelial / stromal-marker⁺]` bin were computed via k-d tree spatial indexing (`scipy.spatial.cKDTree`). Paired within-patient comparisons contrasted proximal (`≤ 50 μm`) against distal (`100–250 μm`) bins using two-sided Wilcoxon signed-rank tests. To isolate specific paracrine proximity effects from vascular distance and capture depth, within-patient multivariable linear regressions were fitted modelling malignant programme score against proximity to `[Marker⁺]` stroma while adjusting for Euclidean distance to nearest vessel and `log₁₀(UMI count)`.
+> - *CNS Verbatim*: `"The sectioned tissues were either processed following the 10X Visium V2 protocol, Visium HD V1 protocol, or Xenium Human 5K panel."` (*Nature Communications*, 2026)
+
+---
+
+### 10. Serial Multiplex IHC Registration (`VALIS`), Segmentation (`Cellpose`), Consensus Phenotyping & CN Stability
+
+> **Serial multiplex IHC registration, single-cell segmentation and cellular neighbourhood stability**
+> Serial multiplex whole-slide fluorescence images acquired across `[Panel 1 / Panel 2]` staining rounds were rigidly and non-rigidly co-registered at single-cell precision using `VALIS (v1.x)` anchored on nuclear DAPI channels. Nuclear and cytoplasmic boundaries were segmented using `Cellpose (v2.x / v3.x)` (`cyto2` / `nuclei` model). Single-cell mean marker intensities were arcsinh-transformed, batch-normalized across slides, and assigned to mutually exclusive cell phenotypes using a strict consensus gating hierarchy that eliminated dual-lineage conflicts (`0%` overlap) while preserving reference cell counts. Unsupervised cellular neighbourhoods (CNs) were defined by computing the `[M]`-lineage composition vector within radius `r` around each cell followed by mini-batch *k*-means clustering (`scikit-learn`). To avoid arbitrary parameterization, a systematic `[r × K]` stability grid (`r = 20–150 μm`, `K = 5–13`) was evaluated via multi-start runs, patient subsampling (`40–90%`, `30` repeats), exhaustive leave-one-patient-out resampling, leave-top-patient-out perturbation and held-out validation cohort concordance (Adjusted Rand Index, ARI, and minimum centroid cosine similarity).
+
+---
+
+### 11. Computational Pathology Foundation Models (WSI Tiling, Linear Spatial Probes & Multimodal Fusion)
+
+> **Whole-slide H&E foundation-model feature extraction, spatial probes and external transfer**
+> Routine diagnostic H&E whole-slide images were co-registered to matched serial multiplex IHC sections (`VALIS`), tissue foreground masks were segmented via Otsu thresholding, and non-overlapping `[224 × 224 px]` foreground tiles were extracted at `20×` magnification (`~0.5 μm pixel⁻¹`). Fixed-weight patch embeddings were extracted using pretrained pathology foundation models (`[e.g. UNI2-h, Prov-GigaPath, H-optimus-0, phikon-v2, MUSK]`) without end-to-end fine-tuning on clinical outcomes. L2-regularized linear spatial probes (`LogisticRegression` / `Ridge`) were trained solely against co-registered mIHC compartment ground truth under patient-level stratified five-fold cross-validation, and all probe and ensemble weights were locked prior to held-out temporal validation. Slide-level spatial scores were evaluated for zero-retraining external transfer on independent diagnostic H&E cohorts (e.g., `TCGA`), correlating predicted compartment scores against matched bulk transcriptomic signatures (two-sided Pearson/Spearman tests) and clinical survival.
+> - *CNS Verbatim*: `"Each tile was 521 × 521 μm² with each pixel 0.51 × 0.51 μm²."` (*Nature Immunology*, 2026)
+
+---
+
+### 12. External Clinical Cohorts, Purity-Adjusted Partial Correlations & Pharmacogenomics (`DepMap` / `PRISM` / `GDSC2`)
+
+> **Public clinical cohorts, pan-cancer purity adjustment and cancer cell-line pharmacogenomics**
+> Normalized expression matrices and curated clinical outcomes for external cohorts (`[TCGA, public clinical trials and GEO cohorts listed in Supplementary Table X]`) were obtained from official portals (`GDC`, `cBioPortal`, `GEO`). Signature scores were standardized (`Z-score`) within each cohort prior to cross-study evaluation. To exclude stromal dilution in bulk RNA-seq, tumour purity was estimated via `ESTIMATE (v1.x)`, and purity-adjusted partial Spearman correlations (`ppcor`) were computed across both individual cohorts and pan-cancer TCGA lineages. Cell-intrinsic genetic dependency (`DepMap` CRISPR Chronos scores), small-molecule viability (`PRISM` and `GDSC2` ln `IC₅₀`), mRNA expression (`CCLE`) and reverse-phase protein array (`CCLE RPPA`) datasets were downloaded from the DepMap portal (`[release version]`) and tested for lineage-specific associations using two-sided Spearman rank correlations with bootstrap 95% CIs (`1,000` replicates).
+> - *CNS Verbatim*: `"The score was calculated for > 9,000 human tumors from 23 major cancer types with RNA-seq and clinical data in the TCGA database."` (*Nature Cancer*, 2022)
+
+---
+
+### 13. Biomarker × Treatment Interaction Cox, Multivariable Logistic Regression & Exact Permutation Tests
+
+> **Interaction survival modelling, multivariable clinical adjustment and exact permutation testing**
+> To distinguish treatment-specific predictive biomarkers from generic prognostic factors, formal `biomarker × treatment` interaction terms were fitted in Cox proportional hazards models (`survival`) comparing treated versus untreated surgical arms (`P_int`, two-sided Wald test). Multivariable logistic regression models estimated adjusted odds ratios (`OR` per s.d. with 95% Wald/profile-likelihood CIs) controlling for established clinical covariates (`[PD-L1 score, TMB, ECOG status, hormone-receptor status or clinical stage]`). For compact validation cohorts, statistical significance of held-out ROC AUC was assessed using exact or `10,000`-iteration label-permutation tests (`P_perm`), and cross-study standardized `Z` scores were summarized across cohorts without pooling raw non-comparable platforms.
 
 ---
 

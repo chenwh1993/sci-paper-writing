@@ -976,30 +976,51 @@ def audit_cover_letter(text: str, spec: dict, journal: str):
     return findings
 
 
-def audit_caption(text: str, spec: dict, journal: str):
+def _audit_single_caption(text: str, spec: dict, journal: str, prefix: str = ""):
     findings = []
+    plain = re.sub(r"\$\^\{[^}]+\}\$|\$_\{[^}]+\}\$|\*\*|\*", "", text)
     wc = count_words(text)
-    findings.append(("INFO", f"Figure Caption: {wc} words (target for {journal}: <={spec['cap_max_w']}w)."))
+    if not prefix:
+        findings.append(("INFO", f"Figure Caption: {wc} words (target for {journal}: <={spec['cap_max_w']}w)."))
     if wc > spec["cap_max_w"]:
-        findings.append(("WARN", f"Caption length ({wc}w) exceeds {journal} guideline ({spec['cap_max_w']}w); consolidate repeated stats into a closing sentence."))
-    if re.search(r"\b(this figure shows|the figure illustrates|as shown in this figure)\b", text, re.I):
-        findings.append(("FAIL", "Avoid 'This figure shows...'; use telegraphic participial syntax ('UMAP projection showing...', 'Box plots comparing...')."))
-    if re.search(r"\b(box ?plot|violin|bar ?plot|scatter|kaplan|survival|quantification|comparison)\b", text, re.I):
-        if not re.search(r"\bn\s*=\s*\d+|\b\d+\s+(patients|mice|samples|replicates|tumou?rs)\b", text, re.I):
-            findings.append(("FAIL", "Quantitative plot detected without explicit sample size 'n' and biological unit."))
-        if re.search(r"\bbox ?plot\b", text, re.I) and not re.search(r"\b(median|interquartile|iqr|whisker|quartile)\b", text, re.I):
-            findings.append(("FAIL", "Box plot mentioned without defining center line (median), box bounds (IQR/quartiles), and whiskers."))
-        if re.search(r"\b(error bar|mean|bar ?plot)\b", text, re.I) and not re.search(r"\b(s\.d\.|s\.e\.m\.|sd|sem|standard deviation|standard error|95%\s*ci)\b", text, re.I):
-            findings.append(("WARN", "Error bars / means mentioned without defining dispersion metric (mean +/- s.d. or s.e.m.)."))
-        if re.search(r"\bp\s*[<=>]|mann|wilcoxon|t-?test|anova|kruskal|log-?rank|fisher\b", text, re.I) and not re.search(r"\b(two-sided|two-tailed|one-sided|one-tailed)\b", text, re.I):
-            findings.append(("WARN", "Statistical test cited without specifying sidedness ('two-sided' / 'two-tailed')."))
-    if re.search(r"\b(immunofluorescence|mif|ihc|h&e|microscop|codex|imaging|histolog|spatial|mri)\b", text, re.I):
-        if not re.search(r"\bscale bar\b", text, re.I):
-            findings.append(("FAIL", "Microscopy / tissue / MRI imaging panel detected without 'Scale bar, XX um/mm/cm' disclosure."))
-        elif not re.search(r"scale bar[^\.]{0,25}\b\d+(?:\.\d+)?\s*(?:µm|μm|um|mm|cm)\b", text, re.I):
-            findings.append(("WARN", "Scale bar mentioned without an explicit numeric physical unit (e.g., 'Scale bar, 100 um' or 'Scale bar, 1 cm')."))
+        findings.append(("WARN", f"{prefix}Caption length ({wc}w) exceeds {journal} guideline ({spec['cap_max_w']}w); consolidate repeated stats into a closing sentence (references/06 Part 4)."))
+    if re.search(r"\b(this figure shows|the figure illustrates|as shown in this figure)\b", plain, re.I):
+        findings.append(("FAIL", f"{prefix}Avoid 'This figure shows...'; retrieve telegraphic participial stems from references/06 Part 3 (21 chart types: 'UMAP projection showing...', 'Box plots comparing...')."))
+    if re.search(r"\b(box ?plot|violin|bar ?plot|scatter|kaplan|survival|quantification|comparison|raincloud|forest plot)\b", plain, re.I):
+        if not re.search(r"\bn\s*=\s*\d+|\b\d+\s+(patients|mice|samples|replicates|tumou?rs|slides|lines|pairs)\b", plain, re.I):
+            findings.append(("FAIL", f"{prefix}Quantitative plot detected without explicit sample size 'n' and biological unit."))
+        if re.search(r"\bbox ?plot\b", plain, re.I) and not re.search(r"\b(median|interquartile|iqr|whisker|quartile)\b", plain, re.I):
+            findings.append(("FAIL", f"{prefix}Box plot mentioned without defining center line (median), box bounds (IQR/quartiles), and whiskers (references/06 Part 4.1)."))
+        if re.search(r"\b(error bar|mean|bar ?plot)\b", plain, re.I) and not re.search(r"\b(s\.d\.|s\.e\.m\.|sd|sem|standard deviation|standard error|95%\s*ci|iqr|median)\b", plain, re.I):
+            findings.append(("WARN", f"{prefix}Error bars / means mentioned without defining dispersion metric (mean +/- s.d. or s.e.m.; references/06 Part 4.2)."))
+        if re.search(r"\bp\s*[<=>]|mann|wilcoxon|t-?test|anova|kruskal|log-?rank|fisher\b", plain, re.I) and not re.search(r"\b(two-sided|two-tailed|one-sided|one-tailed)\b", plain, re.I):
+            findings.append(("WARN", f"{prefix}Statistical test cited without specifying sidedness ('two-sided' / 'two-tailed'; references/06 Part 4.4)."))
+    if re.search(r"\b(immunofluorescence|mif|ihc|h&e|microscop|codex|imaging|histolog|spatial|mri)\b", plain, re.I):
+        if not re.search(r"\b(scale bar|field of view|\bfov\b)\b", plain, re.I):
+            findings.append(("FAIL", f"{prefix}Microscopy / tissue / MRI imaging panel detected without 'Scale bar, XX um/mm/cm' (or truthful FOV) disclosure (references/06 Part 1.2 & Chart #14)."))
+        elif re.search(r"\bscale bar\b", plain, re.I) and not re.search(r"scale bar[^\.]{0,25}\b\d+(?:\.\d+)?\s*(?:µm|μm|um|mm|cm)\b", plain, re.I):
+            findings.append(("WARN", f"{prefix}Scale bar mentioned without an explicit numeric physical unit (e.g., 'Scale bar, 100 um' or 'Scale bar, 1 cm')."))
     if re.search(r"\*\*[pqP]\*\s*[<=>]", text):
-        findings.append(("WARN", "Broken Markdown bold/italic collision around significance stars (e.g., '**q* < 0.01'); escape asterisks '\\*\\*q < 0.01' or use plain notation."))
+        findings.append(("WARN", f"{prefix}Broken Markdown bold/italic collision around significance stars (e.g., '**q* < 0.01'); escape asterisks '\\*\\*q < 0.01' or use plain notation."))
+    return findings
+
+
+def audit_caption(text: str, spec: dict, journal: str):
+    # Support both single figure caption AND multi-figure Legends files cleanly!
+    blocks = re.split(r"\n(?=\*\*(?:Extended Data |Supplementary )?(?:Fig\.|Figure)\s*S?\d+[\.\|\s])", text.strip())
+    fig_blocks = [b.strip() for b in blocks if re.match(r"^\*\*(?:Extended Data |Supplementary )?(?:Fig\.|Figure)\s*S?\d+", b.strip())]
+    if len(fig_blocks) >= 2:
+        findings = []
+        wcs = [count_words(b) for b in fig_blocks]
+        over = sum(1 for w in wcs if w > spec["cap_max_w"])
+        findings.append(("INFO", f"Multi-Figure Legends file: {len(fig_blocks)} captions audited individually (word range {min(wcs)}-{max(wcs)}w; {over} over {journal} <= {spec['cap_max_w']}w limit)."))
+        for b in fig_blocks:
+            m_lbl = re.match(r"^\*\*((?:Extended Data |Supplementary )?(?:Fig\.|Figure)\s*S?\d+)", b)
+            lbl = f"[{m_lbl.group(1)}] " if m_lbl else ""
+            findings.extend(_audit_single_caption(b, spec, journal, prefix=lbl))
+        findings.append(("INFO", "Chart-Metric Sync Reminder: verify 1:1 agreement between every legend/text statistical metric (e.g. Spearman rho vs group difference Delta vs OR/HR), sample size n, and the actual rendered axis label on every Main & Supp panel."))
+        return findings
+    findings = _audit_single_caption(text, spec, journal)
     findings.append(("INFO", "Chart-Metric Sync Reminder: verify 1:1 agreement between every legend/text statistical metric (e.g. Spearman rho vs group difference Delta vs OR/HR), sample size n, and the actual rendered axis label on every Main & Supp panel."))
     return findings
 
@@ -1036,7 +1057,7 @@ def audit_methods(text: str, spec: dict, journal: str):
     active_we = len(re.findall(r"\bwe\s+[a-z]+(ed|d)\b", text, re.I))
     findings.append(("INFO", f"Methods: {wc} words | Past-passive ({passive}) vs Active 'we' ({active_we})."))
     if active_we > 0 and passive / max(1, active_we) < 2.0 and wc > 200:
-        findings.append(("WARN", f"Active 'we' ratio is high ({passive}:{active_we}); CNS Methods average 9.89:1 past-passive dominance."))
+        findings.append(("WARN", f"Active 'we' ratio is high ({passive}:{active_we}); CNS Methods average 9.89:1 past-passive dominance (retrieve verified past-passive blocks from references/07 Parts 3-5, 23 modules)."))
     if re.search(r"\b(patient|human|biopsy|clinical|cohort|tumor specimen)\b", text, re.I) and not re.search(r"\b(irb|institutional review board|ethics committee|helsinki|informed consent)\b", text, re.I):
         findings.append(("FAIL", "Human specimens mentioned without IRB/ethics approval and written informed consent disclosure."))
     if re.search(r"\b(mouse|mice|murine|xenograft|pdx)\b", text, re.I) and not re.search(r"\b(iacuc|animal care|ethics committee|institutional animal)\b", text, re.I):

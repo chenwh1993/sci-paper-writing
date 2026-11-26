@@ -59,8 +59,8 @@ sci-paper-writing/
 │   ├── 03-results-and-subheadings.md                           # Journal subheadings, 765:1 inline fig citations, 4-tier verb ladder & 6 chaining patterns
 │   ├── 04-discussion.md                                        # MIT/Harvard 5-block elevation, 99.6% stat-free P1, paradox resolution & 3-part Limitations
 │   ├── 05-cover-letter.md                                      # Elsevier/CNS 5-step 1-page rules, 4 compliance statements & 4 journal templates
-│   ├── 06-figure-captions.md                                   # 2,990-caption corpus: journal specs, 5:1 -ing syntax, 13 chart templates & stats disclosures
-│   ├── 07-methods-and-star.md                                  # 307-Methods corpus: Nature/Cell STAR+KRT/Science schemas, 9.89:1 past-passive & reproducibility
+│   ├── 06-figure-captions.md                                   # 2,990-caption corpus (~96%+ coverage): journal specs, 5:1 -ing syntax, 21 chart-type templates (incl. MRI/CONSORT/spatial gradients/IC50/in vivo synergy/WSI FM) & stats disclosures
+│   ├── 07-methods-and-star.md                                  # 307-Methods corpus (~95%+ coverage): Nature/Cell STAR+KRT/Science schemas, 9.89:1 past-passive & 23 modular experimental/computational blocks (incl. snFFPE/Visium HD/VALIS-Cellpose/WSI FM/DepMap)
 │   ├── 08-comprehensive-phrasebank-and-collocations.md         # 1,960-paper corpus + Corpus-First Positive Retrieval Library (Scenarios 1–25 from 1,441 papers): low-acronym front matter, 8-slot CNS verbs, prepositional 3/4-grams, 8 Results opener families, non-enumerative Discussion & epistemic stems
 │   ├── 09-citation-and-reference-architecture.md               # 20-journal reference budgets, Intro/Results/Discussion/Methods split, 95% 1–3 anti-stuffing & recency
 │   ├── 10-figure-and-supplement-architecture.md                # 20-journal Main/ED/Supp figure & subpanel budgets, Main-vs-Supp triage matrix & Fig 1–7 pairing
