@@ -86,8 +86,10 @@ Empirically distilled from **2,725** 2025–2026 high-impact titles, **902** str
 Empirical 2025–2026 sentence share: **Findings `47.5%` | Background `34.1%` | Gap `7.5%` | Closing `7.4%` | Methods `3.5%` (≤1 sentence!)**
 - **S1–S2 (Background + Gap, ~30w)**: State the clinical/biological stakes AND immediately pivot to the unresolved contradiction (`However, ... remains unclear.`).
 - **S3 (1-Sentence Approach + Main Discovery, ~25w)**: Fuse method into a subordinate participial phrase (`Here, by integrating single-cell and spatial transcriptomics of 108 tumors, we identify...`). **Never spend 2+ sentences listing QC, sequencing kits, or clustering pipelines!**
-- **S4–S6 (Three Escalating Findings with Quantitative Anchors, ~70w)**:
-  - S4: Key cell state / spatial niche / biomarker discovery (with scale `n`, fold/fraction, or effect size — **NO raw `P = ...` values** in *Nature/NCB/Cell/Cancer Cell/Immunity* Abstracts; only `0.3%` of 1,436 published papers put `P` values in Abstract; reserve Abstract `P` strictly for clinical-trial primary endpoints in *Nat Med / Clin Cancer Res*!).
+- **S4–S6 (Three Escalating Findings with Restrained Quantitative Anchors, ~70w)**:
+  - **Empirical Abstract Data Restraint (`n = 775` Published 2025–2026 CNS Abstracts)**: Real CNS Abstracts are **conceptual narratives, NOT statistical tables** — median quantitative numbers = **`0.0`** (`Q75 = 1–2`, `P90 = 4–7`), and **`98.2%–100.0%` contain ZERO inline stat equations** (`ρ =`, `r =`, `AUC =`, `HR =`, `n =`, `P =`)!
+  - **Flexible Target**: Keep **`0–3`** concise scale/effect anchors in mechanistic/biology Abstracts (*Nature / NCB / Cell / Cancer Cell / Immunity*), or at most **`2–5`** headline anchors in multi-cohort/clinical/AI Abstracts (*Nat Commun / Nat Cancer / Nat Med*). **NEVER** cram 8–12 numbers, micrometer sub-ranges, and correlation equations (`ρ = −0.58`) into 6 sentences! Reserve raw `P` values strictly for randomized clinical-trial primary endpoints in *Nat Med / Clin Cancer Res*.
+  - S4: Key cell state / spatial niche / biomarker discovery (state direction + biological mechanism; at most 1 study-scale anchor).
   - S5: Mechanistic causal axis (`Mechanistically, ... drives ... by ...`).
   - S6: Functional *in vivo* perturbation / rescue OR independent clinical validation (`Genetic deletion or pharmacological blockade of ... sensitizes tumors to anti-PD-1`).
 - **S7 (Conceptual / Translational Takeaway, ~25w)**: `Together, our findings define ... and nominate ... as a therapeutic target/biomarker for ...`

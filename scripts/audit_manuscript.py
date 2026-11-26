@@ -19,47 +19,173 @@ from collections import defaultdict
 from pathlib import Path
 
 JOURNAL_SPECS = {
+    "general": {
+        "style_family": "general",
+        "title_max_w": 15, "title_colon_ok": True,
+        "abs_min_w": 110, "abs_max_w": 150, "abs_num_warn": 7,
+        "intro_min_w": 450, "intro_med_w": 620, "intro_max_w": 820,
+        "res_min_w": 3600, "res_med_w": 4200, "res_max_w": 5000, "res_pure_min": 3150, "res_pure_med": 3650,
+        "disc_min_w": 850, "disc_med_w": 1100, "disc_max_w": 1500,
+        "main_target_w": 6000, "main_min_w": 5200, "main_max_w": 6800, "main_pure_min": 4600,
+        "sub_max_w": 13, "disc_lim_mandatory": False, "cap_max_w": 350, "spelling": "UK/US",
+        "main_ref_min": 48, "main_ref_target": "55-68 (+~18 Methods)", "intro_ref_min": 14, "res_ref_min": 18, "disc_ref_min": 11,
+        "nonp_med": 1.5, "nonp_bull": 10.0, "nonp_warn": 15.0,
+        "paren_tot_med": 37.4, "paren_tot_warn": 48.0, "paren_nfnum_med": 4.0, "paren_nfnum_warn": 12.0,
+        "paren_share_med": 13.2, "paren_share_warn": 18.0, "ge3p_med": 7.5, "ge3p_warn": 16.0,
+    },
     "nature": {
+        "style_family": "nature",
         "title_max_w": 12, "title_colon_ok": False,
-        "abs_min_w": 130, "abs_max_w": 250,
-        "intro_max_w": 550, "sub_max_w": 9,
-        "disc_lim_mandatory": False, "cap_max_w": 350, "spelling": "UK",
+        "abs_min_w": 130, "abs_max_w": 215, "abs_num_warn": 6,
+        "intro_min_w": 260, "intro_med_w": 401, "intro_max_w": 550,
+        "res_min_w": 3400, "res_med_w": 4293, "res_max_w": 5000, "res_pure_min": 3000, "res_pure_med": 3581,
+        "disc_min_w": 500, "disc_med_w": 645, "disc_max_w": 950,
+        "main_target_w": 5430, "main_min_w": 4500, "main_max_w": 6200, "main_pure_min": 3950,
+        "sub_max_w": 9, "disc_lim_mandatory": False, "cap_max_w": 350, "spelling": "UK",
         "main_ref_min": 46, "main_ref_target": "50-58 (+~27 Methods)", "intro_ref_min": 14, "res_ref_min": 16, "disc_ref_min": 10,
+        "nonp_med": 3.0, "nonp_bull": 10.0, "nonp_warn": 15.0,
+        "paren_tot_med": 40.3, "paren_tot_warn": 50.0, "paren_nfnum_med": 3.5, "paren_nfnum_warn": 10.0,
+        "paren_share_med": 16.8, "paren_share_warn": 21.0, "ge3p_med": 8.8, "ge3p_warn": 16.0,
+    },
+    "nat_cell_biol": {
+        "style_family": "nature",
+        "title_max_w": 16, "title_colon_ok": True,
+        "abs_min_w": 110, "abs_max_w": 150, "abs_num_warn": 6,
+        "intro_min_w": 340, "intro_med_w": 511, "intro_max_w": 680,
+        "res_min_w": 3400, "res_med_w": 4278, "res_max_w": 5100, "res_pure_min": 3000, "res_pure_med": 3471,
+        "disc_min_w": 620, "disc_med_w": 930, "disc_max_w": 1300,
+        "main_target_w": 5710, "main_min_w": 4700, "main_max_w": 6600, "main_pure_min": 4150,
+        "sub_max_w": 13, "disc_lim_mandatory": False, "cap_max_w": 350, "spelling": "UK",
+        "main_ref_min": 46, "main_ref_target": "52-65 (+~18 Methods)", "intro_ref_min": 14, "res_ref_min": 16, "disc_ref_min": 10,
+        "nonp_med": 2.9, "nonp_bull": 10.0, "nonp_warn": 15.0,
+        "paren_tot_med": 40.9, "paren_tot_warn": 52.0, "paren_nfnum_med": 4.1, "paren_nfnum_warn": 11.0,
+        "paren_share_med": 14.5, "paren_share_warn": 20.0, "ge3p_med": 7.9, "ge3p_warn": 16.0,
+    },
+    "nat_commun": {
+        "style_family": "nature",
+        "title_max_w": 16, "title_colon_ok": True,
+        "abs_min_w": 110, "abs_max_w": 150, "abs_num_warn": 7,
+        "intro_min_w": 480, "intro_med_w": 723, "intro_max_w": 950,
+        "res_min_w": 3500, "res_med_w": 4299, "res_max_w": 5400, "res_pure_min": 2990, "res_pure_med": 3698,
+        "disc_min_w": 880, "disc_med_w": 1283, "disc_max_w": 1800,
+        "main_target_w": 6110, "main_min_w": 5100, "main_max_w": 7300, "main_pure_min": 4550,
+        "sub_max_w": 14, "disc_lim_mandatory": False, "cap_max_w": 350, "spelling": "UK/US",
+        "main_ref_min": 48, "main_ref_target": "54-68 (+~18 Methods)", "intro_ref_min": 15, "res_ref_min": 18, "disc_ref_min": 11,
+        "nonp_med": 2.3, "nonp_bull": 10.0, "nonp_warn": 15.0,
+        "paren_tot_med": 35.8, "paren_tot_warn": 46.0, "paren_nfnum_med": 4.2, "paren_nfnum_warn": 12.0,
+        "paren_share_med": 12.4, "paren_share_warn": 18.0, "ge3p_med": 7.1, "ge3p_warn": 16.0,
+    },
+    "nat_cancer": {
+        "style_family": "nature",
+        "title_max_w": 16, "title_colon_ok": True,
+        "abs_min_w": 110, "abs_max_w": 150, "abs_num_warn": 7,
+        "intro_min_w": 320, "intro_med_w": 516, "intro_max_w": 700,
+        "res_min_w": 3200, "res_med_w": 4152, "res_max_w": 5000, "res_pure_min": 2650, "res_pure_med": 3483,
+        "disc_min_w": 650, "disc_med_w": 943, "disc_max_w": 1350,
+        "main_target_w": 5610, "main_min_w": 4600, "main_max_w": 6600, "main_pure_min": 4000,
+        "sub_max_w": 13, "disc_lim_mandatory": False, "cap_max_w": 350, "spelling": "UK/US",
+        "main_ref_min": 46, "main_ref_target": "52-62 (+~18 Methods)", "intro_ref_min": 14, "res_ref_min": 16, "disc_ref_min": 10,
+        "nonp_med": 4.6, "nonp_bull": 12.0, "nonp_warn": 18.0,
+        "paren_tot_med": 39.6, "paren_tot_warn": 52.0, "paren_nfnum_med": 5.6, "paren_nfnum_warn": 16.0,
+        "paren_share_med": 15.2, "paren_share_warn": 21.0, "ge3p_med": 8.8, "ge3p_warn": 18.0,
     },
     "nature_sister": {
+        "style_family": "nature",
         "title_max_w": 16, "title_colon_ok": True,
-        "abs_min_w": 110, "abs_max_w": 165,
-        "intro_max_w": 750, "sub_max_w": 13,
-        "disc_lim_mandatory": False, "cap_max_w": 350, "spelling": "UK",
+        "abs_min_w": 110, "abs_max_w": 150, "abs_num_warn": 7,
+        "intro_min_w": 340, "intro_med_w": 520, "intro_max_w": 750,
+        "res_min_w": 3300, "res_med_w": 4200, "res_max_w": 5000, "res_pure_min": 2900, "res_pure_med": 3480,
+        "disc_min_w": 680, "disc_med_w": 935, "disc_max_w": 1350,
+        "main_target_w": 5650, "main_min_w": 4700, "main_max_w": 6600, "main_pure_min": 4100,
+        "sub_max_w": 13, "disc_lim_mandatory": False, "cap_max_w": 350, "spelling": "UK",
         "main_ref_min": 46, "main_ref_target": "52-65 (+~18 Methods)", "intro_ref_min": 14, "res_ref_min": 16, "disc_ref_min": 10,
+        "nonp_med": 2.9, "nonp_bull": 10.0, "nonp_warn": 15.0,
+        "paren_tot_med": 40.0, "paren_tot_warn": 50.0, "paren_nfnum_med": 4.5, "paren_nfnum_warn": 12.0,
+        "paren_share_med": 14.5, "paren_share_warn": 20.0, "ge3p_med": 8.0, "ge3p_warn": 16.0,
     },
     "nat_med": {
+        "style_family": "nature",
         "title_max_w": 18, "title_colon_ok": True,
-        "abs_min_w": 140, "abs_max_w": 240,
-        "intro_max_w": 650, "sub_max_w": 13,
-        "disc_lim_mandatory": True, "cap_max_w": 350, "spelling": "US",
+        "abs_min_w": 140, "abs_max_w": 225, "abs_num_warn": 10,
+        "intro_min_w": 250, "intro_med_w": 475, "intro_max_w": 650,
+        "res_min_w": 2600, "res_med_w": 3523, "res_max_w": 4400, "res_pure_min": 2100, "res_pure_med": 2820,
+        "disc_min_w": 900, "disc_med_w": 1255, "disc_max_w": 1750,
+        "main_target_w": 5260, "main_min_w": 4100, "main_max_w": 6400, "main_pure_min": 3550,
+        "sub_max_w": 13, "disc_lim_mandatory": True, "cap_max_w": 350, "spelling": "US",
         "main_ref_min": 42, "main_ref_target": "48-58 (+~17 Methods)", "intro_ref_min": 12, "res_ref_min": 14, "disc_ref_min": 10,
+        "nonp_med": 2.7, "nonp_bull": 12.0, "nonp_warn": 18.0,
+        "paren_tot_med": 47.1, "paren_tot_warn": 56.0, "paren_nfnum_med": 11.8, "paren_nfnum_warn": 22.0,
+        "paren_share_med": 19.5, "paren_share_warn": 25.0, "ge3p_med": 14.9, "ge3p_warn": 22.0,
+    },
+    "nat_methods": {
+        "style_family": "nature",
+        "title_max_w": 16, "title_colon_ok": True,
+        "abs_min_w": 110, "abs_max_w": 150, "abs_num_warn": 7,
+        "intro_min_w": 380, "intro_med_w": 656, "intro_max_w": 900,
+        "res_min_w": 3100, "res_med_w": 3752, "res_max_w": 4600, "res_pure_min": 2900, "res_pure_med": 3340,
+        "disc_min_w": 450, "disc_med_w": 590, "disc_max_w": 1050,
+        "main_target_w": 5280, "main_min_w": 4300, "main_max_w": 6300, "main_pure_min": 4000,
+        "sub_max_w": 12, "disc_lim_mandatory": False, "cap_max_w": 350, "spelling": "US/UK",
+        "main_ref_min": 44, "main_ref_target": "50-60 (+~20 Methods)", "intro_ref_min": 14, "res_ref_min": 16, "disc_ref_min": 9,
+        "nonp_med": 0.3, "nonp_bull": 8.0, "nonp_warn": 13.0,
+        "paren_tot_med": 31.0, "paren_tot_warn": 42.0, "paren_nfnum_med": 2.2, "paren_nfnum_warn": 8.0,
+        "paren_share_med": 11.0, "paren_share_warn": 16.0, "ge3p_med": 4.8, "ge3p_warn": 12.0,
     },
     "cell": {
+        "style_family": "cell",
         "title_max_w": 15, "title_colon_ok": True,
-        "abs_min_w": 100, "abs_max_w": 160,
-        "intro_max_w": 700, "sub_max_w": 16,
-        "disc_lim_mandatory": True, "cap_max_w": 350, "spelling": "US",
+        "abs_min_w": 100, "abs_max_w": 150, "abs_num_warn": 6,
+        "intro_min_w": 340, "intro_med_w": 533, "intro_max_w": 700,
+        "res_min_w": 3100, "res_med_w": 3852, "res_max_w": 4600, "res_pure_min": 2850, "res_pure_med": 3420,
+        "disc_min_w": 680, "disc_med_w": 984, "disc_max_w": 1350,
+        "main_target_w": 5400, "main_min_w": 4500, "main_max_w": 6400, "main_pure_min": 4150,
+        "sub_max_w": 16, "disc_lim_mandatory": True, "cap_max_w": 350, "spelling": "US",
         "main_ref_min": 52, "main_ref_target": "62-84 (+~16 STAR)", "intro_ref_min": 15, "res_ref_min": 22, "disc_ref_min": 12,
+        "nonp_med": 0.0, "nonp_bull": 6.0, "nonp_warn": 10.0,
+        "paren_tot_med": 39.2, "paren_tot_warn": 48.0, "paren_nfnum_med": 1.8, "paren_nfnum_warn": 7.0,
+        "paren_share_med": 11.9, "paren_share_warn": 17.0, "ge3p_med": 8.5, "ge3p_warn": 17.0,
     },
     "cancer_cell": {
+        "style_family": "cell",
         "title_max_w": 16, "title_colon_ok": True,
-        "abs_min_w": 100, "abs_max_w": 160,
-        "intro_max_w": 700, "sub_max_w": 16,
-        "disc_lim_mandatory": True, "cap_max_w": 350, "spelling": "US",
+        "abs_min_w": 100, "abs_max_w": 150, "abs_num_warn": 6,
+        "intro_min_w": 320, "intro_med_w": 458, "intro_max_w": 650,
+        "res_min_w": 2900, "res_med_w": 3627, "res_max_w": 4400, "res_pure_min": 2650, "res_pure_med": 3160,
+        "disc_min_w": 680, "disc_med_w": 866, "disc_max_w": 1250,
+        "main_target_w": 4950, "main_min_w": 4100, "main_max_w": 5900, "main_pure_min": 3850,
+        "sub_max_w": 16, "disc_lim_mandatory": True, "cap_max_w": 350, "spelling": "US",
         "main_ref_min": 52, "main_ref_target": "60-80 (+~16 STAR)", "intro_ref_min": 15, "res_ref_min": 20, "disc_ref_min": 12,
+        "nonp_med": 0.6, "nonp_bull": 7.0, "nonp_warn": 11.0,
+        "paren_tot_med": 40.1, "paren_tot_warn": 50.0, "paren_nfnum_med": 2.7, "paren_nfnum_warn": 9.0,
+        "paren_share_med": 12.3, "paren_share_warn": 18.0, "ge3p_med": 10.3, "ge3p_warn": 17.0,
+    },
+    "immunity": {
+        "style_family": "cell",
+        "title_max_w": 16, "title_colon_ok": True,
+        "abs_min_w": 100, "abs_max_w": 150, "abs_num_warn": 6,
+        "intro_min_w": 340, "intro_med_w": 494, "intro_max_w": 660,
+        "res_min_w": 3000, "res_med_w": 3724, "res_max_w": 4500, "res_pure_min": 2750, "res_pure_med": 3224,
+        "disc_min_w": 700, "disc_med_w": 943, "disc_max_w": 1300,
+        "main_target_w": 5020, "main_min_w": 4200, "main_max_w": 6000, "main_pure_min": 3950,
+        "sub_max_w": 16, "disc_lim_mandatory": True, "cap_max_w": 350, "spelling": "US",
+        "main_ref_min": 52, "main_ref_target": "60-80 (+~16 STAR)", "intro_ref_min": 15, "res_ref_min": 20, "disc_ref_min": 12,
+        "nonp_med": 0.0, "nonp_bull": 6.0, "nonp_warn": 10.0,
+        "paren_tot_med": 36.4, "paren_tot_warn": 48.0, "paren_nfnum_med": 1.6, "paren_nfnum_warn": 7.0,
+        "paren_share_med": 10.1, "paren_share_warn": 16.0, "ge3p_med": 6.9, "ge3p_warn": 17.0,
     },
     "science": {
+        "style_family": "science",
         "title_max_w": 13, "title_colon_ok": False,
-        "abs_min_w": 85, "abs_max_w": 140,
-        "intro_max_w": 650, "sub_max_w": 14,
-        "disc_lim_mandatory": False, "cap_max_w": 300, "spelling": "US",
+        "abs_min_w": 85, "abs_max_w": 125, "abs_num_warn": 5,
+        "intro_min_w": 280, "intro_med_w": 456, "intro_max_w": 650,
+        "res_min_w": 3600, "res_med_w": 4874, "res_max_w": 5600, "res_pure_min": 3400, "res_pure_med": 4322,
+        "disc_min_w": 500, "disc_med_w": 786, "disc_max_w": 1150,
+        "main_target_w": 6090, "main_min_w": 4700, "main_max_w": 6900, "main_pure_min": 4500,
+        "sub_max_w": 14, "disc_lim_mandatory": False, "cap_max_w": 300, "spelling": "US",
         "main_ref_min": 50, "main_ref_target": "58-78 (+~16 Supp)", "intro_ref_min": 15, "res_ref_min": 20, "disc_ref_min": 12,
+        "nonp_med": 0.0, "nonp_bull": 6.0, "nonp_warn": 10.0,
+        "paren_tot_med": 37.6, "paren_tot_warn": 50.0, "paren_nfnum_med": 1.9, "paren_nfnum_warn": 7.0,
+        "paren_share_med": 12.6, "paren_share_warn": 18.0, "ge3p_med": 6.3, "ge3p_warn": 14.0,
     },
 }
 
@@ -79,11 +205,17 @@ CHINGLISH_PATTERNS = [
 
 # Journal-calibrated Results P/q density targets: (published_median, bullseye_hi, warn_hi, fail_hi) per 1,000 words
 CNS_JOURNAL_P_TARGETS = {
+    "general":       (0.6, 2.0, 5.5, 10.0),
     "cell":          (0.0, 1.0, 3.5, 10.0),
+    "immunity":      (0.0, 0.8, 2.5, 10.0),
     "cancer_cell":   (0.3, 1.5, 6.0, 10.0),
-    "nature_sister": (0.4, 1.8, 4.5, 10.0),
+    "nat_cell_biol": (0.4, 1.5, 4.0, 10.0),
+    "nat_commun":    (0.8, 2.0, 6.0, 10.0),
+    "nat_cancer":    (1.0, 2.5, 8.0, 12.0),
+    "nat_methods":   (0.3, 1.5, 4.0, 10.0),
+    "nature_sister": (0.4, 1.8, 5.0, 10.0),
     "nature":        (1.0, 2.0, 5.5, 10.0),
-    "science":       (0.6, 2.0, 5.5, 10.0),
+    "science":       (0.0, 1.5, 4.5, 10.0),
     "nat_med":       (2.8, 4.5, 9.0, 14.0),
 }
 
@@ -231,6 +363,64 @@ def count_words(text: str) -> int:
     return len(re.findall(r"[A-Za-z0-9]+(?:[-'][A-Za-z0-9]+)*", text))
 
 
+def strip_parens(text: str) -> str:
+    """Remove all parenthetical blocks (...) to measure pure narrative prose length."""
+    prev = None
+    cur = text or ""
+    while prev != cur:
+        prev = cur
+        cur = re.sub(r"\([^()]*\)", " ", cur)
+    return cur
+
+
+_PAREN_FIG_RE = re.compile(r"\b(?:Extended Data\s+|Supplementary\s+)?(?:Figs?\.|Figures?|Tables?|Supplementary\s+Data|Supplementary\s+Table|Supplementary\s+Movie|Video|Movie|Data\s+S)(?=\s|\d|$)", re.I)
+_PAREN_CITE_AY_RE = re.compile(r"^[A-Z][A-Za-z\-]+(?:\s+et\s+al\.|\s+(?:and|&)\s+[A-Z][A-Za-z\-]+)?,?\s*(?:19|20)\d\d[a-z]?(?:;\s*[A-Z][^)]{2,90})*$")
+_PAREN_CITE_NUM_RE = re.compile(r"^\d{1,3}(?:\s*[,–—\-]\s*\d{1,3})*$")
+_PAREN_NUM_RE = re.compile(r"(?:\b[npqrPQR]\s*[=<>≤≥]\s*[-−+]?\d|\b(?:AUC|AUROC|HR|OR|CI|IQR|SD|SEM|FDR|NES|ARI|log2?FC|FC|rho|ρ|C-?index)\b|\d+(?:\.\d+)?\s*(?:%|fold|-fold|µm|μm|mm|cm|nm|mg|kg|mM|µM|μM|h|d|days|weeks|months|years|patients|mice|tumou?rs|cells|nuclei|samples|cohorts|genes|spots|bins|slides)|\b\d+\s*(?:of|/)\s*\d+\b|\b\d+(?:\.\d+)?\s*[–\-−±]\s*\d+(?:\.\d+)?)", re.I)
+
+
+def analyze_parens(clean_text: str) -> dict:
+    """Measure raw vs paren-stripped pure prose, parenthetical word share, and Fig/NonFig paren composition."""
+    raw_w = max(1, count_words(clean_text))
+    pure_w = count_words(strip_parens(clean_text))
+    paren_w = max(0, raw_w - pure_w)
+    paren_share_pct = round(100.0 * paren_w / raw_w, 1)
+
+    n_fig = n_fig_stat = n_nf = n_nf_num = 0
+    for inner in re.findall(r"\(([^()]{1,240})\)", clean_text):
+        inn = inner.strip()
+        if not inn or _PAREN_CITE_AY_RE.match(inn) or _PAREN_CITE_NUM_RE.match(inn):
+            continue
+        if _PAREN_FIG_RE.search(inn):
+            n_fig += 1
+            if _PAREN_NUM_RE.search(inn):
+                n_fig_stat += 1
+        else:
+            n_nf += 1
+            if _PAREN_NUM_RE.search(inn):
+                n_nf_num += 1
+    tot = n_fig + n_nf
+    sents = split_sents(clean_text)
+    ge3 = 0
+    max_p = 0
+    for s in sents:
+        ps = [m.strip() for m in re.findall(r"\(([^()]{1,240})\)", s) if m.strip() and not _PAREN_CITE_AY_RE.match(m.strip()) and not _PAREN_CITE_NUM_RE.match(m.strip())]
+        if len(ps) >= 3:
+            ge3 += 1
+        if len(ps) > max_p:
+            max_p = len(ps)
+    return {
+        "raw_w": raw_w, "pure_w": pure_w, "paren_w": paren_w, "paren_share_pct": paren_share_pct,
+        "tot": tot, "n_fig": n_fig, "n_fig_stat": n_fig_stat, "n_nf": n_nf, "n_nf_num": n_nf_num,
+        "tot_1kw": round(1000.0 * tot / raw_w, 1),
+        "fig_stat_1kw": round(1000.0 * n_fig_stat / raw_w, 1),
+        "nf_1kw": round(1000.0 * n_nf / raw_w, 1),
+        "nf_num_1kw": round(1000.0 * n_nf_num / raw_w, 1),
+        "ge3_pct": round(100.0 * ge3 / max(1, len(sents)), 1),
+        "max_p_sent": max_p,
+    }
+
+
 def split_sents(text: str):
     t = re.sub(r"\b(Fig|Figs|vs|et al|e\.g|i\.e|Dr|Prof|No)\.", r"\1<D>", text)
     t = re.sub(r"(\d)\.(\d)", r"\1<P>\2", t)
@@ -343,13 +533,18 @@ def audit_abstract(text: str, spec: dict, journal: str):
         findings.append(("WARN", "No explicit Gap/Problem pivot detected ('However, ... remains poorly understood')."))
     if not re.search(r"\b(here,?\s+we|in this study,?\s+we|we here|we show|we identify|we demonstrate|we present|we develop|we report)\b", text, re.I):
         findings.append(("WARN", "No clear main-result pivot ('Here, we show/identify/present...')."))
-    if not re.search(r"\b(\d{2,}|\d+\.\d+%?|n\s*=\s*\d+|fold|auc|hr\s*=)\b", text, re.I):
-        findings.append(("WARN", "No quantitative anchors (cohort n, cell counts, fold changes, AUC/HR) detected; 55.7-76% of top abstracts include concrete scale/effect-size numbers."))
-    # Anti-P-value spam in mechanistic Abstracts (only 0.3% of 1,436 2025-26 papers put P values in Abstract; 0.0% in NCB/Cell/Cancer Cell!)
-    ab_clean = re.sub(r"\*|`", "", text)
+    # Empirical Abstract quantitative & stat-equation restraint (n=775 published 2025-26 CNS Abstracts: med=0.0 nums, 98.2% zero stat equations!)
+    ab_clean = re.sub(r"\$\^\{[^}]+\}\$|\$_\{[^}]+\}\$|\*\*|\*|`", "", text)
     ab_pvals = re.findall(r"\b[PpQq]\s*(?:value|val|adj)?\s*[<=>≤≥]\s*[0-9\.]", ab_clean)
     if ab_pvals and journal != "nat_med":
-        findings.append(("WARN", f"Raw P-value(s) detected in Abstract ({len(ab_pvals)}); only 0.3% of 1,436 published 2025-26 Abstracts include raw P values (0.0% in NCB/Cell/Cancer Cell). Keep scale (n) and effect sizes (AUC/fold/%/rho), move P values to Figures/Results."))
+        findings.append(("WARN", f"Raw P-value(s) detected in Abstract ({len(ab_pvals)}); only 0.3% of 1,436 published 2025-26 Abstracts include raw P values (0.0% in NCB/Nat Commun/Cell/Cancer Cell). Move P values to Figures/Results."))
+    ab_stat_eq = re.findall(r"(?:\b(?:AUC|AUROC|C-?index|HR|OR|NES|r|ρ|rho)\s*[=<>≤≥]\s*[-−+]?[0-9\.]|\bn\s*=\s*\d+)", ab_clean, re.I)
+    ab_quant_nums = re.findall(r"(?:\b\d+(?:,\d+)+(?:\.\d+)?\b|\b\d+(?:\.\d+)?%|\b\d+(?:\.\d+)?\s*(?:µm|μm|mm|cm|fold|-fold|plex|-plex|million|patients|tumou?rs|samples|cohorts|mice|cells|nuclei)\b|\b(?:AUC|AUROC|HR|OR|r|ρ|rho)\s*[=<>≤≥]\s*[-−+]?[0-9\.])", ab_clean, re.I)
+    ab_num_lim = spec.get("abs_num_warn", 7)
+    if len(ab_stat_eq) >= 2 and journal != "nat_med":
+        findings.append(("WARN", f"Stat equations inside Abstract ({len(ab_stat_eq)}: {ab_stat_eq[:5]}); 98.2-100% of published 2025-26 CNS Abstracts contain ZERO inline 'rho=/r=/AUC=/n=' equations! Keep narrative conceptual and retain at most 1 headline predictive/clinical metric if essential."))
+    if len(ab_quant_nums) >= ab_num_lim:
+        findings.append(("WARN", f"Data-crammed Abstract ({len(ab_quant_nums)} quantitative numbers >= {journal} warn limit {ab_num_lim}; 2025-26 CNS median=0.0, Q75=1-2). Trim secondary micrometer/sub-cohort/correlation numbers to 2-5 crisp headline anchors so the Abstract reads like a published {journal} summary."))
     # Methods-bloat detector
     method_sents = sum(1 for s in sents if re.search(r"\b(seurat|harmony|cellchat|gsea|10x genomics|filtered|normalized|clustered|western blot|qpcr|pcr|flow cytometry|kit|software|pipeline|we collected|we performed|we analyzed)\b", s, re.I))
     if method_sents >= 3 or (len(sents) >= 3 and method_sents / len(sents) >= 0.45):
@@ -364,9 +559,12 @@ def audit_intro(text: str, spec: dict, journal: str):
     findings = []
     paras = [p.strip() for p in re.split(r"\n{2,}", text.strip()) if len(p.split()) >= 15]
     wc = count_words(text)
-    findings.append(("INFO", f"Introduction: {wc} words across {len(paras)} paragraphs (target for {journal}: <={spec['intro_max_w']}w, 3-4 paras)."))
-    if wc > spec["intro_max_w"] + 150:
-        findings.append(("WARN", f"Introduction is lengthy ({wc}w vs {journal} norm <={spec['intro_max_w']}w); prune textbook background that does not pay off in Results."))
+    pure_wc = count_words(strip_parens(re.sub(r"\$\^\{[^}]+\}\$|\*\*|\*", "", text)))
+    findings.append(("INFO", f"Introduction: {wc} words ({pure_wc}w pure prose excl. parens) across {len(paras)} paragraphs (target for {journal}: {spec['intro_min_w']}-{spec['intro_max_w']}w, med={spec['intro_med_w']}w, 3-4 paras)."))
+    if wc > spec["intro_max_w"] + 120:
+        findings.append(("WARN", f"Introduction is lengthy ({wc}w vs {journal} norm {spec['intro_min_w']}-{spec['intro_max_w']}w, med={spec['intro_med_w']}w); prune textbook background that does not pay off in Results."))
+    elif 150 <= wc < spec["intro_min_w"]:
+        findings.append(("WARN", f"Introduction is shorter than {journal} norm ({wc}w < {spec['intro_min_w']}w floor; published {journal} median={spec['intro_med_w']}w). Expand focused P2-P3 biological tension & prior-art contrast."))
     if len(paras) < 2 or len(paras) > 6:
         findings.append(("WARN", f"Paragraph count ({len(paras)}) outside optimal 3-4 paragraph CNS funnel."))
     if not re.search(r"\b(however|yet|despite|nevertheless|remains? (unclear|unknown|poorly understood|elusive|limited|challenging)|little is known|poorly characterized)\b", text, re.I):
@@ -399,7 +597,7 @@ def audit_subheadings(text: str, spec: dict, journal: str):
     long_sh = [ln for ln in lines if count_words(ln) > spec["sub_max_w"]]
     if long_sh:
         findings.append(("WARN", f"{len(long_sh)} subheading(s) exceed {journal} length norm ({spec['sub_max_w']}w), e.g.: '{long_sh[0][:75]}'"))
-    if journal in ("cell", "cancer_cell"):
+    if spec.get("style_family") == "cell":
         finite_n = sum(1 for ln in lines if re.search(r"\b(is|are|was|were|drives?|promotes?|reveals?|enhances?|induces?|suppresses?|inhibits?|controls?|regulates?|mediates?|predicts?|identifies?|improves?|reprograms?|requires?|exhibits?|impairs?|attenuates?|potentiates?|increases?|reduces?|correlates?|restores?|localizes?|colocalizes?|organizes?|shapes?|remodels?|rescues?|abolishes?|synergizes?|sensitizes?|reverses?|prevents?|triggers?|orchestrates?|defines?|determines?|links?|uncovers?|establishes?|activates?|limits?|alters?|enables?|boosts?|fuels?|licenses?|governs?)\b", ln, re.I))
         if lines and finite_n / len(lines) < 0.45:
             findings.append(("WARN", f"Cell Press prefers declarative biological-takeaway subheadings (~52%+); only {finite_n}/{len(lines)} contain an active verb."))
@@ -450,7 +648,47 @@ def audit_results(text: str, spec: dict, journal: str):
         elif p_rate > p_bull:
             findings.append(("WARN", f"Results P-value density ({p_rate}/1,000w) is inside safe ceiling but above {journal} Median Bullseye (<= {p_bull}/1kw; published median={p_med}/1kw). Trim secondary inline P values onto figure panels/captions to land near the human CNS median."))
 
-    # 2. Monster sentence & burstiness cadence check (Published 2025-26 med mean=27.7w, CV=0.49, <=18w=23.1%, >40w=12.2%, >55w=2.7%)
+    # 1b. Per-Journal Flexible Non-P inline stat-equation restraint (n=, rho/r=, AUC=, HR=, OR=, C-index=, NES=, log2FC=)
+    if clean_wc >= 400:
+        n_eq_hits = re.findall(r"\bn\s*=\s*\d+(?:,\d+)*", clean_res)
+        corr_eq_hits = re.findall(r"\b(?:AUC|AUROC|C-?index|HR|OR|NES|ARI|r|ρ|rho|log2?FC)\s*[=<>≤≥]\s*[-−+]?[0-9\.]", clean_res, re.I)
+        nonp_tot = len(n_eq_hits) + len(corr_eq_hits)
+        nonp_rate = round(1000.0 * nonp_tot / clean_wc, 1)
+        corr_rate = round(1000.0 * len(corr_eq_hits) / clean_wc, 1)
+        n_rate = round(1000.0 * len(n_eq_hits) / clean_wc, 1)
+        nonp_med = spec["nonp_med"]
+        nonp_bull = spec["nonp_bull"]
+        nonp_warn = spec["nonp_warn"]
+        findings.append(("INFO", f"Results non-P inline metrics: {nonp_tot} ({nonp_rate}/1,000w: {len(n_eq_hits)} 'n=' [{n_rate}/1kw] + {len(corr_eq_hits)} 'rho/AUC/HR/OR/NES/log2FC=' [{corr_rate}/1kw]; {journal} med={nonp_med}/1kw, flex <= {nonp_bull}/1kw, warn > {nonp_warn}/1kw)."))
+        if nonp_rate > nonp_warn or corr_rate > max(6.5, nonp_bull * 0.8):
+            findings.append(("WARN", f"High non-P inline metric density in Results ({nonp_tot} hits = {nonp_rate}/1,000w > {journal} limit {nonp_warn}/1kw; published {journal} med={nonp_med}/1kw). Handle flexibly: state each cohort's n naturally ONCE per module ('across 24 patients') instead of repeating '(n = 24)', retain 1 headline AUC/HR/% per key claim, and let Figures/Captions carry secondary rho, log2FC, NES and subgroup AUCs."))
+
+        # 1c. Per-Journal Paren-Stripped Pure-Prose Length & Parenthesis Composition Audit (n=1,436 papers!)
+        pm = analyze_parens(clean_res)
+        findings.append(("INFO", f"Results pure prose (excl. parens): {pm['pure_w']}w / {pm['raw_w']}w raw ({pm['paren_w']}w = {pm['paren_share_pct']}% inside '(...)'; {journal} pure med={spec['res_pure_med']}w, paren share med={spec['paren_share_med']}%)."))
+        findings.append(("INFO", f"Results parentheses (excl. cites): {pm['tot']} ({pm['tot_1kw']}/1kw; {journal} med={spec['paren_tot_med']}) | Fig={pm['n_fig']} (Fig+stat={pm['fig_stat_1kw']}/1kw) | NonFig={pm['n_nf']} (numeric={pm['nf_num_1kw']}/1kw vs {journal} med={spec['paren_nfnum_med']}) | >=3 parens/sent={pm['ge3_pct']}% (max={pm['max_p_sent']}, {journal} med={spec['ge3p_med']}%)."))
+        if pm["paren_share_pct"] > spec["paren_share_warn"]:
+            findings.append(("WARN", f"Parenthetical hollow-out in Results: {pm['paren_share_pct']}% of Results words ({pm['paren_w']}w) sit inside '(...)' (>{journal} limit {spec['paren_share_warn']}%; published med={spec['paren_share_med']}%). Stripping parens leaves only {pm['pure_w']}w of narrative prose vs {journal} pure median {spec['res_pure_med']}w!"))
+        if pm["tot_1kw"] > spec["paren_tot_warn"] or pm["nf_num_1kw"] > spec["paren_nfnum_warn"] or pm["ge3_pct"] > spec["ge3p_warn"]:
+            findings.append(("WARN", f"Results parenthesis overload for {journal} (tot={pm['tot_1kw']}/1kw [lim {spec['paren_tot_warn']}], non-Fig numeric={pm['nf_num_1kw']}/1kw [lim {spec['paren_nfnum_warn']}], >=3p sents={pm['ge3_pct']}% [lim {spec['ge3p_warn']}%]). In published CNS papers ~48% of non-Fig parens are brief acronym definitions, NOT stacked stat blocks — offload inline stat parens onto figures/captions and reinvest space into biological narrative!"))
+        if pm["raw_w"] >= 1000 and pm["pure_w"] < spec["res_pure_min"]:
+            findings.append(("WARN", f"Results pure narrative prose (excl. parens) is thin for {journal} ({pm['pure_w']}w < {spec['res_pure_min']}w floor; {journal} pure med={spec['res_pure_med']}w, raw med={spec['res_med_w']}w). After trimming parenthetical stat dumps, expand mechanistic explanation, biological specificity contrasts & experimental transitions."))
+
+        # 1d. Per-Subheading Zero-Citation Detector (85.3% of CNS Results subheadings cite >=1 ref!)
+        sub_blocks = [s.strip() for s in re.split(r"\n(?=##\s+)", text.strip()) if s.strip().startswith("## ")]
+        zero_cite_subs = []
+        for sb in sub_blocks:
+            s_lines = sb.splitlines()
+            s_hdr = s_lines[0].lstrip("# ").strip()
+            s_body = "\n".join(s_lines[1:]).strip()
+            if count_words(s_body) >= 250:
+                su, sm, _ = extract_citations(s_body)
+                if sm == 0:
+                    zero_cite_subs.append(f"'{s_hdr[:50]}' ({count_words(s_body)}w)")
+        if zero_cite_subs:
+            findings.append(("WARN", f"{len(zero_cite_subs)} Results subheading(s) >=250w contain ZERO inline citations ({', '.join(zero_cite_subs[:4])}; 85.3% of CNS subheadings cite >=1 ref). Anchor published tools, cohorts, pathways or prior benchmarks inside each module."))
+
+    # 2. Monster sentence, burstiness & anti-consecutive bare-NP opener check (Published 2025-26 med mean=27.7w, CV=0.49, <=18w=23.1%, >40w=12.2%, >55w=2.7%)
     if clean_wc >= 400:
         rsents = split_sents(clean_res)
         if rsents:
@@ -467,10 +705,30 @@ def audit_results(text: str, spec: dict, journal: str):
                 findings.append(("FAIL", f"Wall-of-text monster sentences in Results (mean={s_mean}w, {gt55}% >55w, max={s_max}w vs CNS median 27.7w / 2.7% >55w). Split stacked clauses into crisp 1-claim sentences (bullseye 25-29w)!"))
             elif s_mean > 34.0 or gt55 > 10.0 or s_max > 85:
                 findings.append(("WARN", f"Long compound sentences in Results (mean={s_mean}w, {gt55}% >55w, max={s_max}w); tighten toward 25-29w CNS median cadence."))
+            elif gt55 > 4.5 and len(slens) >= 40:
+                findings.append(("WARN", f"Paragraph-opening long sentences slightly above human CNS median ({gt55}% >55w vs med 2.7%, max={s_max}w); split 55-65w 'To [verb]..., we...' sentences into 2 crisp sentences (cohort/assay -> key finding)."))
             if len(slens) >= 25 and s_cv < 0.36:
                 findings.append(("WARN", f"Low sentence-length burstiness / metronome AI cadence (CV={s_cv} < 0.36, <=18w={short_pct}% vs human CNS median CV=0.49 / 23.1% <=18w). Interleave 1 crisp 10-17w sentence every 3-4 sentences — e.g.: {' | '.join(CNS_SHORT_BURST_MODELS[:2])}"))
             elif len(slens) >= 25 and (s_cv < 0.43 or short_pct < 19.0):
                 findings.append(("WARN", f"Sentence burstiness below Human CNS Median Bullseye (CV={s_cv}, <=18w={short_pct}% vs bullseye CV 0.44-0.55, <=18w 20-28%). Add crisp short topic/negative-control sentences — e.g.: '{CNS_SHORT_BURST_MODELS[1]}'"))
+            # Anti-consecutive bare article-less NP subject streaks & active human 'We' voice balance (flexible!)
+            if len(rsents) >= 30:
+                we_re = re.compile(r"^(?:We\b|Here,?\s+we\b|Next,?\s+we\b|Finally,?\s+we\b|To\s+[a-z]+[^\.]{0,120}\bwe\b|(?:Using|By|Combining|Integrating|Applying|Profiling|Comparing)\b[^\.]{0,120}\bwe\b)", re.I)
+                nat_open_re = re.compile(r"^(?:We\b|To\b|In\b|By\b|Across\b|Consistent\b|Unlike\b|Although\b|Whereas\b|While\b|However\b|Thus\b|Together\b|Taken\b|Conversely\b|Notably\b|Specifically\b|For\b|Because\b|When\b|After\b|Before\b|The\b|This\b|These\b|Our\b|Using\b|Here\b|Next\b|Finally\b|Moreover\b|Furthermore\b|Neither\b|Both\b|Only\b)", re.I)
+                we_pct = round(100.0 * sum(1 for s in rsents if we_re.match(s.strip())) / len(rsents), 1)
+                cur_streak = best_streak = 0
+                best_ex = ""
+                for s in rsents:
+                    if not nat_open_re.match(s.strip()):
+                        cur_streak += 1
+                        if cur_streak > best_streak:
+                            best_streak = cur_streak
+                            best_ex = s[:75]
+                    else:
+                        cur_streak = 0
+                findings.append(("INFO", f"Results opener voice (flexible): active 'We'={we_pct}% (human target 20-40%) | max consecutive bare-NP streak={best_streak} (target <=3-4)."))
+                if best_streak >= 5 or we_pct < 15.0:
+                    findings.append(("WARN", f"Executive-summary bare-NP opener streak in Results (max streak={best_streak}, active 'We'={we_pct}%; e.g. '{best_ex}...'). Keep domain terms freely, but break 5+ bare noun-phrase chains by interleaving active 'We next...', 'Using [Tool], we identified...', 'The...', or 'Consistent with...' openings."))
 
     # 3. Internal notebook/code/sample-ID jargon leaks (Published 2025-26 med = 0.0, P90 = 1.0!)
     jargon_re = re.compile(r"\b(?:[a-z]\d{2}_[A-Za-z0-9_]+|[A-Z]\d+_[A-Z]\d+_[A-Za-z]+|(?:Primary|Temporal|Cohort|Val|Discovery)\d{2,3}|pt\d{1,3}(?:-pre|-post)?|CNA(?:Pure|Gate)|L\d+-H&E|Ensemble-(?:Top)?\d+|F[1-9][a-d]?\b|Panel\s+[A-C]\b|v2\s+slides)\b")
@@ -502,10 +760,15 @@ def audit_discussion(text: str, spec: dict, journal: str):
     findings = []
     paras = [p.strip() for p in re.split(r"\n{2,}", text.strip()) if len(p.split()) >= 15]
     wc = count_words(text)
-    findings.append(("INFO", f"Discussion: {wc} words across {len(paras)} paragraphs."))
-    disc_floor = 550 if journal == "nature" else 720
+    pure_wc = count_words(strip_parens(re.sub(r"\$\^\{[^}]+\}\$|\*\*|\*", "", text)))
+    findings.append(("INFO", f"Discussion: {wc} words ({pure_wc}w pure prose excl. parens) across {len(paras)} paragraphs (target for {journal}: {spec['disc_min_w']}-{spec['disc_max_w']}w, med={spec['disc_med_w']}w)."))
+    disc_floor = spec["disc_min_w"]
     if 250 <= wc < disc_floor:
-        findings.append(("WARN", f"Discussion is compressed ({wc}w < {disc_floor}w norm; published 2025-26 median=999w, NCB=913w). Ensure adequate comparative literature (+11-14 NEW refs), translational roadmap, and balanced constructive Limitations."))
+        findings.append(("WARN", f"Discussion is compressed for {journal} ({wc}w < {disc_floor}w floor; published {journal} median={spec['disc_med_w']}w). Expand comparative literature triangulation (+11-15 NEW refs), concrete translational roadmap, and balanced constructive Limitations."))
+    elif wc > spec["disc_max_w"] + 250:
+        findings.append(("WARN", f"Discussion exceeds {journal} upper norm ({wc}w > {spec['disc_max_w']}w; median={spec['disc_med_w']}w); tighten repetitive result recaps."))
+    if len(paras) >= 3 and count_words(paras[-1]) < 45:
+        findings.append(("WARN", f"Closing Discussion paragraph is an ultra-short stub ({count_words(paras[-1])}w < 45w); either fold into the preceding paragraph or flesh out a grounded 60-110w forward-looking horizon."))
     if paras:
         p1 = paras[0]
         if re.search(r"\b(p\s*[<=>]\s*0\.\d+|hr\s*=\s*\d|auc\s*=\s*0\.\d+|\d+\.\d+%)\b", p1, re.I):
@@ -517,7 +780,7 @@ def audit_discussion(text: str, spec: dict, journal: str):
         findings.append(("FAIL", f"{journal} mandates explicit Limitations (Cell Press requires a dedicated 'Limitations of the study' subheading; Nat Med ~70%)."))
     elif not has_lim:
         findings.append(("WARN", "No explicit scope limitation or caveat detected; consider weaving a constructive 3-part limitation + next-step sentence."))
-    if journal in ("cell", "cancer_cell") and not re.search(r"limitations of the study", text, re.I):
+    if spec.get("style_family") == "cell" and not re.search(r"limitations of the study", text, re.I):
         findings.append(("WARN", "Cell Press expects the exact subheading 'Limitations of the study'."))
     if not re.search(r"\b(therapeutic|clinical|trial|patient stratification|biomarker|target|future studies|prospective|translation)\b", text, re.I):
         findings.append(("WARN", "No forward-looking clinical/translational or future-extension statement detected (present in 76.8% of oncology Discussions)."))
@@ -644,9 +907,9 @@ def audit_methods(text: str, spec: dict, journal: str):
         findings.append(("FAIL", "Bioinformatics software cited without exact version numbers (e.g., Seurat v4.3.0, R v4.3.2)."))
     if wc > 400 and not re.search(r"\b(data availability|code availability|github|zenodo|gse\d+|hra\d+|egas\d+|prjna\d+)\b", text, re.I):
         findings.append(("WARN", "No Data/Code Availability statement or repository accession (GEO/GSA/EGA/GitHub/Zenodo) detected."))
-    if journal in ("cell", "cancer_cell") and wc > 500 and not re.search(r"key resources table|resource availability|quantification and statistical analysis", text, re.I):
+    if spec.get("style_family") == "cell" and wc > 500 and not re.search(r"key resources table|resource availability|quantification and statistical analysis", text, re.I):
         findings.append(("WARN", "Cell Press STAR Methods requires 'KEY RESOURCES TABLE', 'RESOURCE AVAILABILITY', and 'QUANTIFICATION AND STATISTICAL ANALYSIS'."))
-    if journal in ("nature", "nature_sister", "nat_med") and re.search(r"key resources table", text, re.I):
+    if spec.get("style_family") == "nature" and re.search(r"key resources table", text, re.I):
         findings.append(("WARN", f"Cell Press 'Key Resources Table' detected inside a {journal} Methods file; Nature Portfolio uses a Reporting Summary + Supplementary Tables (remove KRT cross-references from prose before submission)."))
     mu, mm, _ = extract_citations(text)
     if wc >= 1500 and len(mu) < 8:
@@ -970,7 +1233,7 @@ def run_audit(section: str, journal: str, text: str) -> int:
             if semi_prose_rate > 7.5:
                 print(f"  [WARN] Heavy prose semicolon overuse ({semi_prose_rate}/1kw vs CNS median 2.4); break chained prose clauses into crisp periods (keep ';' ONLY inside '(stat; Fig. Xa)').")
                 total_warn += 1
-            if comma_fig_n >= 8 and journal in ("nature", "nature_sister", "nat_med"):
+            if comma_fig_n >= 8 and spec.get("style_family") == "nature":
                 print(f"  [WARN] Parenthetical stat-to-figure separators use commas instead of semicolons ({comma_fig_n}x, e.g., '(n = 24, Fig. 1a)'); Nature house style uses ';' -> '(n = 24; Fig. 1a)'.")
                 total_warn += 1
             # Overused editorializing / AI-signature words (>2x across paper)
@@ -1004,10 +1267,29 @@ def run_audit(section: str, journal: str, text: str) -> int:
             if named_tools and len(ru) < spec["res_ref_min"]:
                 print(f"  [INFO] Named tools/cohorts/trials in Results that can naturally raise Results citations ({len(named_tools)} detected): {named_tools[:12]}")
 
-            # --- Human CNS Median Scorecard (Bullseye vs Boundary-Hugging vs Out-of-Range) ---
+            # --- Main-Text Raw vs Paren-Stripped Pure-Prose Length Audit (Per-Journal or ~6,000w General Default) ---
             res_prose_lines = [ln for ln in parts["results"].splitlines() if not re.match(r"^\s*#{1,4}\s+", ln) and ln.strip() != "---"]
             res_clean_sc = re.sub(r"\$\^\{[^}]+\}\$|\$_\{[^}]+\}\$|\*\*|\*|`", "", "\n".join(res_prose_lines))
-            res_wc_sc = max(1, count_words(res_clean_sc))
+            intro_clean_sc = re.sub(r"\$\^\{[^}]+\}\$|\$_\{[^}]+\}\$|\*\*|\*|`", "", parts["intro"])
+            disc_clean_sc = re.sub(r"\$\^\{[^}]+\}\$|\$_\{[^}]+\}\$|\*\*|\*|`", "", parts["discussion"])
+            in_raw_sc, in_pure_sc = count_words(intro_clean_sc), count_words(strip_parens(intro_clean_sc))
+            ds_raw_sc, ds_pure_sc = count_words(disc_clean_sc), count_words(strip_parens(disc_clean_sc))
+            pm_sc = analyze_parens(res_clean_sc)
+            main_raw_sc = in_raw_sc + pm_sc["raw_w"] + ds_raw_sc
+            main_pure_sc = in_pure_sc + pm_sc["pure_w"] + ds_pure_sc
+            main_paren_pct_sc = round(100.0 * max(0, main_raw_sc - main_pure_sc) / max(1, main_raw_sc), 1)
+            print(f"\n[SECTION & PURE-PROSE LENGTH AUDIT — Target: {journal} (~{spec['main_target_w']}w raw | pure floor >={spec['main_pure_min']}w)]")
+            print(f"  [INFO] Main Text (Intro+Results+Disc): raw={main_raw_sc}w -> pure_prose={main_pure_sc}w ({main_raw_sc - main_pure_sc}w = {main_paren_pct_sc}% inside parens) | Intro {in_raw_sc}w ({in_pure_sc}w pure) | Results {pm_sc['raw_w']}w ({pm_sc['pure_w']}w pure, {pm_sc['paren_share_pct']}% parens) | Disc {ds_raw_sc}w ({ds_pure_sc}w pure).")
+            if main_raw_sc >= 1500 and (main_raw_sc < spec["main_min_w"] or main_pure_sc < spec["main_pure_min"]):
+                short_pure = max(0, spec["main_pure_min"] - main_pure_sc)
+                print(f"  [WARN] Main Text is shorter than {journal} target (raw={main_raw_sc}w vs target ~{spec['main_target_w']}w [floor {spec['main_min_w']}w]; pure prose excl. parens={main_pure_sc}w vs floor {spec['main_pure_min']}w, short by ~{short_pure}w!). Once bloated stat parentheses are trimmed, reinvest words into mechanistic narrative, specificity contrasts & comparative Discussion.")
+                total_warn += 1
+            elif main_raw_sc > spec["main_max_w"] + 500:
+                print(f"  [WARN] Main Text exceeds {journal} upper norm (raw={main_raw_sc}w > {spec['main_max_w']}w; target ~{spec['main_target_w']}w); tighten secondary subgroup descriptions or move technical details to Methods.")
+                total_warn += 1
+
+            # --- Human CNS Median Scorecard (Per-Journal Bullseye vs Boundary-Hugging vs Out-of-Range) ---
+            res_wc_sc = max(1, pm_sc["raw_w"])
             res_p_n = len(re.findall(r"(?:\b[PpQq]\s*(?:value|val|adj|_?adj)?\s*[<=>≤≥]\s*[0-9\.]|\bFDR\s*[<=>≤≥]\s*[0-9\.])", res_clean_sc))
             res_p_rate = round(1000.0 * res_p_n / res_wc_sc, 1)
             p_med_sc, p_bull_sc, p_warn_sc, _ = CNS_JOURNAL_P_TARGETS.get(journal, (0.6, 2.0, 5.5, 10.0))
@@ -1023,16 +1305,26 @@ def run_audit(section: str, journal: str, text: str) -> int:
             def _tag(ok_bull: bool, ok_safe: bool) -> str:
                 return "BULLSEYE" if ok_bull else ("EDGE->pull to median" if ok_safe else "OUT-OF-RANGE")
 
-            print("\n[HUMAN CNS MEDIAN SCORECARD — Aim for BULLSEYE, Not Just Ceiling!]")
-            print(f"  - Results P/q (/1kw)    : {res_p_rate:5.1f} | Med {p_med_sc:4.1f} (Bullseye <= {p_bull_sc:3.1f})  -> [{_tag(res_p_rate <= p_bull_sc, res_p_rate <= p_warn_sc)}]")
-            print(f"  - Sentence Mean (w)     : {sc_mean:5.1f} | Med 27.7 (Bullseye 25-29)   -> [{_tag(25.0 <= sc_mean <= 29.5, 22.0 <= sc_mean <= 34.0)}]")
-            print(f"  - Burstiness CV         : {sc_cv:5.2f} | Med 0.49 (Bullseye 0.44-55) -> [{_tag(0.44 <= sc_cv <= 0.58, sc_cv >= 0.36)}]")
-            print(f"  - Short <=18w (%)       : {sc_short:5.1f} | Med 23.1 (Bullseye 20-28%)  -> [{_tag(19.5 <= sc_short <= 30.0, 15.0 <= sc_short <= 40.0)}]")
-            print(f"  - Monster >40w (%)      : {sc_gt40:5.1f} | Med 12.2 (Bullseye <= 15%)  -> [{_tag(sc_gt40 <= 15.5, sc_gt40 <= 21.0)}]")
-            print(f"  - Em-dash '—' (/1kw)    : {em_rate:5.1f} | Med  0.0 (Bullseye <= 0.3)  -> [{_tag(em_rate <= 0.3, em_rate <= 1.1)}]")
-            print(f"  - Prose ';' (/1kw)      : {semi_prose_rate:5.1f} | Med  2.4 (Bullseye 1.0-4.0) -> [{_tag(0.8 <= semi_prose_rate <= 4.5, semi_prose_rate <= 7.5)}]")
-            print(f"  - AI-Tell & Hyphen Hits : {sc_ai_total:5d} | Med    0 (Bullseye = 0)     -> [{_tag(sc_ai_total == 0, sc_ai_total <= 3)}]")
-            print(f"  - Main Unique Refs      : {len(main_u):5d} | Med   62 (Bullseye 52-72)   -> [{_tag(52 <= len(main_u) <= 78, len(main_u) >= spec['main_ref_min'])}]")
+            sc_nonp_n = len(re.findall(r"(?:\bn\s*=\s*\d+(?:,\d+)*|\b(?:AUC|AUROC|C-?index|HR|OR|NES|ARI|r|ρ|rho|log2?FC)\s*[=<>≤≥]\s*[-−+]?[0-9\.])", res_clean_sc, re.I))
+            sc_nonp_rate = round(1000.0 * sc_nonp_n / res_wc_sc, 1)
+            sc_nonp_med = spec["nonp_med"]
+            sc_nonp_bull = spec["nonp_bull"]
+            sc_nonp_safe = spec["nonp_warn"]
+
+            print(f"\n[HUMAN CNS MEDIAN SCORECARD — Target: {journal} | Aim for BULLSEYE, Not Just Ceiling!]")
+            print(f"  - Main Pure Prose (w)   : {main_pure_sc:5d} | Target ~{spec['main_target_w']}w raw (Pure >= {spec['main_pure_min']}w) -> [{_tag(main_pure_sc >= spec['main_pure_min'] and main_raw_sc <= spec['main_max_w'] + 400, main_pure_sc >= int(spec['main_pure_min'] * 0.85))}]")
+            print(f"  - Res Paren Share (%)   : {pm_sc['paren_share_pct']:5.1f} | Med {spec['paren_share_med']:4.1f}% (Lim <= {spec['paren_share_warn']:4.1f}%) -> [{_tag(pm_sc['paren_share_pct'] <= spec['paren_share_med'] + 3.0, pm_sc['paren_share_pct'] <= spec['paren_share_warn'])}]")
+            print(f"  - Res NF-Num '()' (/1kw): {pm_sc['nf_num_1kw']:5.1f} | Med {spec['paren_nfnum_med']:4.1f}  (Lim <= {spec['paren_nfnum_warn']:4.1f})  -> [{_tag(pm_sc['nf_num_1kw'] <= spec['paren_nfnum_med'] + 4.0, pm_sc['nf_num_1kw'] <= spec['paren_nfnum_warn'])}]")
+            print(f"  - Results P/q (/1kw)    : {res_p_rate:5.1f} | Med {p_med_sc:4.1f}  (Bullseye <= {p_bull_sc:3.1f}) -> [{_tag(res_p_rate <= p_bull_sc, res_p_rate <= p_warn_sc)}]")
+            print(f"  - Non-P Metrics (/1kw)  : {sc_nonp_rate:5.1f} | Med {sc_nonp_med:4.1f}  (Flex <= {sc_nonp_bull:4.1f})    -> [{_tag(sc_nonp_rate <= sc_nonp_bull, sc_nonp_rate <= sc_nonp_safe)}]")
+            print(f"  - Sentence Mean (w)     : {sc_mean:5.1f} | Med 27.7  (Bullseye 25-29)  -> [{_tag(25.0 <= sc_mean <= 29.5, 22.0 <= sc_mean <= 34.0)}]")
+            print(f"  - Burstiness CV         : {sc_cv:5.2f} | Med 0.49  (Bullseye 0.44-55)-> [{_tag(0.44 <= sc_cv <= 0.58, sc_cv >= 0.36)}]")
+            print(f"  - Short <=18w (%)       : {sc_short:5.1f} | Med 23.1  (Bullseye 20-28%) -> [{_tag(19.5 <= sc_short <= 30.0, 15.0 <= sc_short <= 40.0)}]")
+            print(f"  - Monster >40w (%)      : {sc_gt40:5.1f} | Med 12.2  (Bullseye <= 15%) -> [{_tag(sc_gt40 <= 15.5, sc_gt40 <= 21.0)}]")
+            print(f"  - Em-dash '—' (/1kw)    : {em_rate:5.1f} | Med  0.0  (Bullseye <= 0.3) -> [{_tag(em_rate <= 0.3, em_rate <= 1.1)}]")
+            print(f"  - Prose ';' (/1kw)      : {semi_prose_rate:5.1f} | Med  2.4  (Bullseye 1.0-4.0)-> [{_tag(0.8 <= semi_prose_rate <= 4.5, semi_prose_rate <= 7.5)}]")
+            print(f"  - AI-Tell & Hyphen Hits : {sc_ai_total:5d} | Med    0  (Bullseye = 0)    -> [{_tag(sc_ai_total == 0, sc_ai_total <= 3)}]")
+            print(f"  - Main Unique Refs      : {len(main_u):5d} | Med   62  (Bullseye 52-72)  -> [{_tag(52 <= len(main_u) <= 78, len(main_u) >= spec['main_ref_min'])}]")
 
     print(f"\n--- SUMMARY: {total_fail} FAIL(s), {total_warn} WARN(s) ---")
     return 1 if total_fail > 0 else 0
@@ -1294,11 +1586,17 @@ def match_oncology_storyline(text: str, top_k: int = 3) -> int:
 # Physical Millimeter Figure Page-Budget & Overflow Rebalancer (sci-plot linkage)
 # ---------------------------------------------------------------------------
 FIGURE_PAGE_SPECS = {
+    "general":       {"w_mm": 180, "h_mm": 220, "max_main_figs": 7, "hard_max_figs": 8, "ideal_panels": 8,  "max_panels": 10, "supp_prefix": "Extended Data Fig.", "panel_case": "lower"},
     "nature":        {"w_mm": 180, "h_mm": 220, "max_main_figs": 5, "hard_max_figs": 6, "ideal_panels": 8,  "max_panels": 10, "supp_prefix": "Extended Data Fig.", "panel_case": "lower"},
+    "nat_cell_biol": {"w_mm": 180, "h_mm": 220, "max_main_figs": 7, "hard_max_figs": 8, "ideal_panels": 8,  "max_panels": 10, "supp_prefix": "Extended Data Fig.", "panel_case": "lower"},
+    "nat_commun":    {"w_mm": 180, "h_mm": 220, "max_main_figs": 7, "hard_max_figs": 8, "ideal_panels": 8,  "max_panels": 10, "supp_prefix": "Supplementary Fig.", "panel_case": "lower"},
+    "nat_cancer":    {"w_mm": 180, "h_mm": 220, "max_main_figs": 7, "hard_max_figs": 8, "ideal_panels": 8,  "max_panels": 10, "supp_prefix": "Extended Data Fig.", "panel_case": "lower"},
+    "nat_methods":   {"w_mm": 180, "h_mm": 220, "max_main_figs": 6, "hard_max_figs": 7, "ideal_panels": 8,  "max_panels": 10, "supp_prefix": "Extended Data Fig.", "panel_case": "lower"},
     "nature_sister": {"w_mm": 180, "h_mm": 220, "max_main_figs": 7, "hard_max_figs": 8, "ideal_panels": 8,  "max_panels": 10, "supp_prefix": "Extended Data Fig.", "panel_case": "lower"},
     "nat_med":       {"w_mm": 180, "h_mm": 215, "max_main_figs": 5, "hard_max_figs": 6, "ideal_panels": 6,  "max_panels": 8,  "supp_prefix": "Extended Data Fig.", "panel_case": "lower"},
     "cell":          {"w_mm": 174, "h_mm": 215, "max_main_figs": 7, "hard_max_figs": 7, "ideal_panels": 9,  "max_panels": 11, "supp_prefix": "Figure S",           "panel_case": "upper"},
     "cancer_cell":   {"w_mm": 174, "h_mm": 215, "max_main_figs": 7, "hard_max_figs": 7, "ideal_panels": 9,  "max_panels": 11, "supp_prefix": "Figure S",           "panel_case": "upper"},
+    "immunity":      {"w_mm": 174, "h_mm": 215, "max_main_figs": 7, "hard_max_figs": 7, "ideal_panels": 9,  "max_panels": 11, "supp_prefix": "Figure S",           "panel_case": "upper"},
     "science":       {"w_mm": 184, "h_mm": 218, "max_main_figs": 6, "hard_max_figs": 7, "ideal_panels": 9,  "max_panels": 10, "supp_prefix": "Fig. S",             "panel_case": "upper"},
 }
 
@@ -1307,6 +1605,7 @@ FIGURE_PAGE_SPECS = {
 # (35-55% of Main Figure area: 174-180 mm full-width hero bands or 115 mm 2/3-width blocks)!
 PANEL_FOOTPRINTS_MM = {
     "schematic": (88, 46), "working_model": (88, 46),
+    "mouse_timeline_schematic": (88, 28), "cell_assay_schematic": (64, 34), "spatial_workflow_schematic": (76, 38),
     # Real visual / imaging / pathology / radiology Hero footprints (synced with sci-plot)
     "hero_pathology_strip": (174, 72), "hero_mif_codex_panel": (174, 78), "hero_radiology_mri_ct": (174, 66),
     "pathology_he_ihc": (115, 64), "mif_hero": (115, 68), "radiology_mri_ct": (115, 60),
@@ -1462,22 +1761,32 @@ def plan_and_rebalance_figures(data: dict, journal: str, do_rebalance: bool = Fa
             elif not hd_ps and len(ps) >= 4:
                 print(f"          [WARN SPARSE-PLATE] Fig. {fn} has 0 real visual images AND 0 high-density composite charts (all basic univariate plots risk >76% white!). Add a representative microscopy/spatial ROI or upgrade to OncoPrint/heatmap/KM+Risk-Table.")
             if ctypes.count("scatter") >= 3:
-                print(f"          [TIP ANTI-SPARSE] {ctypes.count('scatter')} separate scatter plots in Fig. {fn}; consolidate into 2D-contour facets, correlation matrix, or paired forest plot to avoid repetitive sparse strips.")
+                print(f"          [TIP ANTI-SPARSE] {ctypes.count('scatter')} separate scatter plots in Main Fig. {fn}; consider summarizing into a clean correlation matrix, lollipop, or paired forest plot (NEVER pad small-n scatters with decorative KDE contours!).")
             if "km" in ctypes:
                 print(f"          [TIP HIGH-DENSITY] Bare 'km' detected in Fig. {fn}; upgrade to 'km_risk_table' (95% CI ribbon + aligned Number at risk + HR [95% CI]).")
-            if any(c in ("schematic", "working_model") for c in ctypes):
-                print(f"          [TIP SCHEMATIC] Draw schematic/working_model in Fig. {fn} as biological cell/organ vector art (Illustrator/BioRender) — NEVER plain matplotlib text-boxes + straight arrows.")
+            if any(c in ("schematic", "working_model", "mouse_timeline_schematic", "cell_assay_schematic", "spatial_workflow_schematic") for c in ctypes):
+                print(f"          [TIP SCHEMATIC] Draw schematic/timeline/working_model in Fig. {fn} as biological cell/organ vector art (Illustrator/BioRender) — NEVER plain matplotlib text-boxes + straight arrows; cross-check 100% of numbers against data panels!")
+            # Multi-figure experimental-design / mouse-timeline / spatial-workflow schematic nudge (52-59% of CNS papers have >=2 schematics!)
+            has_schem = any(c in ("schematic", "working_model", "mouse_timeline_schematic", "cell_assay_schematic", "spatial_workflow_schematic") for c in ctypes)
+            roles_f = {str(p.get("role", "")).lower() for p in ps}
+            if not has_schem:
+                if "in_vivo_rescue" in roles_f:
+                    print(f"          [TIP MULTI-FIG SCHEMATIC] Fig. {fn} covers in vivo experiments without a dosing/timeline diagram! 26-45% of CNS Fig. 5-6 include a compact 'mouse_timeline_schematic' (88x28 mm: Day 0 implant -> treatment -> MRI/harvest) for instant reader clarity.")
+                elif "in_vitro_key" in roles_f:
+                    print(f"          [TIP MULTI-FIG SCHEMATIC] Fig. {fn} covers in vitro cellular assays without an assay setup diagram; consider a compact 'cell_assay_schematic' (64x34 mm).")
+                elif "spatial_headline" in roles_f:
+                    print(f"          [TIP MULTI-FIG SCHEMATIC] Fig. {fn} covers spatial analysis without a workflow/distance-ring concept schematic; 21-37% of CNS spatial figures include a compact 'spatial_workflow_schematic' (76x38 mm).")
         sparse_eds = []
         for fn in sorted(s_dict.keys()):
             ps = s_dict[fn]
             h, rows = shelf_pack_height(ps, page_w)
             epct = round(100 * h / page_h, 1)
-            st = "OVERFLOW" if h > page_h else ("HALF-EMPTY" if (len(ps) <= 4 and epct < 62.0) else "OK")
-            if st == "HALF-EMPTY":
+            st = "OVERFLOW" if h > page_h else ("VERY-SHORT" if (len(ps) <= 4 and epct < 50.0) else "OK")
+            if st == "VERY-SHORT":
                 sparse_eds.append(fn)
             print(f"  {supp_prefix} {fn}: {len(ps):2d} panels | packed={h:5.1f}/{page_h} mm ({epct:5.1f}%) -> [{st}]")
         if len(sparse_eds) >= 2:
-            print(f"  [WARN SPARSE-ED] {len(sparse_eds)} half-empty {supp_prefix} plate(s) ({sparse_eds}; <=4 panels & <62% height). Merge thematically related 4-panel ED plates into ONE dense 7-8 panel full-page plate (175-215 mm)!")
+            print(f"  [TIP SUPP-MERGE] {len(sparse_eds)} very short {supp_prefix} plate(s) ({sparse_eds}; <=4 panels & <50% height). Consider merging if they share one theme, while keeping Supp figures clean and spacious (no visual padding!).")
         overflows = ov
         return ov
 
@@ -1676,15 +1985,15 @@ def main():
 
     pa = sub.add_parser("audit", help="Audit a manuscript section or full markdown manuscript")
     pa.add_argument("--section", required=True, choices=["title", "abstract", "highlights", "in_brief", "intro", "results", "subheadings", "discussion", "cover_letter", "caption", "methods", "all"])
-    pa.add_argument("--journal", default="nature", choices=list(JOURNAL_SPECS.keys()))
+    pa.add_argument("--journal", default="general", choices=list(JOURNAL_SPECS.keys()), help="Target journal profile (default: 'general' = ~6,000-word Main Text CNS standard)")
     pa.add_argument("--file", required=True, help="Path to draft text/markdown file")
 
     ps = sub.add_parser("scaffold", help="Generate a strategic narrative scaffold by study archetype")
     ps.add_argument("--archetype", required=True, choices=list(SCAFFOLDS.keys()))
-    ps.add_argument("--journal", default="cancer_cell", choices=list(JOURNAL_SPECS.keys()))
+    ps.add_argument("--journal", default="general", choices=list(JOURNAL_SPECS.keys()))
 
     pf = sub.add_parser("plan-figures", help="Check millimeter page-size budgets & rebalance overflowing Main Figures to Extended Data/Supp")
-    pf.add_argument("--journal", default="nature", choices=list(FIGURE_PAGE_SPECS.keys()))
+    pf.add_argument("--journal", default="general", choices=list(FIGURE_PAGE_SPECS.keys()))
     pf.add_argument("--input", required=True, help="JSON file with 'panels' list")
     pf.add_argument("--rebalance", action="store_true", help="Automatically demote/split/compress overflowing Main Figures")
     pf.add_argument("--out", default=None, help="Optional path to save finalized storyboard JSON (shared with sci-plot)")

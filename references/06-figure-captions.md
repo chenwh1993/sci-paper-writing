@@ -48,6 +48,9 @@ Empirically calibrated from 2,091 main figures and 892 Extended Data figures acr
 4. **BioRender / Adapted Artwork Credit**:
    - When a schematic panel was created with BioRender, append `Created with BioRender.com.` (or `Schematic in a created with BioRender.com.`) — empirically observed across *Nature*, *Cell*, and *Science*.
    - When adapted from a published figure: `Adapted with permission from ref. X.`
+5. **Scale-Bar Truthfulness & Working-Model Numerical Cross-Check (Mandatory Pre-Submission Gate!)**:
+   - **Zero Phantom Scale Bars**: NEVER write `(scale bar, 2 cm)` or `(scale bar, 5 mm)` in a Figure Legend unless a calibrated physical scale bar is **genuinely drawn and visibly verified** on the rendered image! For clinical/preclinical MRI, CT, or microscopy panels lacking an embedded bar: either draw a verified vector scale bar from exact DICOM/OME-TIFF pixel spacing, or truthfully state the exact physical field of view (`FOV, 18 × 18 cm`) instead of claiming a non-existent scale bar.
+   - **100% Schematic ↔ Data-Panel Consistency**: Cross-check EVERY numerical distance (`µm`), score (`AUC`, `C-index`, `HR`), `P` value, sample size `n`, and gene/cell-type label printed inside schematics (`Fig. 1a`, experimental timelines, `Working Model`) against the corresponding data panels so zero numerical drift occurs.
 
 ---
 

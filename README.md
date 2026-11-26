@@ -29,8 +29,9 @@ Distilled and out-of-time cross-validated across **2020–2026**:
    - Turns raw data/results notes into an atomic evidence table, checks physical full-page millimeter budgets (*Nature* `180×220 mm`, *Cell* `174×215 mm`, *Science* `184×218 mm`) via `plan-figures --rebalance`, automatically demotes/splits/consolidates overflowing panels into paired Extended Data / Supplementary Figures (exporting a shared `final_storyboard.json` with exact `(w_mm, h_mm)` dimensions for `sci-plot`), and expands the locked storyboard into a synchronized full manuscript with zero fabricated statistics.
 
 ```bash
-# Audit an entire Markdown manuscript against Cancer Cell / Nature / Science rules
-python scripts/audit_manuscript.py audit --section all --journal cancer_cell --file manuscript.md
+# Audit an entire Markdown manuscript (~6,000w default if no target journal, or exact per-journal thresholds)
+python scripts/audit_manuscript.py audit --section all --journal general --file manuscript.md
+python scripts/audit_manuscript.py audit --section all --journal nat_commun --file manuscript.md
 
 # Match your existing results/notes against 30 6-year CNS oncology entry points & Intro Part-2 Gaps
 python scripts/audit_manuscript.py match-storyline --file my_results_notes.md
@@ -66,8 +67,8 @@ sci-paper-writing/
 │   ├── 11-results-to-manuscript-and-figure-packing.md          # Mode D end-to-end Results->Manuscript expansion & millimeter figure-overflow rebalancing (sci-plot linkage)
 │   ├── 12-oncology-storyline-and-gap-playbooks.md              # 30-Entry-Point 6-year oncology encyclopedia (6,665 papers): Intro Part-2 Gaps, H1->H7 chains & Discussion elevation
 │   ├── 13-novelty-engineering-and-reviewer-defense.md          # Entry-Point <-> Novelty <-> Results Proof Triangle (1,960 papers): Hype Inversion Law, 6 Proof Modules & 'No-Novelty' Rescue
-│   ├── 14-anti-ai-prose-stat-restraint-and-rule-harmony.md     # Median-Bullseye Prose Realism & Conflict Harmonization (1,436 papers): Two-tier Median targets, 4-Zone Before->After Gallery & 13-pair conflict matrix
-│   └── 15-journal-format-and-standards-matrix.md               # Cross-Journal Standards & Format Matrix (16 dimensions x 8 journal families) + cross-journal conversion checklists & top 8 contamination traps
+│   ├── 14-anti-ai-prose-stat-restraint-and-rule-harmony.md     # Per-Journal Median-Bullseye Prose Realism & Conflict Harmonization (1,436 papers): raw vs paren-stripped pure prose (~6,000w general default), P & non-P metric restraint, parenthesis budgets & 16-pair conflict matrix
+│   └── 15-journal-format-and-standards-matrix.md               # Cross-Journal Standards & Format Matrix (18 dimensions x 9 journal profiles incl. Nat Commun & ~6,000w general default) + cross-journal conversion checklists & top 8 contamination traps
 └── scripts/
     └── audit_manuscript.py                                     # Zero-dependency full-manuscript linter (Human CNS Median Scorecard, inline AI->CNS replacements, sequential/orphan refs), storyline matcher & figure/anti-sparse rebalancer
 ```
