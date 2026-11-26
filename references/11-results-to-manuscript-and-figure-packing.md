@@ -78,6 +78,13 @@ Whenever a Main Figure exceeds `H_max` (e.g., packed height `> 220 mm` in *Natur
 4. **Tier 4 — Cross-Journal Main-Figure Compression (When `Current Main Figs > Journal Cap`, e.g., 7-Fig Draft → 5-Fig *Nature*)**:
    - Merge adjacent discovery figures (`Fig. 1 + Fig. 2` → condensed `Fig. 1`; `Fig. 5 + Fig. 6` → combined Genetic + Pharmacological `Fig. 4`) and promote orthogonal assays into *Nature*'s generous **`8–10` Extended Data Figures**!
 
+#### 3.4 Anti-Sparse Plate, Visual-Density & Anti-Half-Empty ED Pre-Flight Check (Symmetric to Overflow!)
+Preventing overflow is only half the battle — `plan-figures` AND `sci-plot`'s `--audit-plate` ALSO guard against **thin, sparse, low-substance plates**:
+1. **Anti-All-White Stat-Dump Check**: Every Main Figure must carry ≥ 1 **real visual Hero** (`MRI/H&E/mIF/IHC/spatial ROI/gross tumor/WB`) OR **high-density composite chart** (`heatmap`, `oncoprint`, `dotplot`, `atlas_umap`, `km_risk_table`, `multi_cluster_volcano`, `chord`). Flag any Main Figure built solely from bare `scatter / bar / box / bare km` (`> 76%` white!) and promote a matching real visual or spatial ROI from ED!
+2. **Mandatory Rich KM Standard**: Always schedule `km_risk_table` (95% CI + Number at risk + HR), never bare two-line `km`.
+3. **Anti-Half-Empty ED Plate Consolidation**: If `≥ 2` Extended Data / Supp figures have `≤ 4` panels and `< 62%` page height (`110–130 mm`), merge thematically paired ED figures into ONE dense `7–8` panel full-page plate (`175–215 mm`), freeing slots for mIF single-channel splits, mouse toxicity/organ H&E, or uncropped blots.
+4. **Biological Vector Schematics + Post-Render `sci-plot` Gate**: Plan `schematic` / `working_model` as true biological cell/organ vector art (never matplotlib text-box flowcharts), verify `0` dropped real visual files, and run `python sci_plot_py.py --audit-plate <assembled_dir> --journal <target>` after rendering to verify `≤ 76–80%` white, `< 10 mm` internal white voids, and `0` in-figure AI/notebook text leaks! See [15-journal-format-and-standards-matrix.md](./15-journal-format-and-standards-matrix.md) for all 16 cross-journal formatting rules.
+
 ### Stage 4 — Lock Shared `storyboard.json` (Single Source of Truth!)
 Present the rebalanced Storyboard Table to the user for 1-turn confirmation before full-text expansion:
 - Exact Main Figure count (`Fig. 1..N`), exact packed height (`e.g., 196 / 220 mm — OK`), exact panel letters (`a–h` / `A–I`), chart types & `(w_mm, h_mm)` specs for `sci-plot`, and exact paired `ED Fig. / Fig. S` allocation.

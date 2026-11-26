@@ -22,9 +22,9 @@ Distilled and out-of-time cross-validated across **2020–2026**:
      - **4-Layer Elevated Discussion** (99.6% zero raw-stat P1, paradox reconciliation, translational roadmap, constructive 3-part Limitations)
      - **30-Second Editor-Focused Cover Letter** (`300–500w`, 1 page)
 2. **Section Drafting & Idiomatic Polishing Mode**:
-   - Enforces authentic CNS grammar, tense discipline (`4.93:1` Results past tense; `5:1` `-ing` figure captions; `9.89:1` past-passive Methods), inline parenthetical figure citations (`765.3:1` `(Fig. 1a)` vs `"Fig. 1a shows"`), the **4-Tier Certainty Verb Ladder**, **5 Precision Verb Confusion Matrices**, and **12 micro-scenario ready-to-migrate sentence banks**.
+   - Enforces authentic CNS grammar, tense discipline (`4.93:1` Results past tense; `5:1` `-ing` figure captions; `9.89:1` past-passive Methods), inline parenthetical figure citations (`765.3:1` `(Fig. 1a)` vs `"Fig. 1a shows"`), the **4-Tier Certainty Verb Ladder**, **5 Precision Verb Confusion Matrices**, **18 micro-scenario sentence & anti-AI CNS replacement banks** (distilled from `1,960` + `550` flagship papers), and **Human CNS Median-Bullseye** calibration.
 3. **Automated Pre-Submission Audit & Scaffolding CLI (`scripts/audit_manuscript.py`)**:
-   - Zero-dependency Python linter auditing any single section or full Markdown manuscript (`title`, `abstract`, `highlights`, `in_brief`, `intro`, `results`, `subheadings`, `discussion`, `cover_letter`, `caption`, `methods`, `all`) plus an interactive archetype scaffolder.
+   - Zero-dependency Python linter auditing any single section or full Markdown manuscript (`title`, `abstract`, `highlights`, `in_brief`, `intro`, `results`, `subheadings`, `discussion`, `cover_letter`, `caption`, `methods`, `all`), printing a **Human CNS Median Scorecard** + exact inline `AI -> CNS` word/hyphen-stack/opener replacements, plus an interactive archetype scaffolder.
 4. **Data/Results-Doc → Millimeter-Bounded Figure Packing → Full Manuscript Expansion (`sci-plot` Linkage!)**:
    - Turns raw data/results notes into an atomic evidence table, checks physical full-page millimeter budgets (*Nature* `180×220 mm`, *Cell* `174×215 mm`, *Science* `184×218 mm`) via `plan-figures --rebalance`, automatically demotes/splits/consolidates overflowing panels into paired Extended Data / Supplementary Figures (exporting a shared `final_storyboard.json` with exact `(w_mm, h_mm)` dimensions for `sci-plot`), and expands the locked storyboard into a synchronized full manuscript with zero fabricated statistics.
 
@@ -60,14 +60,16 @@ sci-paper-writing/
 │   ├── 05-cover-letter.md                                      # Elsevier/CNS 5-step 1-page rules, 4 compliance statements & 4 journal templates
 │   ├── 06-figure-captions.md                                   # 2,990-caption corpus: journal specs, 5:1 -ing syntax, 13 chart templates & stats disclosures
 │   ├── 07-methods-and-star.md                                  # 307-Methods corpus: Nature/Cell STAR+KRT/Science schemas, 9.89:1 past-passive & reproducibility
-│   ├── 08-comprehensive-phrasebank-and-collocations.md         # 1,960-paper corpus: 5 verb confusion matrices, top 4-gram openers & 12 micro-scenario banks
+│   ├── 08-comprehensive-phrasebank-and-collocations.md         # 1,960-paper corpus + 550-paper Anti-AI Replacement Corpus: 5 verb matrices, 18 scenarios & hyphen-stack unpacking bank
 │   ├── 09-citation-and-reference-architecture.md               # 20-journal reference budgets, Intro/Results/Discussion/Methods split, 95% 1–3 anti-stuffing & recency
 │   ├── 10-figure-and-supplement-architecture.md                # 20-journal Main/ED/Supp figure & subpanel budgets, Main-vs-Supp triage matrix & Fig 1–7 pairing
 │   ├── 11-results-to-manuscript-and-figure-packing.md          # Mode D end-to-end Results->Manuscript expansion & millimeter figure-overflow rebalancing (sci-plot linkage)
 │   ├── 12-oncology-storyline-and-gap-playbooks.md              # 30-Entry-Point 6-year oncology encyclopedia (6,665 papers): Intro Part-2 Gaps, H1->H7 chains & Discussion elevation
-│   └── 13-novelty-engineering-and-reviewer-defense.md          # Entry-Point <-> Novelty <-> Results Proof Triangle (1,960 papers): Hype Inversion Law, 6 Proof Modules & 'No-Novelty' Rescue
+│   ├── 13-novelty-engineering-and-reviewer-defense.md          # Entry-Point <-> Novelty <-> Results Proof Triangle (1,960 papers): Hype Inversion Law, 6 Proof Modules & 'No-Novelty' Rescue
+│   ├── 14-anti-ai-prose-stat-restraint-and-rule-harmony.md     # Median-Bullseye Prose Realism & Conflict Harmonization (1,436 papers): Two-tier Median targets, 4-Zone Before->After Gallery & 13-pair conflict matrix
+│   └── 15-journal-format-and-standards-matrix.md               # Cross-Journal Standards & Format Matrix (16 dimensions x 8 journal families) + cross-journal conversion checklists & top 8 contamination traps
 └── scripts/
-    └── audit_manuscript.py                                     # Zero-dependency full-manuscript linter, 30-entry-point storyline + novelty matcher, scaffolder & millimeter figure rebalancer
+    └── audit_manuscript.py                                     # Zero-dependency full-manuscript linter (Human CNS Median Scorecard, inline AI->CNS replacements, sequential/orphan refs), storyline matcher & figure/anti-sparse rebalancer
 ```
 
 ---

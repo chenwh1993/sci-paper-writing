@@ -141,3 +141,135 @@ Never treat academic verbs as interchangeable synonyms. Match **verb precision**
 - **Slot 1**: `Our study has several limitations that should be considered when interpreting these findings. First, [scope boundary: e.g., cohort size / retrospective design / targeted spatial panel]; we addressed this limitation by [validation across external multi-center cohorts / orthogonal scRNA-seq].`
 - **Slot 2**: `Second, while our preclinical models establish causal necessity for [X], future studies employing [genetic lineage tracing / prospective trials with paired on-treatment biopsies] will be essential to definitively validate [mechanism/translation] in patients.`
 - *CNS Verbatim*: `"Future studies employing robust genetic lineage tracing systems, potentially utilizing split-Cre technology, will be essential to definitively validate F-apCAF developmental trajectories and function."` (*Cancer Cell*, 2025)
+
+---
+
+## Part 4 — Anti-AI → Authentic Human CNS Replacement Corpus (`Scenarios 13–18`, Distilled from `550` Flagship 2025–2026 CNS Papers)
+
+> **Median-Bullseye Rule**: Do **NOT** merely aim to slip inside the "safe ceiling" (`65%` grounding or `CV = 0.38` or `5 P/1kw`). Actively use the verbatim human CNS frames, short burstiness sentences, high-grounding Discussion openers, and compound-stack unpackings below to land squarely around the **real human CNS median** (`76.0%` 2-gram grounding, `46.5%` 3-gram grounding, `73.8%` opener grounding, `CV = 0.49` with `23.1% <= 18w` sentences, `0.6 P/1kw` in Results, `0` alien words or invented hyphen stacks).
+
+### Scenario 13 — Crisp Short Human Burstiness Sentences (`8–17w`, Driving `CV` to the `0.45–0.55` Human Median)
+LLMs flatten every Results sentence to `25–30` words (`CV ≈ 0.32`), creating an unmistakable "metronome cadence." Real CNS authors interleave **1 punchy `8–17w` sentence every 3–4 sentences** (targeting **`20–28% <= 18w`**) to establish topic shifts, crisp empirical readouts, or decisive null controls:
+- **Slot 1 (Crisp Discovery)**: `We identified a subpopulation of [cells] that was transcriptionally distinct from [control cells] (Fig. Xa).`
+- **Slot 2 (Crisp Perturbation Readout)**: `[Drug / Deletion] impaired tumour growth but did not induce complete regression (Fig. Xb).`
+- **Slot 3 (Crisp Negative Control)**: `The frequency of [other immune subsets], including [cell B], did not change (Extended Data Fig. Xc).`
+- **Slot 4 (Crisp Confirmation)**: `First, we confirmed that [model/cells] expressed [Marker A] but lacked [Marker B] (Fig. Xd).`
+- **Slot 5 (Crisp Contrast)**: `Unlike [Model A], [Model B] did not exhibit improved response to combined therapy (Fig. Xe).`
+- *CNS Verbatim (`10–17w`, 2025–2026 Flagship Papers)*:
+  - `"We identified a subpopulation of LPT-MET fibroblasts that were transcriptionally distinct from LPT-WT fibroblasts (Fig. 4a)."` (*Nat Cell Biol*, 2025 — `16w`)
+  - `"The frequency of other resident macrophages, including alveolar macrophages, did not change (Figure S5F)."` (*Cell*, 2025 — `14w`)
+  - `"Paclitaxel hampered tumor growth, but did not lead to any complete tumor regression (Fig. 1A)."` (*Immunity*, 2025 — `15w`)
+  - `"First, we confirmed that CP-A cells expressed TP53 but did not express CDKN2A (Fig. 2d)."` (*Nat Cancer*, 2025 — `15w`)
+  - `"Unlike 2208L, EMT6 did not exhibit improved response to the combined therapy (Fig. 1B)."` (*Immunity*, 2025 — `14w`)
+  - `"Finally, we confirmed that NRG1 treatment triggered downstream signaling pathways, including AKT, MAPK and FAK (Fig. 1j)."` (*Nat Cancer*, 2025 — `17w`)
+
+### Scenario 14 — Spatial Niches, Distance Gradients & Unsupervised Clustering (Replacing Tech-Blog Metaphors)
+Replace AI metaphors (`locked atlas`, `habitats`, `portals`, `cleanly`, `cross-cohort robustness`, `target-to-vascular geometry`) with plain spatial-biology CNS phrasing:
+- **Slot 1 (Adjacency & Proportion)**: `In [tumour] sections, [Cell A] localized predominantly adjacent to [Cell B], with [X]% of their nearest neighbours being [Cell B] (Fig. Xa,b).`
+- **Slot 2 (Niche Organization)**: `These results reveal a conserved spatial organization of [Cell A] within [perivascular / stromal / invasive-margin] niches across [human and mouse] tumours (Fig. Xc).`
+- **Slot 3 (Barrier / Gradient)**: `We next investigated whether the boundary formed by [Cell A] acts as a physical barrier that restricts [Cell B] infiltration into the tumour core (Fig. Xd).`
+- **Slot 4 (Orthogonal Multiplex Confirmation)**: `This spatial proximity was confirmed by multiplexed immunofluorescence imaging, which identified [Cell A] in the direct cellular neighbourhood of [Cell B] (Fig. Xe).`
+- *CNS Verbatim (2025–2026 Flagship Papers)*:
+  - `"These results reveal a conserved spatial organization of CCR7+ DCs in perivascular and lymphatic niches in both human and mouse tumors."` (*Immunity*, 2025)
+  - `"We then investigated whether the boundary formed by eFibro_CTHRC1 could serve as a physical barrier that may affect the infiltration of immune cells into the tumor core."` (*Nat Cancer*, 2025)
+  - `"No significant correlations were observed in the inner tumor-invasive margin and the central tumor regions (Figure S3C)."` (*Cancer Cell*, 2025)
+  - `"This was confirmed by multiplexed immunofluorescence imaging using codetection by indexing (CODEX), which identified IFNG-producing T cells in the direct cellular neighborhood to small DCC clusters and micrometastases (Fig. 4e)."` (*Nat Cancer*, 2025)
+  - `"Single disseminated cells localized to interstitial and luminal sites in the lungs (Extended Data Fig. 1d) and in perivascular niches in the brain parenchyma (Fig. 1a)."` (*Nat Cancer*, 2025)
+
+### Scenario 15 — Prognostic Models, Cross-Validation & Independent External Validation
+Replace Kaggle/ML-blog wording (`quarantined cohort`, `out-of-fold`, `parsimonious`, `upgraded stratification`, `two-feature composite`, `outcome-blind`) with plain clinical-genomics CNS prose:
+- **Slot 1 (Cross-Validation & Feature Selection)**: `We trained [classifier/regression] models using repeated cross-validation to minimize overfitting and evaluate predictive performance across cohorts (Fig. Xa).`
+- **Slot 2 (Independent Validation Cohort)**: `To validate [Signature/Model] in an independent patient cohort, we evaluated [N] tumours from [M] patients without overlap with the discovery set (Fig. Xb).`
+- **Slot 3 (Multivariable Confounder Control)**: `To account for potential clinical confounders, we included [stage, age, sex, and baseline marker] in a multivariable analysis of [DFS/OS] (Fig. Xc).`
+- **Slot 4 (Treatment-Specific vs Prognostic Distinction)**: `To distinguish prognostic from treatment-specific predictive effects, we evaluated [biomarker] in relation to outcomes in the [control/monotherapy] arm (Fig. Xd).`
+- *CNS Verbatim (2025–2026 Flagship Papers)*:
+  - `"We constructed subtype-balanced repeated cross-validation folds for all cohorts, and set these as training and test sets (Figure 2A)."` (*Cancer Cell*, 2025)
+  - `"For the validation of ORACLE in an independent patient cohort, we exclude patients profiled in our previous study to yield the TRACERx validation cohort, consisting of 369 tumor regions from 158 patients."` (*Nat Cancer*, 2025)
+  - `"To account for any confounding effect, we included ITH, age, sex, race, IMDC risk score, and CNL in our multivariable analysis."` (*Nat Cancer*, 2025)
+  - `"To account for possible bias and distinguish between prognostic and predictive factors, we also studied tumor-intrinsic biomarkers in relation to response to tyrosine kinase inhibitor (TKI) monotherapy in the control arm of these trials."` (*Nat Cancer*, 2025)
+  - `"Samples are stratified by American Joint Committee on Cancer (AJCC) 8th edition pathological stage (stage I, n = 23; stage III–IV, n = 163)."` (*Nat Cell Biol*, 2025)
+
+### Scenario 16 — Computational Pathology, H&E Histology & Multimodal Integration
+Replace AI hype/metaphors (`honest optical blind spot`, `decodes macro-architectural`, `capitalising on division of labour`, `unanchored end-to-end`, `crosswalk`) with restrained, concrete CNS phrasing:
+- **Slot 1 (Histology Limitation — Plain & Factual)**: `Haematoxylin and eosin (H&E) staining alone was not sufficient to distinguish [state A from state B], as [molecular feature] is not clearly visible morphologically (Extended Data Fig. Xa).`
+- **Slot 2 (Multimodal Integration)**: `We integrated [spatial transcriptomics / multiplex imaging] with routine H&E histology to jointly capture [macroscopic tissue architecture] and [molecular states] (Fig. Xb).`
+- **Slot 3 (Unimodal vs Multimodal Comparison)**: `Using cross-validation with both [imaging] and [molecular] features, we compared combined multimodal models against each unimodal baseline (Fig. Xc).`
+- **Slot 4 (Deep-Learning Mapping)**: `We next applied [ToolName], a deep-learning framework, to map [modality A] profiles onto matched [modality B] slides and infer [cellular composition / score] (Fig. Xd).`
+- *CNS Verbatim (2025–2026 Flagship Papers)*:
+  - `"Hematoxylin and eosin (H&E) staining is not sufficient to identify CRATERs, as the gap is not clearly visible (Figure S5J)."` (*Cell*, 2025)
+  - `"Using cross-validation with both MIBI and RNA features, we found that multimodal models did not outperform unimodal ones; in fact, combined models showed reduced performance (Extended Data Fig. 9i)."` (*Nat Cancer*, 2025)
+  - `"Next, we used Tangram, a deep learning framework, to map tumor-matched scRNA-seq profiles to the corresponding ST data and generate a probabilistic measure of the cellular composition for each spatial measurement (Fig. 1g)."` (*Nat Cancer*, 2025)
+  - `"Histological analysis of haematoxylin and eosin (H&E)-stained tumour sections confirmed larger tumour sizes in the HOXB3-WT group compared with the notably smaller tumours in the SN5I group (Fig. 8d)."` (*Nat Cell Biol*, 2025)
+  - `"Pathological response rates were assessed according to microscopic examination of H&E slides of the resected tumor as part of routine clinical practice (Figures 1A and S1A–S1C; STAR Methods)."` (*Cell*, 2025)
+
+### Scenario 17 — Clean `P4` Specificity, Confounder Exclusion & Stat-Light Results (`Median 0.6 P/1kw`)
+Never write defensive audit prose (`without outcome-label leakage`, `guarding against batch`, `adversarial removal`) or inline `P`-value dumps. State the biological independence cleanly and anchor exact `P`/`n` on the figure with *Nature* parenthetical semicolon syntax `(n = X; Fig. Ya)`:
+- **Slot 1 (Independence From Confounder)**: `These observations were independent of [tumour viability / baseline expression / clinical stage], which were unaffected by [perturbation / cohort strata] (Extended Data Fig. Xa).`
+- **Slot 2 (Ruling Out Alternative Mechanism)**: `[Treatment/Perturbation] did not alter [cell counts / baseline proliferation], confirming that changes in [phenotype] were not due to [confounder] (Extended Data Fig. Xb).`
+- **Slot 3 (Stat-Light Magnitude + Clean Nature Semicolon)**: `[Blockade/Regimen] markedly reduced [endpoint] by [X]% (n = [M]; Fig. Xc) and prolonged survival (Fig. Xd).`
+- **Slot 4 (Consistent Across Subgroups)**: `[Effect] persisted across [both cohorts / all genotypes], regardless of [mutation status / prior regimen] (Extended Data Fig. Xe).`
+- *CNS Verbatim (2025–2026 Flagship Papers)*:
+  - `"These observations are independent of tumour cell viability, initial drug response or persister cell formation, which were each found to be unaffected by DFFB deficiency (Extended Data Fig. 4)."` (*Nat Cell Biol*, 2025)
+  - `"Chemotherapy did not affect MSM numbers, confirming changes in phagocytosis were not due to MSM reduction (Fig S1D)."` (*Cancer Cell*, 2025)
+  - `"CCR7 levels remain unchanged (Figure S7E), suggesting that CCR7 expression is independent of other DC activation markers."` (*Immunity*, 2025)
+  - `"Strikingly, b2 blockade also significantly reduced metastatic burden by 50%, measured as number and size of lung nodules (Figures 3L and 3M), and prolonged mouse survival (Figure 3N)."` (*Cell*, 2025)
+  - `"In accordance with these findings, FLASH RT enhanced the infiltration of CD3+ T cells into the tumors (Fig. 1l)."` (*Nat Cancer*, 2025)
+  - `"In agreement with previous studies29,32,41, CDKN2A was the second most frequently damaged EAC driver, with LoF in 25% of samples (Fig. 1b)."` (*Nat Cancer*, 2025)
+
+### Scenario 18 — High-Grounding Human Discussion Openers (`550` Flagship Papers) & Hyphen-Stack Unpacking Bank
+
+#### 18.1 Top 20 Real Human Discussion 3-Word Openers (Raises Discussion Opener Grounding From `~35%` to the `74%` Human Median!)
+| Rank | Authentic Flagship Discussion Opener (`n = 550` Papers) | Hits | Best Discussion Function |
+| :---: | :--- | :---: | :--- |
+| 1 | **`In this study, we...`** | `121` | P1 conceptual summary |
+| 2 | **`We found that...`** / **`We show that...`** / **`We demonstrate that...`** | `132` | Core takeaway & synthesis |
+| 3 | **`In addition to...`** | `53` | Extending to a second axis/cohort |
+| 4 | **`Consistent with this, ...`** / **`This is consistent with...`** | `64` | Literature concordance |
+| 5 | **`In our study, ...`** | `40` | Anchoring scope or cohort design |
+| 6 | **`In line with...`** | `40` | Reconciling with prior reports |
+| 7 | **`This suggests that...`** / **`These findings suggest...`** | `76` | Mechanistic interpretation |
+| 8 | **`In summary, our/we...`** / **`In conclusion, our...`** | `100` | Closing synthesis paragraph |
+| 9 | **`Together, these findings...`** | `27` | Multi-evidence convergence |
+| 10 | **`Our data suggest/indicate...`** / **`Our findings suggest...`** | `60` | Calibrated inference |
+| 11 | **`Future studies should...`** / **`Future work will...`** | `23+` | Constructive limitations & roadmap |
+| 12 | **`Previous studies have...`** / **`A recent study...`** | `42` | Setting up literature contrast |
+| 13 | **`These findings highlight...`** | `20` | Broader conceptual significance |
+| 14 | **`However, it is...`** / **`It is important...`** | `38` | Nuance, caveat, or clinical context |
+| 15 | **`In contrast to...`** | `18` | Sharp paradigm contrast (`X, rather than Y`) |
+| 16 | **`We speculate that...`** / **`This may be...`** | `36` | Explicit calibrated speculation |
+
+- *CNS Verbatim Discussion Sentences (2025–2026 Flagship Papers)*:
+  - `"In this study, we identified GUK1 activation as a metabolic liability in oncogene-driven lung cancers."` (*Cell*, 2025 — crisp `15w` P1 opener!)
+  - `"Consistent with our findings, a recent report showed that FLASH RT increases antitumor Mϕs and reduces protumor Mϕs in lung cancer."` (*Nat Cancer*, 2025)
+  - `"In line with this, AML cells and HSCs under other pathological conditions such as BM failure have been shown to be particularly sensitive to ferroptosis induction."` (*Nat Cell Biol*, 2025)
+  - `"We have shown that, rather than recruiting monocytes, tumor cells induce expansion of resident IMs in the lung PTN, reprogramming them toward a CD163+/CD206+ M2-like phenotype."` (*Cell*, 2025)
+  - `"A key limitation of our method is the focus on a targeted set of genes for transcriptomic readout, which limits the potential for de novo discovery."` (*Cell*, 2025)
+  - `"Although this study integrates data for 42 RCC tumor samples across three independent cohorts, dataset size remains a notable limitation."` (*Immunity*, 2025)
+
+#### 18.2 Compound Hyphen-Stack Unpacking Dictionary (3-Part & AI-Tell 2-Part Pre-Modifiers → Plain CNS Prepositional English)
+Invented compound stacks drop de-lexicalized 2-gram grounding by `~25%` because real human CNS writers unpack them into natural nouns + prepositions (`of`, `by`, `for`, `across`, `within`):
+
+| AI-Tell Compound Modifier Stack (`~0%` in `1,312` CNS Papers) | Authentic Human CNS Replacement |
+| :--- | :--- |
+| `marker-stability-tiered spatial features` | `spatial features filtered for staining stability` |
+| `copy-number-confirmed malignant cells` | `malignant cells confirmed by copy-number inference` |
+| `outcome-blind tile-level scores` | `unsupervised tile-level scores` *(or `scores derived without clinical labels`)* |
+| `out-of-fold predictions` / `out-of-fold AUC` | `cross-validated predictions` / `cross-validated AUC` |
+| `leave-one-patient-out validation` | `leave-one-patient-out cross-validation` *(define once in Methods; write `cross-validation` in Results)* |
+| `cross-regimen signed-Z synthesis` | `meta-analysis across independent treatment regimens` |
+| `target-to-vascular geometry` | `spatial proximity between target-expressing cells and vessels` |
+| `two-feature composite` / `three-feature model` | `a two-feature spatial score` / `a model combining [Feature A] and [Feature B]` |
+| `same-section histology` / `same-section mIHC` | `matched H&E sections` / `serial sections` / `within the same tissue section` |
+| `single-marker quantification` / `single-metric scoring` | `quantification of [Marker] alone` / `conventional single-marker scoring` |
+| `batch-matched controls` / `within-batch normalization` | `controls matched for batch` / `normalization within each batch` |
+| `multi-compartment atlas` | `atlas spanning epithelial, stromal and immune compartments` |
+| `macro-architectural features` | `macroscopic tissue architecture` / `histological architecture` |
+| `ambient-RNA-filtered` / `ambient-RNA contamination` | `after removing ambient RNA` / `ambient RNA contamination` *(no hyphen as noun!)* |
+| `zero-shot foundation-model embeddings` | `pretrained pathology foundation model embeddings` |
+| `per-slide summary` / `per-patient median` | `slide-level summary` / `patient-level median` |
+| `dendritic-cell infiltration` / `bladder-wall invasion` | `dendritic cell infiltration` / `bladder wall invasion` *(unhyphenated noun adjuncts!)* |
+| `dose-dense regimen` / `treatment-specific interaction` | `standard chemotherapy` / `biomarker-by-treatment interaction` |
+| `strictly quarantined validation cohort` | `independent external validation cohort` |
+| `honest optical blind spot` | `limited ability of H&E morphology alone to resolve [X]` |
+| `capitalising on this division of labour` | `combining these complementary modalities` |
+| `upgraded clinical stratification` | `improved clinical stratification` / `enhanced risk stratification` |

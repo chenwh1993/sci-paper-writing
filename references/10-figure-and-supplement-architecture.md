@@ -93,3 +93,23 @@ Reviewers and readers trust direct physical visual evidence far more than abstra
 ### 4.2 Strict `1-Panel = 1-Unique-Letter` Indexing Law (`90.4%` CNS Standard)
 - Across `8,852` CNS panel descriptions, **`90.4%`** map **1 unique letter (`a, b, c...` / `A, B, C...`) to 1 independent plot** (pure multi-chart bundling under one letter is only `3.0%`).
 - **Rule**: NEVER bundle two distinct analytical plots under a single panel index (e.g., `Fig. 1a` = UMAP + barplot is FORBIDDEN; assign `a` = UMAP, `b` = barplot!). Even for **Real Image + Quantification**, assign **adjacent separate letters** (`a` = representative MRI/H&E/mIF hero image, `b` = quantification across `n` samples). Reserve shared letters strictly for paired overview + ROI zoom / split channels of the *exact same* tissue FOV, identical-assay small-multiple strips sharing one scale/colorbar, or inseparable widgets (`KM + risk table`, `OncoPrint`).
+
+---
+
+## 5. Anti-Sparse Plate Calibration, High-Substance Density & Anti-Half-Empty ED Consolidation (`sci-plot` Synced)
+
+Having `7` Main Figures and `60+` panels is **not enough** if individual plates look thin, repetitive, or `80%` pure white! High-impact *Nature / Nature Cell Biology / Cell / Cancer Cell* figures feel substantial because of **high visual & analytical density per plate**:
+
+1. **Every Main Figure Must Carry ≥ 1 Visual or High-Density Matrix Anchor (Target `52–72%` White; Flag `> 76%`)**:
+   - NEVER plan a Main Figure composed exclusively of `8–10` bare univariate scatterplots, 4-bar charts, and bare two-line KM curves (`78–82%` pure white).
+   - Anchor every Main Figure with at least ONE **real visual Hero panel** (`MRI/CT`, `H&E`, `mIF/CODEX/IHC`, `high-power spatial tissue ROI`, `gross tumor / WB`) OR a **high-density composite chart** (`multi-track OncoPrint`, `clustered multi-block heatmap`, `grouped dotplot`, `L–R chord/network`, `KM + 95% CI + Risk Table + HR`).
+2. **Audit 100% of Available Real Visuals — Zero Dropped or Buried Assets**:
+   - Before locking the storyboard, verify every real imaging file (`clinical MRI`, `human mIF/IHC`, `spatial Visium/Xenium ROI`, `mouse tumor IF`, `gross tumors`, `Western blots`) is placed. Never leave a striking microscopy/spatial ROI buried in Extended Data (or dropped on disk!) while its corresponding Main Figure sits `80%` white with bare scatterplots.
+3. **Anti-Bare-Plot Minimum Information Standards**:
+   - **KM Survival**: ALWAYS plan as `km_risk_table` (**95% CI ribbon + aligned Number-at-risk table + Cox HR [95% CI] + two-sided log-rank `P`**) — never bare two-line KM curves.
+   - **Scatter / Bar**: Avoid `≥ 3` consecutive tiny univariate scatter plots or wide 3–4 bar plots; consolidate into multi-cohort correlation matrices, 2D-contour strips, or paired forest plots.
+   - **Study Design (`Fig. 1a`) & Working Model (`Last Panel`)**: Plan as **biological cell/tissue/receptor vector illustrations** (BioRender / Illustrator), **NEVER** plain code rounded text-boxes + straight arrows!
+4. **Consolidate Half-Empty `4`-Panel Extended Data Plates (`6–8` Panels / Full-Page `170–215 mm`)**:
+   - In *Nature / NCB* (cap `10` ED Figs, median `6–8` panels/ED), **never scatter multiple `4`-panel half-height (`115–125 mm`, `82–90%` white) ED plates** when two thematically linked ED plates (`e.g. Related to Fig. 6`) can merge into **ONE substantial `7–8` panel full-page plate (`185–215 mm`)**, freeing ED slots for single-channel mIF splits, antibody controls, mouse toxicity/body-weight/organ H&E, or uncropped blots.
+5. **In-Figure Text Must Pass the Same Anti-AI & Anti-Notebook-Jargon Gate**:
+   - Purge `audit`, `crosswalk`, `parsimonious`, `habitat`, `OOF`, `Quarantined`, `phase cliff`, `Adversarial`, `triage cascade`, and internal cluster/pipeline codes from figure panel titles, axes, and legends so Main Text, Legends, and Figures stay 100% synchronized. Cross-check journal-specific artwork rules in [15-journal-format-and-standards-matrix.md](./15-journal-format-and-standards-matrix.md).

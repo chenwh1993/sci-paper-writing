@@ -77,6 +77,155 @@ CHINGLISH_PATTERNS = [
     (r"\b(first (?:study|report|investigation) to|to the best of our knowledge|never been (?:studied|reported|explored))\b", "Empty priority/novelty claim ('first study to / never been studied' is 2.8-5.0x more common in lower tiers and triggers 'no novelty' scrutiny); replace with explicit prior-art contrast ('Whereas prior studies..., our data show...')."),
 ]
 
+# Journal-calibrated Results P/q density targets: (published_median, bullseye_hi, warn_hi, fail_hi) per 1,000 words
+CNS_JOURNAL_P_TARGETS = {
+    "cell":          (0.0, 1.0, 3.5, 10.0),
+    "cancer_cell":   (0.3, 1.5, 6.0, 10.0),
+    "nature_sister": (0.4, 1.8, 4.5, 10.0),
+    "nature":        (1.0, 2.0, 5.5, 10.0),
+    "science":       (0.6, 2.0, 5.5, 10.0),
+    "nat_med":       (2.8, 4.5, 9.0, 14.0),
+}
+
+# Authentic CNS replacement dictionaries (distilled from 1,312 + 550 flagship 2025-2026 papers)
+CNS_LEXICON_REPLACEMENTS = {
+    "audited": "evaluated / assessed",
+    "rigorous audit": "systematic evaluation",
+    "quarantined": "held-out / independent validation",
+    "obliterates": "disrupts / eliminates / abolishes",
+    "obliterate": "disrupt / eliminate / abolish",
+    "crosswalk": "comparison / mapping",
+    "capitalising": "combining / integrating",
+    "capitalised": "combined / integrated",
+    "capitalizing": "combining / integrating",
+    "capitalized": "combined / integrated",
+    "over-optimistic": "prevailing / unverified",
+    "honest optical blind spot": "limited ability of H&E morphology alone to resolve",
+    "honest blind spot": "limited ability to distinguish",
+    "upgraded clinical": "improved clinical",
+    "phase cliff": "sharp decline / threshold shift",
+    "division of labour": "complementary roles",
+    "division of labor": "complementary roles",
+    "triage cascade": "two-step stratification",
+    "parsimonious": "compact / minimal",
+    "habitats": "niches / compartments",
+    "descriptors": "features / metrics",
+    "portals": "compartments / interfaces",
+    "cleanly": "distinctly / clearly",
+    "decodes": "predicts / infers",
+    "decode": "predict / infer",
+}
+
+CNS_DEFENSIVE_REPLACEMENTS = {
+    "without outcome-label leakage": "unsupervised (move leakage controls to Methods)",
+    "without outcome label leakage": "unsupervised (move leakage controls to Methods)",
+    "outcome-blind": "unsupervised / derived without clinical labels",
+    "outcome blind": "unsupervised / derived without clinical labels",
+    "zero-outcome-peeking": "unsupervised (describe cross-validation in Methods)",
+    "adversarial removal": "sensitivity analysis excluding extreme samples (Methods)",
+    "sensitivity audit": "sensitivity analysis (Extended Data)",
+    "sensitivity audits": "sensitivity analyses (Extended Data)",
+    "quarantined": "independent external validation",
+    "bidirectional rescue disabled": "move scoring constraints to Methods",
+    "conflict-free": "consistent / concordant",
+    "guarding against technical batch": "independent of batch effects (Methods)",
+    "zero batch confounding": "no batch-associated bias (Extended Data)",
+    "negative penalty": "move scoring penalty details to Methods",
+    "fragile antibodies": "markers failing staining QC (Methods)",
+    "strictly isolated": "independent held-out",
+    "overfitted": "evaluated via cross-validation to minimize overfitting",
+}
+
+CNS_2PART_STACK_REPLACEMENTS = {
+    "two-feature": "a model combining [A] and [B] / two-variable",
+    "three-feature": "a model combining [A], [B] and [C]",
+    "same-section": "matched / serial sections / within the same section",
+    "single-marker": "quantification of [Marker] alone",
+    "single-metric": "single-marker / univariate scoring",
+    "batch-matched": "controls matched for batch",
+    "multi-compartment": "spanning epithelial, stromal and immune compartments",
+    "macro-architectural": "macroscopic tissue architecture",
+    "ambient-rna": "ambient RNA (unhyphenated noun)",
+    "zero-shot": "pretrained (specify zero-shot once in Methods)",
+    "out-of-fold": "cross-validated",
+    "within-batch": "within each batch",
+    "per-slide": "slide-level",
+    "bladder-wall": "bladder wall (unhyphenated noun adjunct)",
+    "dendritic-cell": "dendritic cell (unhyphenated noun adjunct)",
+    "signed-z": "standardized z-score",
+}
+
+CNS_HYPHEN_UNPACK = {
+    "antibody-stability-tiered": "filtered for antibody staining stability",
+    "marker-stability-tiered": "filtered for marker staining stability",
+    "copy-number-confirmed": "confirmed by copy-number inference",
+    "copy-number-gated": "filtered by copy-number inference",
+    "near-versus-distal": "proximal versus distal",
+    "out-of-sample": "held-out / independent validation",
+    "leave-one-patient-out": "leave-one-patient-out cross-validation (define in Methods; use 'cross-validation' in Results)",
+    "out-of-fold": "cross-validated",
+    "target-to-vascular": "spatial proximity between target-expressing cells and vessels",
+    "immune-checkpoint-blockade": "immune checkpoint blockade (unhyphenated noun)",
+    "single-cell-resolution": "at single-cell resolution",
+    "zero-outcome-peeking": "unsupervised",
+    "outcome-label-free": "unsupervised",
+}
+
+CNS_SHORT_BURST_MODELS = [
+    "We identified a subpopulation of [cells] transcriptionally distinct from controls (Fig. 2a).",
+    "The frequency of other resident immune subsets did not change (Extended Data Fig. 2b).",
+    "Unlike [Model A], [Model B] did not improve response to combined therapy (Fig. 3b).",
+]
+
+CNS_DISC_OPENER_MODELS = [
+    "In this study, we...",
+    "Consistent with this, ...",
+    "In line with previous reports, ...",
+    "These findings suggest that...",
+    "In contrast to prior studies, ...",
+    "Our data indicate that...",
+    "Future studies should...",
+    "We speculate that...",
+]
+
+
+def suggest_lexicon_fixes(hits: list, mapping: dict, max_items: int = 6) -> str:
+    seen = []
+    for raw in hits:
+        k = raw.lower().strip()
+        if k in seen:
+            continue
+        seen.append(k)
+        if len(seen) >= max_items:
+            break
+    pairs = []
+    for k in seen:
+        repl = mapping.get(k)
+        if not repl:
+            for mk, mv in mapping.items():
+                if mk in k or k in mk:
+                    repl = mv
+                    break
+        if not repl and k.startswith("locked "):
+            repl = "consensus atlas"
+        pairs.append(f"'{k}' -> '{repl or 'plain CNS wording'}'")
+    return "; ".join(pairs)
+
+
+def suggest_hyphen_unpacks(hits: list, max_items: int = 6) -> str:
+    seen = []
+    for h in hits:
+        kl = h.lower()
+        if kl not in seen:
+            seen.append(kl)
+        if len(seen) >= max_items:
+            break
+    pairs = []
+    for kl in seen:
+        repl = CNS_HYPHEN_UNPACK.get(kl, "unpack into plain prepositional phrase (avoid 3-part hyphen stack)")
+        pairs.append(f"'{kl}' -> '{repl}'")
+    return "; ".join(pairs)
+
 
 def count_words(text: str) -> int:
     return len(re.findall(r"[A-Za-z0-9]+(?:[-'][A-Za-z0-9]+)*", text))
@@ -148,6 +297,13 @@ def extract_citations(text: str):
             mentions.extend(ids)
             clusters.append(len(ids))
 
+    # 5. Nature/LaTeX markdown superscripts: $^{1-5}$, $^{14,19}$, $^{20}$ (exclude 10^{...}, mm^{3}, cm^{2}, ml^{-1})
+    for m in re.finditer(r"(?<!10)(?<!mm)(?<!cm)(?<!ml)(?<!µm)\$\^\{(\d{1,3}(?:\s*[,–—\-]\s*\d{1,3})*)\}\$", text):
+        ids = expand_num(m.group(1))
+        if ids:
+            mentions.extend(ids)
+            clusters.append(len(ids))
+
     return set(mentions), len(mentions), clusters
 
 
@@ -187,8 +343,13 @@ def audit_abstract(text: str, spec: dict, journal: str):
         findings.append(("WARN", "No explicit Gap/Problem pivot detected ('However, ... remains poorly understood')."))
     if not re.search(r"\b(here,?\s+we|in this study,?\s+we|we here|we show|we identify|we demonstrate|we present|we develop|we report)\b", text, re.I):
         findings.append(("WARN", "No clear main-result pivot ('Here, we show/identify/present...')."))
-    if not re.search(r"\b(\d{2,}|\d+\.\d+%?|n\s*=\s*\d+|fold|auc|hr\s*=|p\s*[<=>])\b", text, re.I):
-        findings.append(("WARN", "No quantitative anchors (cohort n, cell counts, fold changes, AUC/HR) detected; 55.7-76% of top abstracts include concrete numbers."))
+    if not re.search(r"\b(\d{2,}|\d+\.\d+%?|n\s*=\s*\d+|fold|auc|hr\s*=)\b", text, re.I):
+        findings.append(("WARN", "No quantitative anchors (cohort n, cell counts, fold changes, AUC/HR) detected; 55.7-76% of top abstracts include concrete scale/effect-size numbers."))
+    # Anti-P-value spam in mechanistic Abstracts (only 0.3% of 1,436 2025-26 papers put P values in Abstract; 0.0% in NCB/Cell/Cancer Cell!)
+    ab_clean = re.sub(r"\*|`", "", text)
+    ab_pvals = re.findall(r"\b[PpQq]\s*(?:value|val|adj)?\s*[<=>≤≥]\s*[0-9\.]", ab_clean)
+    if ab_pvals and journal != "nat_med":
+        findings.append(("WARN", f"Raw P-value(s) detected in Abstract ({len(ab_pvals)}); only 0.3% of 1,436 published 2025-26 Abstracts include raw P values (0.0% in NCB/Cell/Cancer Cell). Keep scale (n) and effect sizes (AUC/fold/%/rho), move P values to Figures/Results."))
     # Methods-bloat detector
     method_sents = sum(1 for s in sents if re.search(r"\b(seurat|harmony|cellchat|gsea|10x genomics|filtered|normalized|clustered|western blot|qpcr|pcr|flow cytometry|kit|software|pipeline|we collected|we performed|we analyzed)\b", s, re.I))
     if method_sents >= 3 or (len(sents) >= 3 and method_sents / len(sents) >= 0.45):
@@ -270,6 +431,69 @@ def audit_results(text: str, spec: dict, journal: str):
         findings.append(("INFO", f"Results citations: {len(ru)} unique refs ({rm} mentions, {rdens}/100w; CNS 2024-26 median: 31 unique / +27 NEW, ~4/subheading)."))
     if wc >= 600 and len(ru) < spec["res_ref_min"]:
         findings.append(("WARN", f"Results is under-cited ({len(ru)} unique refs < {journal} floor {spec['res_ref_min']}; CNS median 31, 85.3% of subheadings cite >=1 ref!). Cite published signatures/markers, named tools on first use, external cohorts, mouse/assay models, premise pivots & prior concordance."))
+
+    # --- Forensic CNS Prose Realism & Statistical Restraint Checks (calibrated on 1,436 published 2025-26 papers) ---
+    prose_lines = [ln for ln in text.splitlines() if not re.match(r"^\s*#{1,4}\s+", ln) and ln.strip() != "---"]
+    clean_res = re.sub(r"\$\^\{[^}]+\}\$|\$_\{[^}]+\}\$|\*\*|\*|`", "", "\n".join(prose_lines))
+    clean_wc = max(1, count_words(clean_res))
+
+    # 1. P/q/FDR density & Human CNS Median Bullseye detector (Published 2025-26 med = 0.6/1kw, P90 = 5.9/1kw!)
+    p_hits = re.findall(r"(?:\b[PpQq]\s*(?:value|val|adj|_?adj)?\s*[<=>≤≥]\s*[0-9\.]|\bFDR\s*[<=>≤≥]\s*[0-9\.])", clean_res)
+    p_rate = round(1000.0 * len(p_hits) / clean_wc, 1)
+    p_med, p_bull, p_warn, p_fail = CNS_JOURNAL_P_TARGETS.get(journal, (0.6, 2.0, 5.5, 10.0))
+    if clean_wc >= 400:
+        findings.append(("INFO", f"Results inline P/q/FDR count: {len(p_hits)} ({p_rate}/1,000w; {journal} median={p_med}/1kw, bullseye <= {p_bull}/1kw, P90=5.9/1kw)."))
+        if p_rate > p_fail:
+            findings.append(("FAIL", f"Severe P-value overload in Results prose ({len(p_hits)} total, {p_rate}/1,000w > {p_fail} redline; {journal} median={p_med}/1kw!). Move exact P/q values to Figure panels, Captions & Source Data. CNS Pattern: replace '... (P = 0.003)' with '... reduced X by 63% (Fig. 2a)' and retain inline P ONLY for primary survival, multivariable Cox/interaction & decisive in vivo endpoints."))
+        elif p_rate > p_warn:
+            findings.append(("WARN", f"High inline P-value density in Results ({len(p_hits)} total, {p_rate}/1,000w > ceiling {p_warn}/1kw; {journal} median={p_med}/1kw). Trim routine inline P values toward bullseye <= {p_bull}/1kw (e.g., 'Baseline covariates were balanced between groups (Extended Data Fig. 1b)' instead of listing each P value)."))
+        elif p_rate > p_bull:
+            findings.append(("WARN", f"Results P-value density ({p_rate}/1,000w) is inside safe ceiling but above {journal} Median Bullseye (<= {p_bull}/1kw; published median={p_med}/1kw). Trim secondary inline P values onto figure panels/captions to land near the human CNS median."))
+
+    # 2. Monster sentence & burstiness cadence check (Published 2025-26 med mean=27.7w, CV=0.49, <=18w=23.1%, >40w=12.2%, >55w=2.7%)
+    if clean_wc >= 400:
+        rsents = split_sents(clean_res)
+        if rsents:
+            slens = [len(s.split()) for s in rsents]
+            s_mean = round(sum(slens) / len(slens), 1)
+            s_sd = round((sum((l - s_mean) ** 2 for l in slens) / max(1, len(slens) - 1)) ** 0.5, 1) if len(slens) >= 3 else 0.0
+            s_cv = round(s_sd / max(1e-6, s_mean), 2)
+            short_pct = round(100.0 * sum(1 for l in slens if l <= 18) / len(slens), 1)
+            gt40 = round(100.0 * sum(1 for l in slens if l > 40) / len(slens), 1)
+            gt55 = round(100.0 * sum(1 for l in slens if l > 55) / len(slens), 1)
+            s_max = max(slens)
+            findings.append(("INFO", f"Results sentence rhythm: mean={s_mean}w (med 27.7w, bullseye 25-29w) | CV={s_cv} (med 0.49, bullseye 0.44-0.55) | <=18w={short_pct}% (med 23.1%) | >40w={gt40}% (med 12.2%) | >55w={gt55}% (med 2.7%) | max={s_max}w."))
+            if s_mean > 42.0 or gt55 > 20.0:
+                findings.append(("FAIL", f"Wall-of-text monster sentences in Results (mean={s_mean}w, {gt55}% >55w, max={s_max}w vs CNS median 27.7w / 2.7% >55w). Split stacked clauses into crisp 1-claim sentences (bullseye 25-29w)!"))
+            elif s_mean > 34.0 or gt55 > 10.0 or s_max > 85:
+                findings.append(("WARN", f"Long compound sentences in Results (mean={s_mean}w, {gt55}% >55w, max={s_max}w); tighten toward 25-29w CNS median cadence."))
+            if len(slens) >= 25 and s_cv < 0.36:
+                findings.append(("WARN", f"Low sentence-length burstiness / metronome AI cadence (CV={s_cv} < 0.36, <=18w={short_pct}% vs human CNS median CV=0.49 / 23.1% <=18w). Interleave 1 crisp 10-17w sentence every 3-4 sentences — e.g.: {' | '.join(CNS_SHORT_BURST_MODELS[:2])}"))
+            elif len(slens) >= 25 and (s_cv < 0.43 or short_pct < 19.0):
+                findings.append(("WARN", f"Sentence burstiness below Human CNS Median Bullseye (CV={s_cv}, <=18w={short_pct}% vs bullseye CV 0.44-0.55, <=18w 20-28%). Add crisp short topic/negative-control sentences — e.g.: '{CNS_SHORT_BURST_MODELS[1]}'"))
+
+    # 3. Internal notebook/code/sample-ID jargon leaks (Published 2025-26 med = 0.0, P90 = 1.0!)
+    jargon_re = re.compile(r"\b(?:[a-z]\d{2}_[A-Za-z0-9_]+|[A-Z]\d+_[A-Z]\d+_[A-Za-z]+|(?:Primary|Temporal|Cohort|Val|Discovery)\d{2,3}|pt\d{1,3}(?:-pre|-post)?|CNA(?:Pure|Gate)|L\d+-H&E|Ensemble-(?:Top)?\d+|F[1-9][a-d]?\b|Panel\s+[A-C]\b|v2\s+slides)\b")
+    j_hits = jargon_re.findall(clean_res)
+    if len(j_hits) >= 5:
+        ex_j = sorted(set(j_hits))[:8]
+        findings.append(("FAIL", f"Internal notebook/pipeline/patient-ID jargon leaked into Main Results ({len(j_hits)} hits, e.g. {ex_j}; published CNS median=0.0). Replace with clean biological/cohort prose (e.g. 'the discovery cohort (n = ...)', 'a representative responder', '*POSTN*+ fibroblasts') and move IDs to Methods/Captions/Source Data."))
+    elif j_hits:
+        findings.append(("WARN", f"Possible internal pipeline/sample-ID jargon in Results ({len(j_hits)} hits: {sorted(set(j_hits))[:6]}); replace with clean biological/cohort names in main prose (ensure 1:1 sync with legends/figures)."))
+
+    # 4. Defensive Kaggle/QC/leakage audit log prose in Main Results (Published 2025-26 med = 0.0, P90 = 0.0!)
+    def_re = re.compile(r"\b(without outcome[- ]label leakage|outcome[- ]blind|zero[- ]outcome[- ]peeking|adversarial removal|sensitivity audits?|quarantined|bidirectional rescue disabled|conflict[- ]free|guarding against technical batch|zero batch confounding|negative penalty|fragile antibodies|strictly isolated|overfitted)\b", re.I)
+    d_hits = def_re.findall(clean_res)
+    if len(d_hits) >= 8:
+        findings.append(("FAIL", f"Defensive QC/anti-leakage audit prose saturates Main Results ({len(d_hits)} hits; published CNS median=0.0!). Replace with plain CNS specificity prose: {suggest_lexicon_fixes(d_hits, CNS_DEFENSIVE_REPLACEMENTS)}."))
+    elif len(d_hits) >= 1:
+        findings.append(("WARN", f"Defensive audit/QC wording in Main Results ({len(d_hits)} hit(s); CNS median=0.0). Suggested CNS replacements: {suggest_lexicon_fixes(d_hits, CNS_DEFENSIVE_REPLACEMENTS)}."))
+
+    # 5. Nested brackets [...] inside parentheses (...) (Published med = 0.0)
+    br_hits = re.findall(r"\([^)]*\[[^\]]+\][^)]*\)", clean_res)
+    if len(br_hits) >= 3:
+        findings.append(("WARN", f"Nested brackets '[...]' inside parentheses '()' detected {len(br_hits)} times in Results (published median=0); move nested subgroup counts/metadata to tables or clean separate clauses."))
+
     scan_chinglish(text, findings)
     return findings
 
@@ -279,6 +503,9 @@ def audit_discussion(text: str, spec: dict, journal: str):
     paras = [p.strip() for p in re.split(r"\n{2,}", text.strip()) if len(p.split()) >= 15]
     wc = count_words(text)
     findings.append(("INFO", f"Discussion: {wc} words across {len(paras)} paragraphs."))
+    disc_floor = 550 if journal == "nature" else 720
+    if 250 <= wc < disc_floor:
+        findings.append(("WARN", f"Discussion is compressed ({wc}w < {disc_floor}w norm; published 2025-26 median=999w, NCB=913w). Ensure adequate comparative literature (+11-14 NEW refs), translational roadmap, and balanced constructive Limitations."))
     if paras:
         p1 = paras[0]
         if re.search(r"\b(p\s*[<=>]\s*0\.\d+|hr\s*=\s*\d|auc\s*=\s*0\.\d+|\d+\.\d+%)\b", p1, re.I):
@@ -300,6 +527,15 @@ def audit_discussion(text: str, spec: dict, journal: str):
         findings.append(("INFO", f"Discussion citations: {len(du)} unique refs ({dm} mentions, {ddens}/100w; CNS median: 20 unique / +12 NEW, 1.9/100w)."))
     if wc >= 350 and len(du) < spec["disc_ref_min"]:
         findings.append(("WARN", f"Discussion is under-cited ({len(du)} unique refs < {journal} floor {spec['disc_ref_min']}; CNS median 20 including +11-14 NEW trial/cross-cancer/reconciliation refs)."))
+    # Discussion High-Grounding Human CNS Opener Check (550 flagship papers; real human median ~65-74%)
+    dsents = split_sents(re.sub(r"\$\^\{[^}]+\}\$|\*\*|\*", "", text))
+    if len(dsents) >= 10:
+        disc_open_re = re.compile(r"^(?:In (?:this|our|the present|the current) study|In (?:line|contrast|addition|summary|conclusion|support|agreement)|Consistent with|This (?:is consistent|suggests|indicates|may|pattern|finding|study)|These (?:findings|results|data|observations)|Our (?:data|findings|results|study)|We (?:found|show|demonstrate|observed|identified|speculate|propose|hypothesize|have shown)|Here,?\s+we|Together,?|Taken together|However,?|Nevertheless,?|Importantly,?|Notably,?|Interestingly,?|Although\b|While\b|Whereas\b|Unlike\b|First,|Second,|Third,|Finally,|Future (?:studies|work)|Previous (?:studies|reports|work)|Prior (?:studies|reports|work)|A (?:recent|key|notable)|It is (?:important|notable|worth)|To our knowledge|Furthermore,?|Moreover,?|Thus,?|Therefore,?|By contrast)", re.I)
+        grounded_d = sum(1 for s in dsents if disc_open_re.match(s.strip()))
+        dpct = round(100.0 * grounded_d / len(dsents), 1)
+        findings.append(("INFO", f"Discussion CNS opener grounding: {grounded_d}/{len(dsents)} sentences ({dpct}%; target >=55% using verified 550-paper Discussion openers)."))
+        if dpct < 45.0:
+            findings.append(("WARN", f"Low Discussion CNS opener grounding ({dpct}% < 45%; avoids abstract nominalized openings). Replace abstract openings with high-frequency 550-paper CNS stems: {' | '.join(CNS_DISC_OPENER_MODELS[:6])}"))
     scan_chinglish(text, findings)
     return findings
 
@@ -327,6 +563,10 @@ def audit_cover_letter(text: str, spec: dict, journal: str):
         findings.append(("WARN", "Missing Compliance #4 (if human/animal data): IRB/IACUC ethics & informed consent note."))
     if not re.search(r"\b(readership|scope|recent|published in|et al\.,?\s*202\d)\b", text, re.I):
         findings.append(("WARN", "Missing explicit journal-scope fit / citation of 1-2 recent papers from the target journal."))
+    elif not re.search(r"\bet al\.,?\s*(?:\(?\d{4}\)?)?", text):
+        findings.append(("WARN", "Cover Letter mentions journal scope generically without citing 1-2 specific recent papers ('Author et al., 2024/2025') published in the target journal."))
+    if re.search(r"\b[Pp]\s*[<=>]\s*0\.\d+", re.sub(r"\*", "", text)):
+        findings.append(("WARN", "Raw P value detected in Cover Letter; keep editor pitch conceptual and effect-size driven (no raw P-value dumps)."))
     return findings
 
 
@@ -347,8 +587,13 @@ def audit_caption(text: str, spec: dict, journal: str):
             findings.append(("WARN", "Error bars / means mentioned without defining dispersion metric (mean +/- s.d. or s.e.m.)."))
         if re.search(r"\bp\s*[<=>]|mann|wilcoxon|t-?test|anova|kruskal|log-?rank|fisher\b", text, re.I) and not re.search(r"\b(two-sided|two-tailed|one-sided|one-tailed)\b", text, re.I):
             findings.append(("WARN", "Statistical test cited without specifying sidedness ('two-sided' / 'two-tailed')."))
-    if re.search(r"\b(immunofluorescence|mif|ihc|h&e|microscop|codex|imaging|histolog|spatial)\b", text, re.I) and not re.search(r"\bscale bar\b", text, re.I):
-        findings.append(("FAIL", "Microscopy / tissue imaging panel detected without 'Scale bar, XX um' disclosure."))
+    if re.search(r"\b(immunofluorescence|mif|ihc|h&e|microscop|codex|imaging|histolog|spatial|mri)\b", text, re.I):
+        if not re.search(r"\bscale bar\b", text, re.I):
+            findings.append(("FAIL", "Microscopy / tissue / MRI imaging panel detected without 'Scale bar, XX um/mm/cm' disclosure."))
+        elif not re.search(r"scale bar[^\.]{0,25}\b\d+(?:\.\d+)?\s*(?:µm|μm|um|mm|cm)\b", text, re.I):
+            findings.append(("WARN", "Scale bar mentioned without an explicit numeric physical unit (e.g., 'Scale bar, 100 um' or 'Scale bar, 1 cm')."))
+    if re.search(r"\*\*[pqP]\*\s*[<=>]", text):
+        findings.append(("WARN", "Broken Markdown bold/italic collision around significance stars (e.g., '**q* < 0.01'); escape asterisks '\\*\\*q < 0.01' or use plain notation."))
     return findings
 
 
@@ -389,14 +634,26 @@ def audit_methods(text: str, spec: dict, journal: str):
         findings.append(("FAIL", "Human specimens mentioned without IRB/ethics approval and written informed consent disclosure."))
     if re.search(r"\b(mouse|mice|murine|xenograft|pdx)\b", text, re.I) and not re.search(r"\b(iacuc|animal care|ethics committee|institutional animal)\b", text, re.I):
         findings.append(("FAIL", "Animal experiments mentioned without IACUC / institutional animal ethics approval."))
-    if re.search(r"\b(cell line|hepg2|hela|a549|mcf7|hek293|cultured in dmem|rpmi)\b", text, re.I) and not re.search(r"\b(mycoplasma|str profiling|authenticated)\b", text, re.I):
-        findings.append(("WARN", "Cell lines mentioned without STR authentication and routine mycoplasma testing disclosures."))
+    if re.search(r"\b(cell line|hepg2|hela|a549|mcf7|hek293|rt4|t24|mb49|cultured in dmem|rpmi|mccoy)\b", text, re.I):
+        has_myco = bool(re.search(r"\bmycoplasma\b", text, re.I))
+        has_str = bool(re.search(r"\b(str profiling|str authenticat|short tandem repeat|authenticated by str|cell line authentication)\b", text, re.I))
+        if not has_myco or not has_str:
+            missing_cl = [x for x, ok in [("STR authentication", has_str), ("mycoplasma testing", has_myco)] if not ok]
+            findings.append(("WARN", f"Cell lines mentioned without {' and '.join(missing_cl)} disclosure(s)."))
     if re.search(r"\b(seurat|scanpy|cell ranger|deseq2|harmony|star|bwa|gatk|cellchat|python|r\b)\b", text, re.I) and not re.search(r"\bv?\d+\.\d+(?:\.\d+)?\b", text):
         findings.append(("FAIL", "Bioinformatics software cited without exact version numbers (e.g., Seurat v4.3.0, R v4.3.2)."))
     if wc > 400 and not re.search(r"\b(data availability|code availability|github|zenodo|gse\d+|hra\d+|egas\d+|prjna\d+)\b", text, re.I):
         findings.append(("WARN", "No Data/Code Availability statement or repository accession (GEO/GSA/EGA/GitHub/Zenodo) detected."))
     if journal in ("cell", "cancer_cell") and wc > 500 and not re.search(r"key resources table|resource availability|quantification and statistical analysis", text, re.I):
         findings.append(("WARN", "Cell Press STAR Methods requires 'KEY RESOURCES TABLE', 'RESOURCE AVAILABILITY', and 'QUANTIFICATION AND STATISTICAL ANALYSIS'."))
+    if journal in ("nature", "nature_sister", "nat_med") and re.search(r"key resources table", text, re.I):
+        findings.append(("WARN", f"Cell Press 'Key Resources Table' detected inside a {journal} Methods file; Nature Portfolio uses a Reporting Summary + Supplementary Tables (remove KRT cross-references from prose before submission)."))
+    mu, mm, _ = extract_citations(text)
+    if wc >= 1500 and len(mu) < 8:
+        findings.append(("WARN", f"Methods section ({wc}w) has only {len(mu)} inline citation(s); Nature Portfolio allocates ~32.4% of total refs (15-27 refs) to Methods software, databases & protocols!"))
+    placeholders = re.findall(r"\[(?:Supplier|Cat#|TODO|Zenodo DOI|GEO / GSA|accession placeholder)[^\]]*\]", text, re.I)
+    if placeholders:
+        findings.append(("WARN", f"Unfilled submission placeholder(s) detected in Methods ({len(placeholders)}): {placeholders[:5]} — fill prior to submission."))
     return findings
 
 
@@ -409,28 +666,43 @@ def split_full_manuscript(text: str):
         "discussion": "discussion", "cover letter": "cover_letter",
         "figure caption": "caption", "figure captions": "caption", "figure legend": "caption",
         "methods": "methods", "star methods": "methods", "materials and methods": "methods",
+        "references": "references", "bibliography": "references",
+    }
+    stop_headers = {
+        "authors", "affiliations", "acknowledgements", "acknowledgments",
+        "author contributions", "competing interests", "conflict of interest",
+        "data availability", "code availability", "funding", "ethics",
+        "supplementary", "extended data", "reporting summary",
     }
     sections = {}
     cur = None
     buf = []
     for ln in text.splitlines():
-        m = re.match(r"^#{1,2}\s+(.+)$", ln.strip())
+        m = re.match(r"^(#{1,2})\s+(.+)$", ln.strip())
         if m:
-            hdr = m.group(1).strip().lower().rstrip(":")
+            hashes, raw_hdr = m.group(1), m.group(2).strip()
+            hdr = raw_hdr.lower().rstrip(":")
             matched = next((v for k, v in sec_map.items() if hdr == k or hdr.startswith(k)), None)
-            if matched:
+            is_stop = any(hdr == k or hdr.startswith(k) for k in stop_headers)
+            if matched and (len(hashes) == 1 or cur != "results"):
                 if cur and buf:
                     sections[cur] = "\n".join(buf).strip()
                 cur = matched
+                buf = []
+                continue
+            elif is_stop and (len(hashes) == 1 or cur != "results"):
+                if cur and buf:
+                    sections[cur] = "\n".join(buf).strip()
+                cur = None
                 buf = []
                 continue
         if cur:
             buf.append(ln)
     if cur and buf:
         sections[cur] = "\n".join(buf).strip()
-    # Extract Results H3 subheadings automatically if present
+    # Extract Results H2/H3 subheadings automatically if present
     if "results" in sections and "subheadings" not in sections:
-        shs = re.findall(r"^###\s+(.+)$", sections["results"], re.M)
+        shs = re.findall(r"^#{2,3}\s+(.+)$", sections["results"], re.M)
         if shs:
             sections["subheadings"] = "\n".join(shs)
     return sections
@@ -648,6 +920,119 @@ def run_audit(section: str, journal: str, text: str) -> int:
                     total_fail += 1
                 else:
                     total_warn += 1
+            # Orphan / Missing Reference Cross-Check against # References list
+            if "references" in parts:
+                listed_nums = {int(m.group(1)) for m in re.finditer(r"^\s*(\d{1,3})\.\s+", parts["references"], re.M)}
+                cited_nums = {int(x.split(":")[1]) for x in all_u if x.startswith("num:")}
+                orphans = sorted(listed_nums - cited_nums)
+                missing_r = sorted(cited_nums - listed_nums)
+                if orphans:
+                    print(f"  [FAIL] {len(orphans)} ORPHAN reference(s) listed in # References but NEVER cited in body: {orphans[:15]} — either cite them at matching cohorts/tools/claims in Results/Discussion or remove them!")
+                    total_fail += 1
+                if missing_r:
+                    print(f"  [FAIL] {len(missing_r)} citation number(s) used in body but MISSING from # References: {missing_r[:15]}!")
+                    total_fail += 1
+            # Strict Sequential First-Appearance Citation Numbering Audit (mandatory in Nature/Science!)
+            seq_text = "\n".join(parts[k] for k in ("intro", "results", "discussion") if k in parts)
+            first_seq = []
+            seen_seq = set()
+            for m in re.finditer(r"(?:(?<!10)(?<!mm)(?<!cm)(?<!ml)(?<!µm)\$\^\{(\d{1,3}(?:\s*[,–—\-]\s*\d{1,3})*)\}\$|\[(\d{1,3}(?:\s*[,–—\-]\s*\d{1,3})*)\])", seq_text):
+                raw_s = (m.group(1) or m.group(2)).replace("–", "-").replace("—", "-")
+                for part in re.split(r"[,;\s]+", raw_s.strip()):
+                    if not part:
+                        continue
+                    mr = re.fullmatch(r"(\d{1,3})-(\d{1,3})", part)
+                    ids = list(range(int(mr.group(1)), int(mr.group(2)) + 1)) if mr else ([int(part)] if part.isdigit() else [])
+                    for k_id in ids:
+                        if 1 <= k_id <= 300 and k_id not in seen_seq:
+                            seen_seq.add(k_id)
+                            first_seq.append(k_id)
+            if len(first_seq) >= 10:
+                ooo = [(i + 1, first_seq[i]) for i in range(len(first_seq)) if first_seq[i] != i + 1]
+                if len(ooo) >= 3:
+                    print(f"  [FAIL] Non-sequential reference numbering ({len(ooo)}/{len(first_seq)} out-of-order first citations; first jumps: {ooo[:6]}). Numbered journals require strict 1, 2, 3... order of first appearance in Intro -> Results -> Discussion!")
+                    total_fail += 1
+
+        # Main-Text AI Punctuation & Repetition Realism Audit (calibrated on 1,350 published 2025-26 papers)
+        if main_wc >= 1200:
+            main_prose = " ".join(parts[k] for k in ("intro", "results", "discussion"))
+            main_clean = re.sub(r"\$\^\{[^}]+\}\$|\$_\{[^}]+\}\$|\*\*|\*|`", "", main_prose)
+            # Exclude parenthetical (stat; Fig. Xa) semicolons from prose semicolon chain audit!
+            no_parens_clean = re.sub(r"\([^)]*\)", " ", main_clean)
+            em_rate = round(1000.0 * len(re.findall(r"—|--", main_clean)) / max(1, main_wc), 1)
+            semi_prose_rate = round(1000.0 * len(re.findall(r";\s", no_parens_clean)) / max(1, main_wc), 1)
+            comma_fig_n = len(re.findall(r"\([^)]*(?:=|[0-9%]),\s*(?:Extended Data |Supplementary )?Fig(?:s)?\.", main_clean))
+            print("\n[PROSE REALISM & AI-TELL AUDIT (1,350 Published 2025-26 Papers)]")
+            print(f"  [INFO] Punctuation density: em-dash (—)={em_rate}/1kw (med 0.0, bullseye <=0.3) | prose semicolon (;)={semi_prose_rate}/1kw (med 2.4, bullseye 1.0-4.0).")
+            if em_rate > 0.8:
+                print(f"  [WARN] Em-dash overuse ({em_rate}/1kw vs CNS median 0.0, bullseye <=0.3/1kw); replace '—...—' pairs with commas or crisp separate sentences.")
+                total_warn += 1
+            if semi_prose_rate > 7.5:
+                print(f"  [WARN] Heavy prose semicolon overuse ({semi_prose_rate}/1kw vs CNS median 2.4); break chained prose clauses into crisp periods (keep ';' ONLY inside '(stat; Fig. Xa)').")
+                total_warn += 1
+            if comma_fig_n >= 8 and journal in ("nature", "nature_sister", "nat_med"):
+                print(f"  [WARN] Parenthetical stat-to-figure separators use commas instead of semicolons ({comma_fig_n}x, e.g., '(n = 24, Fig. 1a)'); Nature house style uses ';' -> '(n = 24; Fig. 1a)'.")
+                total_warn += 1
+            # Overused editorializing / AI-signature words (>2x across paper)
+            rep_map = {"parsimonious": "compact/minimal", "crucially": "notably/(delete)", "critically": "notably/(delete)", "strikingly": "markedly/(delete)", "remarkably": "markedly/(delete)", "pivotal": "central/key", "multifaceted": "diverse", "quarantined": "independent/held-out", "compelling": "strong"}
+            overused = [(w, len(re.findall(rf"\b{w}\b", main_clean, re.I))) for w in rep_map]
+            overused = [(w, c) for w, c in overused if c >= 3]
+            if overused:
+                rep_hint = "; ".join(f"'{w}' ({c}x) -> '{rep_map[w]}'" for w, c in overused)
+                print(f"  [WARN] Repeated editorializing/AI-tell word(s) (>=3x; cap <=1-2x): {rep_hint}.")
+                total_warn += 1
+            # Non-CNS / tech-blog / metaphor lexicon (<0.5% in 1,312 published 2025-26 CNS papers; median = 0!)
+            alien_lex = re.findall(r"\b(audited|rigorous audit|quarantined|obliterates?|crosswalk|capitalis(?:ing|ed)|capitaliz(?:ing|ed)|over-optimistic|honest (?:optical )?blind spot|upgraded clinical|locked [^\.,]{1,20} atlas|phase cliff|division of labou?r|triage cascade|parsimonious|habitats|descriptors|portals|cleanly|decodes?)\b", main_clean, re.I)
+            if len(alien_lex) >= 1:
+                print(f"  [WARN] Non-CNS / tech-blog lexicon detected ({len(alien_lex)} hit(s); CNS median=0!). Exact CNS replacements: {suggest_lexicon_fixes(alien_lex, CNS_LEXICON_REPLACEMENTS, 8)}.")
+                total_warn += 1
+            # Invented 3+ part multi-hyphen pre-modifier stacks (0.0% in 1,312 CNS papers!)
+            h_stacks = re.findall(r"\b[a-z]{3,}-[a-z]{2,}-[a-z]{3,}(?:-[a-z]{2,})?\b", main_clean)
+            ok_hyph = {"non-small-cell", "cell-to-cell", "single-cell-level", "dose-response", "leave-one-out", "end-to-end", "anti-pd-1", "anti-pd-l1", "anti-ctla-4", "head-and-neck", "standard-of-care", "real-world-data", "loss-of-function", "gain-of-function", "time-to-event", "one-to-one", "up-to-date", "step-by-step", "side-by-side", "short-term", "long-term", "progression-free-survival", "disease-free-survival"}
+            h_stacks = [h for h in h_stacks if h.lower() not in ok_hyph]
+            if len(h_stacks) >= 2:
+                print(f"  [WARN] Invented 3+ part multi-hyphen compound stack(s) ({len(h_stacks)} hit(s); CNS median=0!). Unpack into plain prepositional CNS English: {suggest_hyphen_unpacks(h_stacks, 7)}.")
+                total_warn += 1
+            # AI-tell 2-part modifier stacks that depress 2-gram CNS grounding (references/08 §18.2)
+            stack2_re = re.compile(r"\b(two-feature|three-feature|same-section|single-marker|single-metric|batch-matched|multi-compartment|macro-architectural|ambient-rna|zero-shot|out-of-fold|within-batch|per-slide|bladder-wall|dendritic-cell|signed-z)\b", re.I)
+            h2_hits = stack2_re.findall(main_clean)
+            if len(h2_hits) >= 3:
+                print(f"  [WARN] Frequent AI-tell 2-part hyphen modifier stacks ({len(h2_hits)} hit(s); pulls 2-gram grounding below 76% CNS median). Unpack: {suggest_lexicon_fixes(h2_hits, CNS_2PART_STACK_REPLACEMENTS, 7)}.")
+                total_warn += 1
+            # Detect named public cohorts/tools in Results missing citations
+            named_tools = sorted(set(re.findall(r"\b(Seurat|Scanpy|Harmony|UCell|ESTIMATE|VALIS|edgeR|DESeq2|DepMap|PRISM|GDSC2|CCLE|RCTD|CellChat|CellPhoneDB|NicheNet|SCENIC|Slingshot|Monocle|H-optimus-0|UNI2?-h?|CONCH|MUSK|phikon-v2|Virchow|TCGA-[A-Z]{2,5}|GSE\d{4,7}|NCT\d{6,9})\b", parts["results"])))
+            if named_tools and len(ru) < spec["res_ref_min"]:
+                print(f"  [INFO] Named tools/cohorts/trials in Results that can naturally raise Results citations ({len(named_tools)} detected): {named_tools[:12]}")
+
+            # --- Human CNS Median Scorecard (Bullseye vs Boundary-Hugging vs Out-of-Range) ---
+            res_prose_lines = [ln for ln in parts["results"].splitlines() if not re.match(r"^\s*#{1,4}\s+", ln) and ln.strip() != "---"]
+            res_clean_sc = re.sub(r"\$\^\{[^}]+\}\$|\$_\{[^}]+\}\$|\*\*|\*|`", "", "\n".join(res_prose_lines))
+            res_wc_sc = max(1, count_words(res_clean_sc))
+            res_p_n = len(re.findall(r"(?:\b[PpQq]\s*(?:value|val|adj|_?adj)?\s*[<=>≤≥]\s*[0-9\.]|\bFDR\s*[<=>≤≥]\s*[0-9\.])", res_clean_sc))
+            res_p_rate = round(1000.0 * res_p_n / res_wc_sc, 1)
+            p_med_sc, p_bull_sc, p_warn_sc, _ = CNS_JOURNAL_P_TARGETS.get(journal, (0.6, 2.0, 5.5, 10.0))
+            res_sents_sc = split_sents(res_clean_sc)
+            sc_slens = [len(s.split()) for s in res_sents_sc] if res_sents_sc else [27]
+            sc_mean = round(sum(sc_slens) / len(sc_slens), 1)
+            sc_sd = (sum((l - sc_mean) ** 2 for l in sc_slens) / max(1, len(sc_slens) - 1)) ** 0.5 if len(sc_slens) >= 3 else 13.0
+            sc_cv = round(sc_sd / max(1e-6, sc_mean), 2)
+            sc_short = round(100.0 * sum(1 for l in sc_slens if l <= 18) / len(sc_slens), 1)
+            sc_gt40 = round(100.0 * sum(1 for l in sc_slens if l > 40) / len(sc_slens), 1)
+            sc_ai_total = len(alien_lex) + len(h_stacks) + len(h2_hits) + len(re.findall(r"\b(without outcome[- ]label leakage|outcome[- ]blind|zero[- ]outcome[- ]peeking|adversarial removal|sensitivity audits?|quarantined|bidirectional rescue disabled|guarding against technical batch|zero batch confounding|negative penalty|fragile antibodies|strictly isolated)\b", res_clean_sc, re.I))
+
+            def _tag(ok_bull: bool, ok_safe: bool) -> str:
+                return "BULLSEYE" if ok_bull else ("EDGE->pull to median" if ok_safe else "OUT-OF-RANGE")
+
+            print("\n[HUMAN CNS MEDIAN SCORECARD — Aim for BULLSEYE, Not Just Ceiling!]")
+            print(f"  - Results P/q (/1kw)    : {res_p_rate:5.1f} | Med {p_med_sc:4.1f} (Bullseye <= {p_bull_sc:3.1f})  -> [{_tag(res_p_rate <= p_bull_sc, res_p_rate <= p_warn_sc)}]")
+            print(f"  - Sentence Mean (w)     : {sc_mean:5.1f} | Med 27.7 (Bullseye 25-29)   -> [{_tag(25.0 <= sc_mean <= 29.5, 22.0 <= sc_mean <= 34.0)}]")
+            print(f"  - Burstiness CV         : {sc_cv:5.2f} | Med 0.49 (Bullseye 0.44-55) -> [{_tag(0.44 <= sc_cv <= 0.58, sc_cv >= 0.36)}]")
+            print(f"  - Short <=18w (%)       : {sc_short:5.1f} | Med 23.1 (Bullseye 20-28%)  -> [{_tag(19.5 <= sc_short <= 30.0, 15.0 <= sc_short <= 40.0)}]")
+            print(f"  - Monster >40w (%)      : {sc_gt40:5.1f} | Med 12.2 (Bullseye <= 15%)  -> [{_tag(sc_gt40 <= 15.5, sc_gt40 <= 21.0)}]")
+            print(f"  - Em-dash '—' (/1kw)    : {em_rate:5.1f} | Med  0.0 (Bullseye <= 0.3)  -> [{_tag(em_rate <= 0.3, em_rate <= 1.1)}]")
+            print(f"  - Prose ';' (/1kw)      : {semi_prose_rate:5.1f} | Med  2.4 (Bullseye 1.0-4.0) -> [{_tag(0.8 <= semi_prose_rate <= 4.5, semi_prose_rate <= 7.5)}]")
+            print(f"  - AI-Tell & Hyphen Hits : {sc_ai_total:5d} | Med    0 (Bullseye = 0)     -> [{_tag(sc_ai_total == 0, sc_ai_total <= 3)}]")
+            print(f"  - Main Unique Refs      : {len(main_u):5d} | Med   62 (Bullseye 52-72)   -> [{_tag(52 <= len(main_u) <= 78, len(main_u) >= spec['main_ref_min'])}]")
 
     print(f"\n--- SUMMARY: {total_fail} FAIL(s), {total_warn} WARN(s) ---")
     return 1 if total_fail > 0 else 0
@@ -948,6 +1333,12 @@ REAL_VISUAL_TYPES = {
     "organoid_microscopy", "western_blot", "spatial_zoom_mif", "histology", "ihc",
 }
 
+HIGH_DENSITY_DATA_TYPES = {
+    "atlas_umap", "spatial_map", "heatmap", "pseudotime_cascade", "dotplot",
+    "oncoprint", "km_risk_table", "multi_cluster_volcano", "chord", "alluvial",
+    "roe_matrix", "neighborhood_matrix", "swimmer",
+}
+
 # Lower triage score = demote to Extended Data / Supplementary FIRST (based on 1,215-paper empirical ratios)
 # Note: Flagship representative real images ('visual_hero_image') are protected at priority 93!
 ROLE_PRIORITY = {
@@ -1057,8 +1448,9 @@ def plan_and_rebalance_figures(data: dict, journal: str, do_rebalance: bool = Fa
             for p in ps:
                 if int(p.get("bundled_subcharts", 1)) > 1 and p.get("chart_type", "").lower() not in REAL_VISUAL_TYPES:
                     print(f"          [WARN 1:1-LETTER] Panel '{p.get('id','?')}' bundles {p.get('bundled_subcharts')} subcharts under ONE letter; split into separate sequential letters!")
-            # Check Real Visual Hero Space Reservation (35-55% of Main Figure!)
+            # Check Real Visual Hero Space Reservation (35-55% of Main Figure!) & Anti-Sparse Visual Density
             vis_ps = [p for p in ps if p.get("chart_type", "").lower() in REAL_VISUAL_TYPES]
+            hd_ps = [p for p in ps if p.get("chart_type", "").lower() in HIGH_DENSITY_DATA_TYPES]
             if vis_ps:
                 vis_area = sum(p["w_mm"] * p["h_mm"] for p in vis_ps)
                 plate_area = max(1.0, page_w * max(h, page_h * 0.60))
@@ -1067,11 +1459,25 @@ def plan_and_rebalance_figures(data: dict, journal: str, do_rebalance: bool = Fa
                 for vp in vis_ps:
                     if vp["w_mm"] < 80.0 or vp["h_mm"] < 50.0:
                         print(f"          [WARN VISUAL SIZE] Real image '{vp.get('id','?')}' ({vp['w_mm']:.0f}x{vp['h_mm']:.0f} mm) is too small! Reserve >=88x60 mm (or 115-174 mm Hero Band) in sci-plot.")
+            elif not hd_ps and len(ps) >= 4:
+                print(f"          [WARN SPARSE-PLATE] Fig. {fn} has 0 real visual images AND 0 high-density composite charts (all basic univariate plots risk >76% white!). Add a representative microscopy/spatial ROI or upgrade to OncoPrint/heatmap/KM+Risk-Table.")
+            if ctypes.count("scatter") >= 3:
+                print(f"          [TIP ANTI-SPARSE] {ctypes.count('scatter')} separate scatter plots in Fig. {fn}; consolidate into 2D-contour facets, correlation matrix, or paired forest plot to avoid repetitive sparse strips.")
+            if "km" in ctypes:
+                print(f"          [TIP HIGH-DENSITY] Bare 'km' detected in Fig. {fn}; upgrade to 'km_risk_table' (95% CI ribbon + aligned Number at risk + HR [95% CI]).")
+            if any(c in ("schematic", "working_model") for c in ctypes):
+                print(f"          [TIP SCHEMATIC] Draw schematic/working_model in Fig. {fn} as biological cell/organ vector art (Illustrator/BioRender) — NEVER plain matplotlib text-boxes + straight arrows.")
+        sparse_eds = []
         for fn in sorted(s_dict.keys()):
             ps = s_dict[fn]
             h, rows = shelf_pack_height(ps, page_w)
-            st = "OVERFLOW" if h > page_h else "OK"
-            print(f"  {supp_prefix} {fn}: {len(ps):2d} panels | packed={h:5.1f}/{page_h} mm ({round(100*h/page_h,1):5.1f}%) -> [{st}]")
+            epct = round(100 * h / page_h, 1)
+            st = "OVERFLOW" if h > page_h else ("HALF-EMPTY" if (len(ps) <= 4 and epct < 62.0) else "OK")
+            if st == "HALF-EMPTY":
+                sparse_eds.append(fn)
+            print(f"  {supp_prefix} {fn}: {len(ps):2d} panels | packed={h:5.1f}/{page_h} mm ({epct:5.1f}%) -> [{st}]")
+        if len(sparse_eds) >= 2:
+            print(f"  [WARN SPARSE-ED] {len(sparse_eds)} half-empty {supp_prefix} plate(s) ({sparse_eds}; <=4 panels & <62% height). Merge thematically related 4-panel ED plates into ONE dense 7-8 panel full-page plate (175-215 mm)!")
         overflows = ov
         return ov
 
@@ -1298,7 +1704,7 @@ def main():
         ))
         return 0
     elif args.cmd == "plan-figures":
-        data = json.loads(Path(args.input).read_text(encoding="utf-8"))
+        data = json.loads(Path(args.input).read_text(encoding="utf-8-sig"))
         return plan_and_rebalance_figures(data, args.journal, do_rebalance=args.rebalance, out_path=args.out)
     elif args.cmd == "match-storyline":
         txt = Path(args.file).read_text(encoding="utf-8") if args.file else (args.text or "")

@@ -87,7 +87,7 @@ Empirical 2025–2026 sentence share: **Findings `47.5%` | Background `34.1%` | 
 - **S1–S2 (Background + Gap, ~30w)**: State the clinical/biological stakes AND immediately pivot to the unresolved contradiction (`However, ... remains unclear.`).
 - **S3 (1-Sentence Approach + Main Discovery, ~25w)**: Fuse method into a subordinate participial phrase (`Here, by integrating single-cell and spatial transcriptomics of 108 tumors, we identify...`). **Never spend 2+ sentences listing QC, sequencing kits, or clustering pipelines!**
 - **S4–S6 (Three Escalating Findings with Quantitative Anchors, ~70w)**:
-  - S4: Key cell state / spatial niche / biomarker discovery (with `n`, fold/fraction, or marker).
+  - S4: Key cell state / spatial niche / biomarker discovery (with scale `n`, fold/fraction, or effect size — **NO raw `P = ...` values** in *Nature/NCB/Cell/Cancer Cell/Immunity* Abstracts; only `0.3%` of 1,436 published papers put `P` values in Abstract; reserve Abstract `P` strictly for clinical-trial primary endpoints in *Nat Med / Clin Cancer Res*!).
   - S5: Mechanistic causal axis (`Mechanistically, ... drives ... by ...`).
   - S6: Functional *in vivo* perturbation / rescue OR independent clinical validation (`Genetic deletion or pharmacological blockade of ... sensitizes tumors to anti-PD-1`).
 - **S7 (Conceptual / Translational Takeaway, ~25w)**: `Together, our findings define ... and nominate ... as a therapeutic target/biomarker for ...`
