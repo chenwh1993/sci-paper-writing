@@ -29,6 +29,8 @@ Remember the empirical **Results → Introduction Back-Propagation Law** (`n = 9
 | **P3** | **The Sharp Gap → Scientific Question** | ~20–25% | Pivot cleanly (`However, ...` / `Yet ...` / `Despite ...`) into 1 of the **5 Strong Gap Types** below, then frame the exact testable question or hypothesis **BEFORE** introducing your method. |
 | **P4** | **Approach + Core Findings Preview + Significance** | ~25% | `Here, we addressed this gap by...` / `In this study, we integrated...` State the experimental/omics strategy concisely (no Methods parameters!), preview the 2–3 flagship findings, and close with 1 grounded sentence of conceptual or clinical value. |
 
+- **Acronym, Code & P4 Restraint in Introduction (`n = 1,441` Published Papers)**: Keep ALL-CAPS acronyms/gene symbols to **`≤ 6–7 / 100w`** (*Nature* median `3.5`, *Nat Commun* `4.6`, *Cancer Cell* `5.9`; warn `> 8.5 / 100w`). Define ONLY acronyms reused `≥ 3×` in Main Text; **NEVER leak Results-only internal codes** (`MP4/MP9`, `CN1–10`, `Model A/B`, `Ensemble-5`) or exact sub-figure micrometer measurements into Introduction, and avoid bolting on unrelated secondary goals with `"Addressing these questions also requires..."` at the end of P3 (weave clinical deployability organically into the clinical biomarker bottleneck!).
+
 ---
 
 ## 3. Five Strong Gap Archetypes vs Banned Weak Gaps

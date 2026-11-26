@@ -61,14 +61,15 @@ sci-paper-writing/
 │   ├── 05-cover-letter.md                                      # Elsevier/CNS 5-step 1-page rules, 4 compliance statements & 4 journal templates
 │   ├── 06-figure-captions.md                                   # 2,990-caption corpus: journal specs, 5:1 -ing syntax, 13 chart templates & stats disclosures
 │   ├── 07-methods-and-star.md                                  # 307-Methods corpus: Nature/Cell STAR+KRT/Science schemas, 9.89:1 past-passive & reproducibility
-│   ├── 08-comprehensive-phrasebank-and-collocations.md         # 1,960-paper corpus + 550-paper Anti-AI Replacement Corpus: 5 verb matrices, 18 scenarios & hyphen-stack unpacking bank
+│   ├── 08-comprehensive-phrasebank-and-collocations.md         # 1,960-paper corpus + Corpus-First Positive Retrieval Library (Scenarios 1–25 from 1,441 papers): low-acronym front matter, 8-slot CNS verbs, prepositional 3/4-grams, 8 Results opener families, non-enumerative Discussion & epistemic stems
 │   ├── 09-citation-and-reference-architecture.md               # 20-journal reference budgets, Intro/Results/Discussion/Methods split, 95% 1–3 anti-stuffing & recency
 │   ├── 10-figure-and-supplement-architecture.md                # 20-journal Main/ED/Supp figure & subpanel budgets, Main-vs-Supp triage matrix & Fig 1–7 pairing
 │   ├── 11-results-to-manuscript-and-figure-packing.md          # Mode D end-to-end Results->Manuscript expansion & millimeter figure-overflow rebalancing (sci-plot linkage)
 │   ├── 12-oncology-storyline-and-gap-playbooks.md              # 30-Entry-Point 6-year oncology encyclopedia (6,665 papers): Intro Part-2 Gaps, H1->H7 chains & Discussion elevation
 │   ├── 13-novelty-engineering-and-reviewer-defense.md          # Entry-Point <-> Novelty <-> Results Proof Triangle (1,960 papers): Hype Inversion Law, 6 Proof Modules & 'No-Novelty' Rescue
-│   ├── 14-anti-ai-prose-stat-restraint-and-rule-harmony.md     # Per-Journal Median-Bullseye Prose Realism & Conflict Harmonization (1,436 papers): raw vs paren-stripped pure prose (~6,000w general default), P & non-P metric restraint, parenthesis budgets & 16-pair conflict matrix
-│   └── 15-journal-format-and-standards-matrix.md               # Cross-Journal Standards & Format Matrix (18 dimensions x 9 journal profiles incl. Nat Commun & ~6,000w general default) + cross-journal conversion checklists & top 8 contamination traps
+│   ├── 14-anti-ai-prose-stat-restraint-and-rule-harmony.md     # Dual-Wing Corpus-First Realism & Per-Journal Calibration (1,441 papers): raw vs pure prose (~6,000w general default), front-matter acronym restraint, P/non-P/paren budgets & 17-pair conflict matrix
+│   ├── 15-journal-format-and-standards-matrix.md               # Cross-Journal Standards & Format Matrix (18 dimensions x 9 journal profiles incl. Nat Commun & ~6,000w general default) + cross-journal conversion checklists & top 8 contamination traps
+│   └── 16-full-results-corpus-and-anti-stiffness-id.md         # Full-Paper 14-Module Results Positive Expression Atlas (~95% Results coverage) & Anti-Stiffness Playbook for Introduction & Discussion (1,441 published 2025-2026 CNS papers)
 └── scripts/
     └── audit_manuscript.py                                     # Zero-dependency full-manuscript linter (Human CNS Median Scorecard, inline AI->CNS replacements, sequential/orphan refs), storyline matcher & figure/anti-sparse rebalancer
 ```

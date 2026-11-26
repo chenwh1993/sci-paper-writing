@@ -221,6 +221,7 @@ CNS_JOURNAL_P_TARGETS = {
 
 # Authentic CNS replacement dictionaries (distilled from 1,312 + 550 flagship 2025-2026 papers)
 CNS_LEXICON_REPLACEMENTS = {
+    "audit": "analysis / evaluation / assessment",
     "audited": "evaluated / assessed",
     "rigorous audit": "systematic evaluation",
     "quarantined": "held-out / independent validation",
@@ -246,6 +247,22 @@ CNS_LEXICON_REPLACEMENTS = {
     "cleanly": "distinctly / clearly",
     "decodes": "predicts / infers",
     "decode": "predict / infer",
+    "erodes": "reduces / impairs / diminishes",
+    "erode": "reduce / impair / diminish",
+    "erases": "eliminates / abolishes / loses",
+    "erase": "eliminate / abolish / lose",
+    "liberate": "release",
+    "liberates": "releases",
+    "lifted": "improved / increased / elevated",
+    "flagging": "identifying / nominating",
+    "response penalty": "reduced clinical response / inferior outcome",
+    "parity": "concordance / agreement",
+    "orthogonality": "independence",
+    "refitting": "retraining / recalibration",
+    "walled off": "surrounded / segregated / excluded",
+    "collars": "perivascular rims / surrounding zones",
+    "cuffs": "perivascular rims / surrounding zones",
+    "abutting": "adjacent to / bordering",
 }
 
 CNS_DEFENSIVE_REPLACEMENTS = {
@@ -285,6 +302,18 @@ CNS_2PART_STACK_REPLACEMENTS = {
     "bladder-wall": "bladder wall (unhyphenated noun adjunct)",
     "dendritic-cell": "dendritic cell (unhyphenated noun adjunct)",
     "signed-z": "standardized z-score",
+    "plasticity-reversing": "reverses plasticity (unpack into clause; 08 §21)",
+    "immune-enabling": "restores antitumour immunity (unpack into clause; 08 §21)",
+    "biomarker-agnostic": "unselected (08 §21)",
+    "biomarker-stratified": "stratified by biomarker status (08 §21)",
+    "stroma-free": "in the absence of stroma (08 §21)",
+    "cross-regimen": "across treatment regimens (08 §21)",
+    "staining-stable": "with consistent staining (08 §21)",
+    "ambient-trimmed": "after ambient RNA removal (08 §21)",
+    "matched-section": "matched serial sections (08 §21)",
+    "five-tier": "across five modelling tiers (08 §21)",
+    "multi-scanner": "across multiple scanners (08 §21)",
+    "drug-entry": "vascular drug delivery / extravasation (08 §21)",
 }
 
 CNS_HYPHEN_UNPACK = {
@@ -517,6 +546,13 @@ def audit_title(text: str, spec: dict, journal: str):
     cap_words = sum(1 for w in t.split()[1:] if len(w) > 3 and w[0].isupper() and not w.isupper())
     if cap_words >= max(4, wc // 2):
         findings.append(("WARN", "Title appears to be in Title Case; CNS journals mandate Sentence case."))
+    # Title Acronym & Internal-Code Restraint (n=1,441 papers: Nature/Cancer Cell med=0, Nat Commun med=1!)
+    t_acrs = re.findall(r"\b[A-Z][A-Z0-9]{1,}\b", t)
+    t_codes = re.findall(r"\b(?:MP\d+|CN\d+|Model\s+[A-C]|Cluster\s+\d+|GSE\d+|NCT\d+)\b", t)
+    if t_codes:
+        findings.append(("WARN", f"Internal module/cohort code(s) detected in Title ({t_codes}); use plain biological terms in Title and introduce codes in Results (see references/08 Scenario 19)."))
+    if len(t_acrs) >= 3:
+        findings.append(("WARN", f"High acronym count in Title ({len(t_acrs)}: {t_acrs}; published Nature/Cancer Cell med=0, Nat Commun med=1). Spell out 1-2 acronyms (e.g. 'antibody-drug conjugate') for broad readability (08 Scenario 19)."))
     return findings
 
 
@@ -545,6 +581,16 @@ def audit_abstract(text: str, spec: dict, journal: str):
         findings.append(("WARN", f"Stat equations inside Abstract ({len(ab_stat_eq)}: {ab_stat_eq[:5]}); 98.2-100% of published 2025-26 CNS Abstracts contain ZERO inline 'rho=/r=/AUC=/n=' equations! Keep narrative conceptual and retain at most 1 headline predictive/clinical metric if essential."))
     if len(ab_quant_nums) >= ab_num_lim:
         findings.append(("WARN", f"Data-crammed Abstract ({len(ab_quant_nums)} quantitative numbers >= {journal} warn limit {ab_num_lim}; 2025-26 CNS median=0.0, Q75=1-2). Trim secondary micrometer/sub-cohort/correlation numbers to 2-5 crisp headline anchors so the Abstract reads like a published {journal} summary."))
+    # Front-Matter Acronym & Internal-Code Restraint in Abstract (n=1,441: Nat Commun med=1.2, Nature=3.4, Cancer Cell=5.9/100w!)
+    ab_acrs = re.findall(r"\b[A-Z][A-Z0-9\-]{1,}\b", ab_clean)
+    ab_acr_100w = round(100.0 * len(ab_acrs) / max(1, wc), 1)
+    ab_codes = sorted(set(re.findall(r"\b(?:MP\d+|CN\d+|Model\s+[A-C]|Cluster\s+\d+|GSE\d+|NCT\d+|Ensemble-\d+)\b", ab_clean)))
+    ab_parens_n = len(re.findall(r"\([^)]+\)", ab_clean))
+    findings.append(("INFO", f"Abstract readability: {len(ab_acrs)} acronyms/symbols ({ab_acr_100w}/100w; CNS med 1.2-5.9, target <=7/100w) | {ab_parens_n} parentheses (target <=3)."))
+    if ab_codes:
+        findings.append(("WARN", f"Internal module/model/cohort code(s) in Abstract ({ab_codes}); replace internal codes with plain biological phrasing (e.g. 'a basal/partial-EMT state', 'a compact spatial signature') and define codes in Results (see references/08 Scenario 19)."))
+    if ab_acr_100w > 10.0 or ab_parens_n >= 5:
+        findings.append(("WARN", f"Alphabet-soup Abstract ({ab_acr_100w} acronyms/100w, {ab_parens_n} parens vs published CNS med 1.2-5.9/100w, 1-3 parens; top={ab_acrs[:10]}). Trim non-essential acronyms & gene lists using clean biological phrasing from references/08 Scenario 19."))
     # Methods-bloat detector
     method_sents = sum(1 for s in sents if re.search(r"\b(seurat|harmony|cellchat|gsea|10x genomics|filtered|normalized|clustered|western blot|qpcr|pcr|flow cytometry|kit|software|pipeline|we collected|we performed|we analyzed)\b", s, re.I))
     if method_sents >= 3 or (len(sents) >= 3 and method_sents / len(sents) >= 0.45):
@@ -584,6 +630,25 @@ def audit_intro(text: str, spec: dict, journal: str):
         findings.append(("INFO", f"Introduction citations: {len(iu)} unique refs ({im} mentions, {idens}/100w; CNS median: 21 unique, 4.5/100w)."))
     if wc >= 280 and len(iu) < spec["intro_ref_min"]:
         findings.append(("WARN", f"Introduction is under-cited ({len(iu)} unique refs < {journal} floor {spec['intro_ref_min']}; CNS median 21, 62-69% of P1-P3 sentences cited). Cite disease burden, key axes, and every Gap claim."))
+    # Introduction Acronym Density & Results-Code Leakage Check (n=1,441: Nature med=3.5, Nat Commun=4.6, Cancer Cell=5.9/100w!)
+    in_clean = re.sub(r"\$\^\{[^}]+\}\$|\$_\{[^}]+\}\$|\*\*|\*|`", "", text)
+    in_acrs = re.findall(r"\b[A-Z][A-Z0-9\-]{1,}\b", in_clean)
+    in_acr_100w = round(100.0 * len(in_acrs) / max(1, wc), 1)
+    in_codes = sorted(set(re.findall(r"\b(?:MP\d+|CN\d+|Model\s+[A-C]|Cluster\s+\d+|GSE\d+|Ensemble-\d+)\b", in_clean)))
+    if wc >= 200:
+        findings.append(("INFO", f"Introduction acronyms/symbols: {len(in_acrs)} ({in_acr_100w}/100w; CNS med 3.5-5.9, target <=7/100w)."))
+    if in_codes:
+        findings.append(("WARN", f"Results-only internal code(s) leaked into Introduction ({in_codes}); keep Introduction conceptual and introduce module/model codes in Results (references/08 Scenario 19)."))
+    if wc >= 250 and in_acr_100w > 7.5:
+        findings.append(("WARN", f"High acronym/symbol density in Introduction ({in_acr_100w}/100w > 7.5 vs Nature 3.5 / Nat Commun 4.6 / Cancer Cell 5.9); define ONLY abbreviations reused >=3x and write gene/pathway names concisely in prose (references/08 Scenario 19)."))
+    # Anti-stiffness Intro checks: bolted-on P3 'also requires' & over-spoiling P4 mini-abstract clone
+    if re.search(r"\b(addressing these questions also requires|in addition,?\s+it is also necessary to|furthermore,?\s+we also need to)\b", in_clean, re.I):
+        findings.append(("WARN", "Stiff bolted-on gap phrase in Introduction ('Addressing these questions also requires...'); integrate secondary/translational goals organically into the central mystery instead of tacking on a checklist sentence (references/16 Part 2.1)."))
+    if paras and len(paras) >= 3:
+        p4_clean = re.sub(r"\$\^\{[^}]+\}\$|\*\*|\*", "", paras[-1])
+        p4_exact_specs = re.findall(r"(?:\b\d+(?:[–\-]\d+)?\s*(?:µm|μm|mm|cm|%|-fold|fold)\b|\bAUC\s*=|\bHR\s*=)", p4_clean, re.I)
+        if len(p4_exact_specs) >= 2:
+            findings.append(("WARN", f"Introduction final paragraph over-spoils granular Results metrics ({p4_exact_specs[:4]}); keep P4 conceptual (approach + biological principle) and save exact micrometer/metric readouts for Results (references/16 Part 2.1)."))
     scan_chinglish(text, findings)
     return findings
 
@@ -752,6 +817,69 @@ def audit_results(text: str, spec: dict, journal: str):
     if len(br_hits) >= 3:
         findings.append(("WARN", f"Nested brackets '[...]' inside parentheses '()' detected {len(br_hits)} times in Results (published median=0); move nested subgroup counts/metadata to tables or clean separate clauses."))
 
+    # 6. Results Paragraph-Opener Variety, Anti-Gerund Overcorrection, Cross-Section Bridges & Anti-Accession Check
+    #    (calibrated on 32,976 CNS paras + 162 lossless HTML-CNS papers: We next=12.1%, To [verb]=18.9%, gerund=0.0% [IQR 0-4.6%], opening-sent 'We'=60.8% [IQR 50-71%])
+    if clean_wc >= 800:
+        r_paras = [p.strip() for p in re.split(r"\n{2,}", clean_res) if count_words(p) >= 25]
+        if len(r_paras) >= 8:
+            n_wn = sum(1 for p in r_paras if re.match(r"^We (?:next|then)\b", p))
+            n_to = sum(1 for p in r_paras if re.match(r"^To\s+[a-z]+", p))
+            ger_excl = {"during", "following", "including", "regarding", "concerning", "according", "timing", "signaling", "signalling", "binding", "staining", "imaging", "profiling", "sequencing", "clustering", "modeling", "modelling", "mapping", "gating", "splicing", "folding", "aging", "ring", "lung", "string"}
+            past_part = {"applied", "combined", "compared", "integrated", "stratified", "guided", "driven", "focused", "trained", "tested", "validated", "evaluated", "fitted"}
+            n_ger = 0
+            n_we_open = 0
+            for p in r_paras:
+                first_s = split_sents(p)[0] if split_sents(p) else p
+                low_s = first_s.lower().strip()
+                m_w0 = re.match(r"^([a-z]+)\b", low_s)
+                if m_w0:
+                    w0 = m_w0.group(1)
+                    if (w0.endswith("ing") and w0 not in ger_excl) or w0 in past_part:
+                        n_ger += 1
+                if re.search(r"\bwe\b", low_s):
+                    n_we_open += 1
+            wn_pct = round(100.0 * n_wn / len(r_paras), 1)
+            to_pct = round(100.0 * n_to / len(r_paras), 1)
+            ger_pct = round(100.0 * n_ger / len(r_paras), 1)
+            we_open_pct = round(100.0 * n_we_open / len(r_paras), 1)
+            findings.append(("INFO", f"Results paragraph opener mix ({len(r_paras)} paras): 'We next/then'={wn_pct}% (cap <=20%) | 'To [verb]'={to_pct}% (cap <=28%) | gerund/participle={ger_pct}% (HTML-CNS med 0.0%, cap <=15%) | opening-sent 'We'={we_open_pct}% (HTML-CNS med 60.8%, target >=35%)."))
+            if (n_wn >= 4 and wn_pct > 20.0) or (n_to >= 6 and to_pct > 28.0):
+                findings.append(("WARN", f"Formulaic Results paragraph-opener monotony ('We next/then'={wn_pct}%, 'To [verb]'={to_pct}% vs CNS norms). Rotate across all 8 positive CNS transition families in references/08 Scenario 22: direct observation lead, 'Because/Given that...', 'In contrast/Unexpectedly...', 'Consistent with/Across...', 'Within the niche...', and perturbation-led openings!"))
+            if n_ger >= 4 and ger_pct > 15.0:
+                findings.append(("WARN", f"Gerund/participle paragraph-opener overcorrection in Results ({n_ger}/{len(r_paras)} = {ger_pct}% > 15% vs 162 lossless HTML-CNS median 0.0%, IQR 0-4.6%, e.g. 'Scoring...', 'Integrating...', 'Comparing...'). Avoid dodging 'We next' by stacking impersonal '-ing' subjects; restore natural active 'We [verb]...' or biological-entity subjects (references/08 Scenario 22 & 16 §2.4)."))
+            if len(r_paras) >= 12 and we_open_pct < 35.0:
+                findings.append(("WARN", f"Low active investigator voice in Results paragraph openings ({we_open_pct}% of opening sentences contain 'We' < 35% vs HTML-CNS median 60.8%, IQR 50-71%). Interleave natural 'We [verb]...', 'To [verb], we...', and 2-3 'We next/then...' transitions so scientific questions visibly drive experimental progression (references/16 §2.4)."))
+        # Cross-Section Abrupt Method-Drop Detector (checks ## H2..Hk opening motivation bridges)
+        sub_blocks_tr = [s.strip() for s in re.split(r"\n(?=##\s+)", text.strip()) if s.strip().startswith("## ")]
+        if len(sub_blocks_tr) >= 3:
+            abrupt_subs = []
+            cold_drop_re = re.compile(r"^(?:Differential expression|Single-(?:cell|nucleus)\s+(?:RNA\s+)?profiling|Spatial transcriptomic|Bulk RNA|Induction of|Across\s+(?:two|three|four|five|six|seven|eight|nine|ten|\d+)\s+(?:independent|external)|Comparison of|Principal component|Gene set enrichment|Kaplan|Multivariable)\b", re.I)
+            bridge_ok_re = re.compile(r"\b(?:to\s+(?:test|determine|identify|examine|validate|assess|evaluate|define|investigate|ask)|however|although|because|given\s+that|since|we\s+(?:next|then|sought|asked)|having\s+\w+ed|prompted|motivated)\b", re.I)
+            for sb in sub_blocks_tr[1:]:
+                s_lines = [ln.strip() for ln in sb.splitlines() if ln.strip()]
+                if len(s_lines) < 2:
+                    continue
+                s_hdr = s_lines[0].lstrip("# ").strip()
+                first_body = re.sub(r"\$\^\{[^}]+\}\$|\$_\{[^}]+\}\$|\*\*|\*|`", "", s_lines[1])
+                first_sent_b = split_sents(first_body)[0] if split_sents(first_body) else first_body
+                if cold_drop_re.match(first_sent_b) and not bridge_ok_re.search(first_sent_b):
+                    abrupt_subs.append(f"'{s_hdr[:45]}'")
+            if len(abrupt_subs) >= 2:
+                findings.append(("WARN", f"{len(abrupt_subs)} Results subsection(s) open with an abrupt cold method/cohort drop without a 1-clause biological bridge ({', '.join(abrupt_subs[:4])}). Bridge across sections using positive Module M14 frames ('To identify...', 'We next asked whether...', 'Because...', 'Having localized...') in references/16."))
+        raw_acc = re.findall(r"\b(?:GSE\d{4,7}|NCT\d{6,9}|EGAS\d{6,})\b", clean_res)
+        if len(raw_acc) >= 8:
+            findings.append(("WARN", f"Accession-code catalog fatigue in Results prose ({len(raw_acc)} raw GSE/NCT IDs vs CNS median=0, P90=2). Describe cohorts by clinical trial/setting in prose (references/08 Scenario 23 & 16 Module M11) and move raw GSE/NCT lists into Figures, Legends & Methods."))
+        # Anti-stiffness Results checks: excessive paragraph-end 'Thus/Therefore' slogans & artificial <=7w telegraph fragments
+        if len(r_paras) >= 8:
+            n_thus_end = sum(1 for p in r_paras if re.search(r"(?:^|\.\s+)(?:Thus|Therefore|Together|Taken together|Collectively)\b[^\.]+\.$|\btherefore\b[^\.]+\.$", p.strip(), re.I))
+            thus_pct = round(100.0 * n_thus_end / len(r_paras), 1)
+            if n_thus_end >= 5 and thus_pct > 22.0:
+                findings.append(("WARN", f"Frequent paragraph-end 'Thus/Therefore' slogan tails in Results ({n_thus_end}/{len(r_paras)} paras = {thus_pct}% vs Nat Commun med 2.9% / Nature 8.7%). End most paragraphs directly on empirical evidence or a natural bridge (references/16 Module M14)."))
+        r_all_sents = split_sents(clean_res)
+        tiny_frag = [s for s in r_all_sents if count_words(s) <= 7]
+        if len(r_all_sents) >= 40 and len(tiny_frag) >= 6:
+            findings.append(("WARN", f"Artificial ultra-short telegraph fragments in Results ({len(tiny_frag)} sentences <=7w, e.g. '{tiny_frag[0][:50]}'). Build burstiness with natural 11-17w observational sentences from references/08 Scenario 24 instead of 4-6w headlines!"))
+
     scan_chinglish(text, findings)
     return findings
 
@@ -799,6 +927,21 @@ def audit_discussion(text: str, spec: dict, journal: str):
         findings.append(("INFO", f"Discussion CNS opener grounding: {grounded_d}/{len(dsents)} sentences ({dpct}%; target >=55% using verified 550-paper Discussion openers)."))
         if dpct < 45.0:
             findings.append(("WARN", f"Low Discussion CNS opener grounding ({dpct}% < 45%; avoids abstract nominalized openings). Replace abstract openings with high-frequency 550-paper CNS stems: {' | '.join(CNS_DISC_OPENER_MODELS[:6])}"))
+    # Discussion Multi-Paragraph 'First, ... Second, ...' Enumeration & Epistemic Nuance Checks (1,401 papers: >=3 enum paras = 0.0-0.1%!)
+    enum_paras = sum(1 for p in paras if re.search(r"\bFirst,", p) and re.search(r"\bSecond,", p))
+    if enum_paras >= 2:
+        findings.append(("WARN", f"Repeated 'First, ... Second, ...' enumeration across {enum_paras} Discussion paragraphs (only 2.3% of Nat Commun use >=2 and 0.0% use >=3!). Keep at most 1 enumerated paragraph and transition others using positive non-enumerative CNS stems in references/08 Scenario 25 ('A central question...', 'Beyond X, our data...', 'From a clinical perspective...')."))
+    if wc >= 600:
+        d_clean = re.sub(r"\$\^\{[^}]+\}\$|\*\*|\*", "", text)
+        epist_n = len(re.findall(r"\b(may|might|could|suggests?|indicates?|raises? the possibility|speculate|hypothesi[sz]e|plausible|likely|remains? to be|future studies|conceivable)\b", d_clean, re.I))
+        epist_1kw = round(1000.0 * epist_n / max(1, wc), 1)
+        findings.append(("INFO", f"Discussion epistemic/hypothesis nuance: {epist_1kw}/1kw (published Nature med 8.8, Nat Commun 6.7, ALL CNS 7.7/1kw)."))
+        if epist_1kw < 5.0:
+            findings.append(("WARN", f"Low Discussion epistemic/speculative depth ({epist_1kw}/1kw < 5.0 vs CNS med 6.7-8.8/1kw). Move beyond pure assertive recap by adding 1-2 paragraphs exploring upstream mechanisms, alternative hypotheses & open questions using references/08 Scenario 25 & 16 Part 2.2."))
+        d_acrs = re.findall(r"\b[A-Z][A-Z0-9\-]{1,}\b", d_clean)
+        d_acr_100w = round(100.0 * len(d_acrs) / max(1, wc), 1)
+        if d_acr_100w > 8.5:
+            findings.append(("WARN", f"High acronym/symbol density in Discussion ({d_acr_100w}/100w > 8.5 vs Nature 5.2 / Nat Commun 6.0); Discussion reads like a compressed Results recap — elevate into conceptual biological prose (references/16 Part 2.2)."))
     scan_chinglish(text, findings)
     return findings
 
@@ -857,6 +1000,7 @@ def audit_caption(text: str, spec: dict, journal: str):
             findings.append(("WARN", "Scale bar mentioned without an explicit numeric physical unit (e.g., 'Scale bar, 100 um' or 'Scale bar, 1 cm')."))
     if re.search(r"\*\*[pqP]\*\s*[<=>]", text):
         findings.append(("WARN", "Broken Markdown bold/italic collision around significance stars (e.g., '**q* < 0.01'); escape asterisks '\\*\\*q < 0.01' or use plain notation."))
+    findings.append(("INFO", "Chart-Metric Sync Reminder: verify 1:1 agreement between every legend/text statistical metric (e.g. Spearman rho vs group difference Delta vs OR/HR), sample size n, and the actual rendered axis label on every Main & Supp panel."))
     return findings
 
 
@@ -1155,6 +1299,40 @@ def run_audit(section: str, journal: str, text: str) -> int:
             elif level == "WARN":
                 total_warn += 1
 
+    # Four-Corner Cohesion: Title <-> Abstract Signature-Term Lock (162 lossless HTML-CNS median = 75%, IQR 64-87%)
+    if section == "all" and "title" in parts and "abstract" in parts:
+        t_clean = re.sub(r"\$\^\{[^}]+\}\$|\$_\{[^}]+\}\$|\*\*|\*|`", "", parts["title"]).replace("–", "-").replace("—", "-")
+        a_clean = re.sub(r"\$\^\{[^}]+\}\$|\$_\{[^}]+\}\$|\*\*|\*|`", "", parts["abstract"]).replace("–", "-").replace("—", "-")
+        uk_us_norm = lambda s: re.sub(r"\btumour", "tumor", re.sub(r"signalling", "signaling", re.sub(r"localis", "localiz", re.sub(r"characteris", "characteriz", s.lower()))))
+        a_norm = uk_us_norm(a_clean)
+        a_toks = set(re.findall(r"[a-z0-9]{2,}", a_norm))
+        t_stop = {
+            "the", "and", "for", "from", "with", "that", "this", "into", "onto", "upon", "over", "between", "within", "without", "under", "after", "before", "across", "through", "during", "using", "toward", "towards",
+            "drive", "drives", "driving", "reveal", "reveals", "identify", "identifies", "mediate", "mediates", "promote", "promotes", "induce", "induces", "regulate", "regulates", "control", "controls", "enhance", "enhances", "enable", "enables", "shape", "shapes", "govern", "governs", "link", "links", "define", "defines", "underlie", "underlies",
+            "cancer", "cancers", "tumor", "tumors", "tumour", "tumours", "cell", "cells", "cellular", "patient", "patients", "human", "mouse", "mice", "study", "analysis", "role", "function", "mechanism", "mechanisms", "therapy", "treatment", "response", "associated", "clinical", "specific", "novel", "distinct",
+        }
+        sig_terms = []
+        seen_sig = set()
+        for raw_tok in re.findall(r"[A-Za-z][A-Za-z0-9]{2,}", t_clean):
+            lt = uk_us_norm(raw_tok)
+            if lt in t_stop or lt in seen_sig:
+                continue
+            if len(lt) >= 4 or (raw_tok.isupper() and len(raw_tok) >= 3) or any(ch.isdigit() for ch in raw_tok):
+                seen_sig.add(lt)
+                sig_terms.append((raw_tok, lt))
+        if len(sig_terms) >= 4:
+            matched_t, missing_t = [], []
+            for raw_tok, lt in sig_terms:
+                root = lt[:5] if len(lt) >= 6 else (lt[:4] if len(lt) == 5 else lt)
+                hit = (lt in a_toks) or any(at.startswith(root) for at in a_toks if len(root) >= 4)
+                (matched_t if hit else missing_t).append(raw_tok)
+            rec_pct = round(100.0 * len(matched_t) / len(sig_terms), 1)
+            print("\n[FOUR-CORNER COHESION: TITLE <-> ABSTRACT LOCK]")
+            print(f"  [INFO] Title signature-term recall in Abstract: {len(matched_t)}/{len(sig_terms)} ({rec_pct}%; 162-paper HTML-CNS med 75%, target >=60%).")
+            if rec_pct < 55.0 and len(missing_t) >= 3:
+                print(f"  [WARN] Weak Title <-> Abstract lexical alignment ({rec_pct}% < 55%; missing Title signature terms in Abstract: {missing_t[:6]}). Anchor the Title's signature mechanistic terms directly inside the Abstract instead of disguising them behind loose synonyms (references/01 & 16 §2.4).")
+                total_warn += 1
+
     # Full-manuscript Main-Text Reference Waterfall Audit (2024-2026 empirical floor: med=62 main refs!)
     if section == "all" and all(k in parts for k in ("intro", "results", "discussion")):
         main_wc = sum(count_words(parts[k]) for k in ("intro", "results", "discussion"))
@@ -1244,10 +1422,10 @@ def run_audit(section: str, journal: str, text: str) -> int:
                 rep_hint = "; ".join(f"'{w}' ({c}x) -> '{rep_map[w]}'" for w, c in overused)
                 print(f"  [WARN] Repeated editorializing/AI-tell word(s) (>=3x; cap <=1-2x): {rep_hint}.")
                 total_warn += 1
-            # Non-CNS / tech-blog / metaphor lexicon (<0.5% in 1,312 published 2025-26 CNS papers; median = 0!)
-            alien_lex = re.findall(r"\b(audited|rigorous audit|quarantined|obliterates?|crosswalk|capitalis(?:ing|ed)|capitaliz(?:ing|ed)|over-optimistic|honest (?:optical )?blind spot|upgraded clinical|locked [^\.,]{1,20} atlas|phase cliff|division of labou?r|triage cascade|parsimonious|habitats|descriptors|portals|cleanly|decodes?)\b", main_clean, re.I)
+            # Non-CNS / tech-blog / literary-metaphor lexicon (<0.25% in 1,441 published 2025-26 CNS papers; median = 0!)
+            alien_lex = re.findall(r"\b(audits?|audited|rigorous audit|quarantined|obliterates?|crosswalk|capitalis(?:ing|ed)|capitaliz(?:ing|ed)|over-optimistic|honest (?:optical )?blind spot|upgraded clinical|locked [^\.,]{1,20} atlas|phase cliff|division of labou?r|triage cascade|parsimonious|habitats|descriptors|portals|cleanly|decodes?|erodes?|erases?|liberates?|lifted|flagging|response penalty|parity|orthogonality|refitting|walled off|collars|cuffs|abutting)\b", main_clean, re.I)
             if len(alien_lex) >= 1:
-                print(f"  [WARN] Non-CNS / tech-blog lexicon detected ({len(alien_lex)} hit(s); CNS median=0!). Exact CNS replacements: {suggest_lexicon_fixes(alien_lex, CNS_LEXICON_REPLACEMENTS, 8)}.")
+                print(f"  [WARN] Non-CNS / rare literary lexicon detected ({len(alien_lex)} hit(s); df<=3/1,441 CNS papers!). Retrieve verified high-frequency positive CNS choices (references/08 Scenario 20): {suggest_lexicon_fixes(alien_lex, CNS_LEXICON_REPLACEMENTS, 8)}.")
                 total_warn += 1
             # Invented 3+ part multi-hyphen pre-modifier stacks (0.0% in 1,312 CNS papers!)
             h_stacks = re.findall(r"\b[a-z]{3,}-[a-z]{2,}-[a-z]{3,}(?:-[a-z]{2,})?\b", main_clean)
@@ -1256,11 +1434,11 @@ def run_audit(section: str, journal: str, text: str) -> int:
             if len(h_stacks) >= 2:
                 print(f"  [WARN] Invented 3+ part multi-hyphen compound stack(s) ({len(h_stacks)} hit(s); CNS median=0!). Unpack into plain prepositional CNS English: {suggest_hyphen_unpacks(h_stacks, 7)}.")
                 total_warn += 1
-            # AI-tell 2-part modifier stacks that depress 2-gram CNS grounding (references/08 §18.2)
-            stack2_re = re.compile(r"\b(two-feature|three-feature|same-section|single-marker|single-metric|batch-matched|multi-compartment|macro-architectural|ambient-rna|zero-shot|out-of-fold|within-batch|per-slide|bladder-wall|dendritic-cell|signed-z)\b", re.I)
+            # AI-tell & zero-corpus 2-part modifier stacks that depress 2-gram CNS grounding (references/08 §18.2 & §21)
+            stack2_re = re.compile(r"\b(two-feature|three-feature|same-section|single-marker|single-metric|batch-matched|multi-compartment|macro-architectural|ambient-rna|zero-shot|out-of-fold|within-batch|per-slide|bladder-wall|dendritic-cell|signed-z|plasticity-reversing|immune-enabling|biomarker-agnostic|biomarker-stratified|stroma-free|cross-regimen|staining-stable|ambient-trimmed|matched-section|five-tier|multi-scanner|drug-entry)\b", re.I)
             h2_hits = stack2_re.findall(main_clean)
             if len(h2_hits) >= 3:
-                print(f"  [WARN] Frequent AI-tell 2-part hyphen modifier stacks ({len(h2_hits)} hit(s); pulls 2-gram grounding below 76% CNS median). Unpack: {suggest_lexicon_fixes(h2_hits, CNS_2PART_STACK_REPLACEMENTS, 7)}.")
+                print(f"  [WARN] Zero-corpus 2-part modifier stacks ({len(h2_hits)} hit(s); pulls 2-gram grounding below 73-76% CNS median). Unpack using positive prepositional frames (references/08 Scenario 21): {suggest_lexicon_fixes(h2_hits, CNS_2PART_STACK_REPLACEMENTS, 8)}.")
                 total_warn += 1
             # Detect named public cohorts/tools in Results missing citations
             named_tools = sorted(set(re.findall(r"\b(Seurat|Scanpy|Harmony|UCell|ESTIMATE|VALIS|edgeR|DESeq2|DepMap|PRISM|GDSC2|CCLE|RCTD|CellChat|CellPhoneDB|NicheNet|SCENIC|Slingshot|Monocle|H-optimus-0|UNI2?-h?|CONCH|MUSK|phikon-v2|Virchow|TCGA-[A-Z]{2,5}|GSE\d{4,7}|NCT\d{6,9})\b", parts["results"])))

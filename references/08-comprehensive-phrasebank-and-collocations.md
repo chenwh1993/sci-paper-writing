@@ -273,3 +273,135 @@ Invented compound stacks drop de-lexicalized 2-gram grounding by `~25%` because 
 | `honest optical blind spot` | `limited ability of H&E morphology alone to resolve [X]` |
 | `capitalising on this division of labour` | `combining these complementary modalities` |
 | `upgraded clinical stratification` | `improved clinical stratification` / `enhanced risk stratification` |
+
+---
+
+## Part 5 — Corpus-First Positive Retrieval Library (`n = 1,441` Published 2025–2026 CNS Papers — Scenarios 19–25)
+
+> **THE CORPUS-FIRST PRINCIPLE (Read Before Drafting or Polishing ANY Sentence!)**:
+> Relying solely on negative blacklists creates a "whack-a-mole" loop: blocking one set of AI words (`obliterates`, `habitats`, `out-of-fold`) causes free generation to invent NEW non-CNS substitutes (`erodes`, `collars/cuffs`, `plasticity-reversing`, `We next/then` chains, triple `First/Second/Third` lists).
+> **Mandatory Positive Workflow**: Whenever drafting or polishing in ANY of the **7 recurring problem zones** below, **DO NOT free-generate novel metaphors, compressed adjective compounds, or template lists**. Instead, **retrieve a verified verb, prepositional 3/4-gram connector, paragraph opener, or sentence skeleton directly from Scenarios 19–25** and substitute ONLY your study's authentic biological entities!
+
+### Scenario 19 — Title, Abstract & Introduction Acronym & Internal-Code Restraint (Zero Alphabet-Soup Front Matter!)
+
+Across **`1,441` published 2025–2026 high-IF articles**, real CNS authors keep front matter effortlessly readable for broad editorial triage by strictly capping ALL-CAPS acronyms and banning internal signature/cluster/cohort codes from Title, Abstract, and Introduction:
+
+| Front-Matter Zone | Published 2025–2026 **Median** (`IQR`) | **Positive Target** | Hard Warn | What NEVER Belongs Here (Move to Results!) |
+| :--- | :---: | :---: | :---: | :--- |
+| **Title** ALL-CAPS Acronyms | *Nature/Cancer Cell* **`0`** (`0–1`) · *Nat Commun* **`1`** (`0–1`) | **`0–1`** (max `2` universal) | **`≥ 3`** or any internal code | `Prog4`, `CN8`, `Model A`, `GSE...`, niche drug codes; spell out `antibody–drug conjugate` or `immune checkpoint` when cleaner! |
+| **Abstract** Acronyms / Gene Symbols (`/100w`) | *Nat Commun* **`1.2`** (`0–4.4`) · *Nature* **`3.4`** · *Cancer Cell* **`5.9`** | **`≤ 5–7 / 100w`** (`≤ 2–3` parens) | **`> 10 / 100w`** or any internal code | Internal module codes (`Prog1`, `Prog2`, `CN1–10`, `Cluster 3`, `Model A/B`), drug trial codes, and 4-gene slash lists (`GeneA/GeneB–LigandX`) — write plain biological concepts (`a basal/partial-EMT state`, `a localized stromal niche`, `target-directed antibody–drug conjugate`)! |
+| **Introduction** Acronyms / Gene Symbols (`/100w`) | *Nature* **`3.5`** · *Nat Commun* **`4.6`** · *Cancer Cell* **`5.9`** | **`≤ 6–7 / 100w`** | **`> 8.5 / 100w`** or Results-only codes | Define ONLY acronyms reused `≥ 3×` in Main Text; NEVER leak internal cluster/program IDs (`Prog4/Prog9`, `Model A/B`, `Ensemble-5`) or exact Results micrometer sub-ranges into Introduction! |
+
+- **Positive Front-Matter Transformation Patterns (Alphabet-Soup → Effortless Published CNS)**:
+  - *Compressed/Acronym-Heavy Abstract (❌ `17 acr/100w`)*: `"Targeted ADCs plus PD-1 blockade achieve high CR in advanced solid tumours, yet IHC fails (58% CR in IHC 3+/2+). Integrating 185,000 nuclei, ST, mIHC... malignant cells span a ProgA-to-ProgB axis inversely coupled to TargetX and CR... sustained by EnzymeA/B–LigandY activating ReceptorY... Drug-1 + InhibitorY regresses tumours by 38%... H&E–mIHC AUC = 0.89."`
+  - *Corpus-First Clean CNS Abstract (✅ `≤ 5 acr/100w` + Locked to Title Terms!)*: `"Target-directed antibody–drug conjugates combined with immune checkpoint blockade achieve high complete response rates in solid tumours, yet clinical receptor staining fails to separate responders from non-responders. Why tumours with comparable target levels diverge clinically remains unclear. Here, by integrating single-nucleus, spatial and functional profiling across patient cohorts and orthotopic models, we show that malignant cells adopt a localized mesenchymal state along tumour boundaries that decouples target availability from drug delivery. This resistant niche is sustained by stromal- and myeloid-derived paracrine signalling activated by local proteases, which stimulates receptor activation and impairs bystander killing and myeloid recruitment. Combining targeted conjugate therapy with receptor blockade reverses mesenchymal plasticity and induces consistent tumour regression in vivo. Across independent clinical trials, this plasticity axis predicts dual targeted and checkpoint resistance yet sensitises tumours to chemotherapy, enabling routine histology-guided multimodal clinical stratification."`
+- *CNS Verbatim Low-Acronym Abstracts (`0.7 acr/100w`, 2025–2026 Flagship Papers)*:
+  - `"Brain metastases (BrM) remain a major clinical and therapeutic challenge in patients with metastatic cancers. However, advances in our understanding of BrM have been hampered by the constrained sample size and resolution of profiling studies. Here, we perform integrative single-cell RNA sequencing analysis..."` (*Cancer Cell*, 2025)
+  - `"Tumor-induced systemic accumulation and polarization of neutrophils to an immunosuppressive phenotype is a potent driver of metastasis formation. Yet, how mammary tumors reprogram granulopoiesis at the molecular level and when tumor imprinting occurs during neutrophil development remains underexplored. Here, we combine..."` (*Cancer Cell*, 2025)
+
+---
+
+### Scenario 20 — 8-Slot Positive CNS Core Verb & Spatial-Lexicon Bank (`df / 1,441` Published Papers)
+
+**Always select directly from these empirically dominant CNS verbs & spatial terms** (numbers = exact document frequency out of `1,441` published 2025–2026 papers) instead of coining literary metaphors (`erodes`, `erases`, `liberates`, `lifted`, `collars`, `cuffs`, `abutting`, `parity`, `orthogonality`, `audit`):
+
+| Semantic Slot | **High-Frequency Positive CNS Choices (`df / 1,441` — RETRIEVE FROM HERE!)** | Rare/Zero-Corpus Words to AVOID (`df ≤ 3`) |
+| :--- | :--- | :--- |
+| **1. Reduce / Suppress / Impair** | `reduced (1,123)` · `limited (1,068)` · `decreased (919)` · `restricted (485)` · `suppressed (439)` · `impaired (427)` · `depleted (413)` · `inhibited (401)` · `diminished (365)` · `lost (275)` · `attenuated (229)` · `abrogated (202)` · `abolished (200)` · `prevented (142)` · `blunted (51)` | `eroded (1)`, `erased (3)`, `obliterated (0)` |
+| **2. Increase / Enhance / Improve** | `increased (1,328)` · `enriched (1,175)` · `induced (1,034)` · `enhanced (921)` · `elevated (855)` · `upregulated (834)` · `improved (800)` · `extended (692)` · `prolonged (376)` · `promoted (351)` · `restored (208)` · `amplified (169)` · `potentiated (64)` | `lifted (3)`, `upgraded (0)` |
+| **3. Release / Activate / Sustain** | `induced (1,034)` · `mediated (1,021)` · `driven (906)` · `activated (873)` · `maintained (396)` · `stimulated (331)` · `sustained (303)` · `triggered (206)` · `released (131)` | `liberated (3)`, `unlocked (3)` |
+| **4. Reverse / Oppose / Contrast** | `reversed (269)` · `differed (181)` · `inverse (151)` · `inversely (140)` · `opposed (109)` · `reciprocal (105)` · `diverged (31)` · `contrasted (25)` | `inverted (18 — prefer 'reversed/opposite')`, `refuted (0)` |
+| **5. Evaluate / Measure / Profile** | `compared (1,426)` · `analyzed (1,005)` · `characterized (984)` · `assessed (956)` · `investigated (864)` · `validated (853)` · `evaluated (849)` · `examined (844)` · `tested (780)` · `determined (679)` · `measured (626)` · `quantified (366)` · `profiled (303)` | `audited (2)`, `audit (1)`, `crosswalked (0)` |
+| **6. Spatial / Microanatomy Position** | `enriched (1,175)` · `restricted (485)` · `adjacent to (470)` · `localized (428)` · `depleted (413)` · `excluded (314)` · `surrounding (265)` · `proximal (188)` · `distal (154)` · `infiltrated (153)` · `confined to (113)` · `colocalized (100)` · `segregated (84)` · `perivascular (72)` · `in close proximity to` | `collars (0)`, `walled off (0)`, `cuffs (2)`, `abutting (1)`, `habitats (2)`, `portals (2)` *(keep at most ONE intentional named concept per paper!)* |
+| **7. Agreement / Independence** | `consistent with (1,320)` · `distinct (1,200)` · `independent of (1,023)` · `correlated with (922)` · `independently (416)` · `in agreement with (251)` · `concordance (236)` · `concordant (184)` · `orthogonal (186)` | `parity (3)`, `orthogonality (3)`, `flagging (1)`, `refitting (0)` |
+| **8. Discussion Epistemic Nuance** | `may (1,377)` · `could (1,298)` · `suggest / suggests (1,160)` · `likely (1,008)` · `indicate / indicates (983)` · `remains to be (954)` · `future studies (885)` · `might (696)` · `raises the possibility (421)` · `hypothesize (195)` · `speculate (130)` · `warrant (124)` · `plausible (88)` | Endless categorical assertions (`demonstrate / prove / establish`) with zero open mechanistic hypotheses |
+
+---
+
+### Scenario 21 — Anti-Noun-Stacking Prepositional Connector Bank (`Top 35` Verified 3/4-Grams + Natural Unpacking)
+
+Real human *Nature / Nat Commun* papers achieve **`73–80%`** 2-gram grounding because they connect biological nouns using **natural prepositional scaffolding** (`of`, `in`, `with`, `between`, `from`, `across`, `in the presence/absence of`) rather than welding 3–5 content nouns together or coining 2-part marketing compounds:
+
+- **Top Verified CNS Prepositional 3-Grams (`df / 1,441`)**:
+  `as well as (943)` · `the expression of (819)` · `the presence of (709)` · `consistent with the (705)` · `cells in the (695)` · `the number of (573)` · `based on the (546)` · `the role of (524)` · `analysis of the (491)` · `the proportion of (475)` · `was associated with (469)` · `in patients with (459)` · `an increase in (459)` · `was observed in (451)` · `compared with the (421)` · `the effect of (412)` · `were enriched in (409)` · `in addition to (405)` · `the absence of (389)` · `in line with (368)` · `due to the (367)` · `in response to (366)` · `in the tumour (365)` · `from patients with (355)`
+- **Top Verified CNS Prepositional 4-Grams (`df / 1,441`)**:
+  `in the presence of (288)` · `in the absence of (258)` · `in the context of (257)` · `a significant increase in (251)` · `on the basis of (219)` · `at the protein level (152)` · `in line with the (148)` · `has been shown to (148)` · `a significant reduction in (147)` · `at the time of (142)` · `the expression levels of (140)` · `a higher proportion of (135)` · `is consistent with the (130)`
+- **Positive Unpacking Patterns (Compressed Noun-Stacks & LLM 2-Part Adjectives → Natural CNS English)**:
+  | Compressed Noun-Stack / Coined 2-Part Compound (`df = 0`) | **Verified Natural CNS Prepositional Replacement** |
+  | :--- | :--- |
+  | `discovery patients` / `validation slides` | `patients in the discovery cohort` / `slides from the validation cohort` |
+  | `under platinum` / `pure targeted` / `pure checkpoint` | `in patients treated with platinum-based chemotherapy` / `single-agent targeted therapy` / `single-agent checkpoint blockade` |
+  | `global target` / `inverse plasticity` / `inverse target` | `overall target expression` / `the inverse association between plasticity and [Target]` |
+  | `plasticity-reversing, immune-enabling sensitiser` | `reverses plasticity and restores antitumour immunity to sensitise tumours` |
+  | `biomarker-agnostic` / `biomarker-stratified` | `unselected populations` / `stratified by biomarker status` |
+  | `stroma-free cell lines` / `cross-regimen` / `multi-scanner` | `cell lines in the absence of stroma` / `across treatment regimens` / `across multiple scanners` |
+  | `staining-stable features` / `matched-section` / `micro-zone` | `features with consistent staining` / `matched serial sections` / `local microanatomical zones` |
+  | `frozen pathology models` / `five-tier benchmark` | `pretrained pathology foundation models` / `comparison across five modelling tiers` |
+  | `response penalty` / `contrasts matched for batch` | `reduced clinical response` / `batch-adjusted comparisons` |
+
+---
+
+### Scenario 22 — 8 Natural Results Paragraph-Transition Families & Anti-Gerund Overcorrection (`32,976` Paras + `162` Lossless HTML-CNS Papers)
+
+Empirically across **`162` lossless HTML-parsed CNS full-text articles** (*Cell / Cancer Cell / Immunity / Nat Cancer / Science / Sci Transl Med*), real authors balance Results paragraph openings naturally: **`To [verb], we...` = `18.9%`** (IQR `12.6–27.8%`), **`We next/then` = `12.1%`** (IQR `5.6–20.8%`), **direct `We [verb]` = `6.0%`**, **causal/contrastive pivots = `8.7%`**, and **direct biological/observation leads = `36.7%`** — keeping active **`We`** inside **`60.8%` (IQR `50–71%`)** of paragraph opening sentences!
+- **CRITICAL ANTI-OVERCORRECTION WARNING**: When trimming excessive `We next` (`> 25%`), **NEVER overcorrect into impersonal gerund/participle openers** (`Scoring... revealed`, `Integrating... linked`, `Combining... improved`, `Interrogating... tested`, `Comparing... separated`, `Visualising... delineated`). In lossless HTML CNS papers, gerund/participle paragraph openers have a median of **`0.0%` (IQR `0.0–4.6%`)** — cap them strictly at **`≤ 10–15%`**!
+- **CROSS-SECTION MOTIVATION BRIDGE LAW**: Every new Results subsection (`H2 → Hk`) MUST open with a 1-clause biological/clinical motivation bridge linking from the preceding section (`To identify...`, `We next asked whether...`, `Because...`, `Although...`, `Global profiles alone, however, ...`) — NEVER cold-drop a method or cohort list (`Differential expression analysis...`, `Across five cohorts...`) at the start of a new section!
+
+| Family (Empirical HTML-CNS Target) | **Positive Adaptable Starter Frames (RETRIEVE & ROTATE!)** | Real Published Verbatim Example (`2025–2026`) |
+| :--- | :--- | :--- |
+| **1. Direct Observation / Entity Lead (`~30–45%`)** | `Whole-slide predictions revealed...` / `Analysis of [N] tumours revealed...` / `The [signature/score] correlated strongly with...` / `Models trained on [feature] accurately predicted...` | `"An analysis of the pooled set of features selected by subtype classifiers revealed overlap with known cancer driver pathways (Figure S5B)."` (*Cancer Cell*) |
+| **2. Direct Active `We [verb]` (`~10–20%`)** | `We integrated matched [Assay A] and [Assay B] profiles across [N] patients to...` / `We scored these programmes at the patient level...` / `We compared survival associations across...` | `"We analyzed which Mϕ and DC subsets phagocytosed tumor material in the TDLN via flow cytometry (Fig S1C)."` (*Cancer Cell*) |
+| **3. Biological Cause / Premise Lead (`Because / Given that / Since`)** | `Because [A] requires [B], we examined whether...` / `Given that [finding X] suggested [Y], we assessed...` / `Since [model/pathway] altered [phenotype], we tested...` | `"Given that our scRNA-seq data suggested accelerated differentiation to the neutrophil lineage, we assessed in vivo proliferation of HSPCs."` (*Cancer Cell*) |
+| **4. Contrast / Anomaly / Surprise Lead (`~8–15%`)** | `Global profiles alone, however, could not explain why...` / `In contrast to [prior finding], [assay] revealed...` / `Although [A] improved [X], [B] remained...` / `Unlike [group A], [group B] exhibited...` | `"In contrast, prematurely opening chromatin sites associated with clusters 4 and 5 were enriched for C/EBP binding motifs (Figure 3G)."` (*Cancer Cell*) |
+| **5. Spatial / Compartment Lead** | `Within the [tumour bed / niche], [cells] exhibited...` / `At the [invasive margin / tissue interface], ...` / `Spatial profiling of [N] tumours showed...` | `"Within this cohort, Xenium data showed lower representation of intratumoral antigen-presenting cell subsets in IS tumors (Figure S14A)."` (*Cell*) |
+| **6. Validation / Concordance Lead** | `Consistent with [previous/in vitro findings], [X] was elevated in...` / `In line with [result A], ...` / `Prospective clinical trials further separated...` | `"Consistent with the downregulation of genes involved in DNA replication, cell proliferation was affected by ecSE silencing."` (*Cancer Cell*) |
+| **7. Purpose Lead (`To [verb]..., we...` — Target `12–25%`)** | `To determine whether [X] drives [Y], we...` / `To identify actionable upstream drivers of [X], we...` / `To validate these findings independently, we...` | `"To evaluate if distinct CD3+ TIL subsets are associated with pathological response, we quantified baseline CD3+ cells in each subset."` (*Cancer Cell*) |
+| **8. Sequential `We next / We then` (Target `5–15%`, 2–4×/paper!)** | `We next asked whether [axis] generalises across...` / `We then interrogated [compendia] to test whether...` *(use 2–4 times naturally — neither 0% nor 40%!)* | `"We next asked whether avapritinib crosses the blood-brain barrier and impacts tumor growth in PDGFRA-altered glioma models."` (*Cancer Cell*) |
+
+---
+
+### Scenario 23 — Multi-Cohort Clinical Validation Prose Without Raw `GSE/NCT` Accession Recitation
+
+In `1,441` published CNS papers, raw `GSE/NCT` accession strings occur at a median of **`0` (`P90 = 2`)** inside Results prose! Name cohorts by their **clinical setting, cancer type, or well-known trial name** in prose, and offload raw `GSE#####` / `NCT########` accession IDs cleanly into **Figure Labels, Legends, Methods, and Supplementary Table 1**:
+- **Slot 1 (Multi-Cohort Replication)**: `We next asked whether this axis generalises across independent patient cohorts. Across multiple independent [cancer type] cohorts totalling [N] patients, [Axis A] consistently correlated inversely with [Target] and positively with [Pathway] (Fig. 6a).`
+- **Slot 2 (Treatment-Specificity / Inversion Across Clinical Arms)**: `Whereas elevated [Signature] showed no prognostic impact in untreated surgical cohorts (Fig. 6c), it associated with prolonged survival in patients receiving neoadjuvant chemotherapy (Fig. 6d,e) and with reduced response under immune checkpoint blockade (Fig. 6b).`
+- **Slot 3 (Prospective Trial Arm Separation)**: `In a randomised phase III trial comparing chemotherapy alone against chemotherapy plus targeted therapy, baseline [Gene] showed no association with response to chemotherapy alone yet specifically predicted residual disease in the targeted-therapy arm (Fig. 6h).`
+- **Slot 4 (Preoperative Monotherapy Biopsies)**: `Consistent with direct adaptive induction, paired biopsies collected before and after single-agent targeted therapy demonstrated reduced [Target] alongside increased [Ligand] in the majority of patients (Fig. 6i).`
+- *CNS Verbatim*: `"Across JAVELIN Renal 101, IMmotion151 and IMmotion150 trials, the mM0 signature was not predictive in any treatment context (Fig. 8A–C)."` (*Cancer Cell*, 2025)
+
+---
+
+### Scenario 24 — Natural Crisp `11–17w` Observation Sentences (Replacing Artificial 4-Word Telegraph Punchlines!)
+
+Achieve genuine human cadence burstiness (`CV = 0.44–0.55`, `20–28% <= 18w`) using **natural, complete `11–17`-word biological observations** — NEVER insert theatrical 4–5 word staccato fragments (`"Isolated marker measurement failed."`, `"State A and State B showed opposing slopes."`):
+- *Positive Adaptable `11–17w` CNS Frames (Verbatim from 2025–2026 Flagship Papers + Generic Templates)*:
+  1. `"The top models from each method demonstrated similar cohort-level performance (Figure S1)."` (*Cancer Cell*, 12w)
+  2. `"This approach performed comparably to the other methods we tested with gene expression data (Figure S2)."` (*Cancer Cell*, 16w)
+  3. `"Consistent with the small-molecule inhibition results, [Gene] knockdown enhanced [Drug]-mediated killing (Figure 1D)."` (*Cancer Cell*, 13w)
+  4. `"Unsupervised clustering and principal-component analysis revealed distinct transcriptional profiles across treatment conditions (Figure S3A)."` (*Cancer Cell*, 15w)
+  5. `"The remaining malignant transcriptional programmes showed no systematic differences between responders and non-responders (Supplementary Fig. 2d)."` (Generic, 15w)
+  6. `"Neither overall nor niche-restricted [Marker] abundance alone discriminated clinical response across baseline biopsies (Fig. 3g)."` (Generic, 15w)
+  7. `"Single-agent [Inhibitor] did not significantly alter tumour growth compared with vehicle controls (Fig. 5h)."` (Generic, 14w)
+  8. `"Baseline clinical variables, including stage, grade, age and sex, were balanced between groups (Supplementary Fig. 1c)."` (Generic, 16w)
+
+---
+
+### Scenario 25 — Non-Enumerative Discussion Transitions & Epistemic Mechanistic Speculation (`n = 1,401` Papers)
+
+In **`175` published *Nat Commun* Discussions**, **`0.0%`** repeat `First, ... Second, ... Third, ...` across `3` paragraphs (and only `2.3%` even use it in `2` paragraphs!). Meanwhile, real CNS Discussions carry **`6.7–8.8 / 1kw`** epistemic/exploratory nuance (`may`, `might`, `could`, `raises the possibility`, `one plausible explanation`, `remains to be determined`) rather than merely recapping Results in assertive bullet prose!
+- **Positive Non-Enumerative Discussion Paragraph Openers (Use at most ONE `First/Second` paragraph per paper!)**:
+  - `A central question raised by our findings is how [upstream signal] initiates [pathway] within [niche].`
+  - `Beyond [mechanism A], our data clarify how [process B] intersects with [therapy/immunity].`
+  - `These observations align with recent spatial studies showing that [context], while extending this concept to [new setting].`
+  - `From a clinical perspective, the opposite behaviour of [axis] under [Therapy A] versus [Therapy B] has direct implications for patient selection.`
+  - `An additional implication of our multimodal analysis concerns clinical deployment on routine pathology slides.`
+  - `While our preclinical and clinical data are encouraging, several questions and limitations warrant consideration.`
+- **Positive Epistemic / Upstream-Hypothesis Stems (Raising Discussion Scholarly Depth)**:
+  - `One plausible explanation for [observation] is that [local hypoxia / niche signals / mechanical cues] selectively induce [Gene] in adjacent [stromal cells].`
+  - `How [Receptor] activation directly represses [Target] transcription remains to be determined, although prior work raises the possibility that [TF/pathway] mediates this switch.`
+  - `It is also conceivable that analogous spatial target depletion limits bystander killing by other [drug class] therapies in [related cancer types].`
+  - `Future studies using [lineage tracing / conditional knockout / prospective adaptive trials] will be needed to test whether [hypothesis].`
+- *CNS Verbatim*:
+  - `"While our pre-clinical and clinical data are encouraging, several questions and potential limitations remain."` (*Cancer Cell*, 2025)
+  - `"An additional question in the setting of neoadjuvant therapy is whether standard post-operative therapy could..."` (*Cancer Cell*, 2025)
+  - `"However, future studies are needed to investigate and validate the relationships between transcriptome- and spatial-based classifications."` (*Cancer Cell*, 2025)
