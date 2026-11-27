@@ -39,10 +39,10 @@ Each subheading's output should logically motivate the next subheading's questio
 2. **Strict Past Tense for Observations (`4.93 : 1` Past : Present)**:
    - Use **Simple Past** for ALL experimental actions, observed patterns, statistical comparisons, and sequencing results (`we profiled`, `cells exhibited`, `expression was enriched`, `blockade reduced`).
    - Reserve **Simple Present** *only* for established biological truths or enduring conceptual statements in a closing sentence (`These findings indicate that X is required for Y`).
-3. **The 3-Move Paragraph Anatomy**:
-   - **Move 1 — Purpose / Rationale Hook (1 sentence)**: State *why* this next analysis/experiment was done (`To determine whether [X] directly drives [Y], we performed...`).
-   - **Move 2 — Figure-Anchored Quantitative Findings (2–4 sentences)**: Report direction, magnitude, and statistical evidence (`...increased 2.8-fold (P = 0.002, two-sided Mann–Whitney test; Fig. 2c)`), covering the **5 statistical elements** where relevant (sample size `n`, summary statistic, comparison baseline, direction/magnitude, exact `P`/FDR).
-   - **Move 3 — Objective One-Sentence Synthesis (1 sentence)**: Lock in the factual conclusion without drifting into Discussion speculation (`Together, these results demonstrate that [X] is essential for [Y] in vivo.`).
+3. **The Empirical Paragraph Anatomy (`n = 1,436` Published CNS Papers — Stat-Light Prose!)**:
+   - **Move 1 — Varied Biological / Rationale Hook (1 sentence)**: State *why* this step was performed or lead directly with the biological/spatial observation. **Rotate across all 8 empirical CNS opener families** (`08` Scenario 22 & `16` §2.4): direct entity/observation lead (`30–45%`), `To [verb], we...` (`12–25%`), direct `We [verb]...` (`10–20%`), causal/contrast pivot (`8–15%`), `We next/then` (`5–15%`), while capping gerund openers (`Scoring/Integrating...`) at `≤ 15%` and keeping active `We` in `45–70%` of paragraph opening sentences!
+   - **Move 2 — Figure-Anchored Biological Findings Without Stat-Dump Bloat (2–4 sentences)**: Report **direction, biological magnitude, and key effect size** (`...increased 2.8-fold relative to controls (Fig. 2c)`). **DO NOT cram full 5-element statistical tuples `(mean ± SD, test name, sidedness, n, exact P)` into Results prose** — in real 2025–2026 CNS papers (`n = 1,436`), inline `P/q` median is **`0.6–0.8 / 1,000w`** (bullseye `≤ 2.0/1kw`)! Put exact test names, sidedness, SD/IQR, secondary `P`/`q` values, and repeated `n` on **Figure Panels, Legends (`06`) & Source Data**; retain inline `P` in Results ONLY for primary survival, multivariable Cox/interaction, and decisive *in vivo* synergy endpoints (see [`14-anti-ai-prose-stat-restraint-and-rule-harmony.md`](./14-anti-ai-prose-stat-restraint-and-rule-harmony.md)).
+   - **Move 3 — Natural Close (`63%` Factual / `51%` Subheading-End Takeaway)**: End most internal paragraphs directly on concrete empirical evidence (avoid slapping `"Thus, ..."` / `"Therefore, ..."` onto every single paragraph — cap `≤ 22%`), and reserve concise factual lock-in sentences (`Together, these findings indicate that...`) primarily for the **final paragraph of a Results subheading (`51.4%`)** to hand off to the next module!
 4. **Two Strict Taboos**:
    - **No Methods Repetition**: Mention the assay/model name in 3–6 words (`using multiplex immunofluorescence`, `via orthotopic implantation`) — NEVER recite buffer recipes, centrifuge speeds, antibody catalog numbers, or Seurat clustering parameters.
    - **No Deep Discussion**: Do not launch into 5-sentence literature reviews or broad clinical speculation inside Results; limit contextual notes to 1 brief clause (`Consistent with prior bulk analyses, ...`).
@@ -81,26 +81,26 @@ Ranked by exact 2025–2026 CNS frequency:
 - `To elucidate the underlying molecular mechanism, we ...` (`86`)
 
 ### 4.2 Inter-Paragraph & Intra-Paragraph Flow Bridges
-- **Progression**: `We next examined/asked/performed...` (`1,780`), `Next, we...` (`1,354`), `Having established/shown that [X], we next sought to...` (`99`)
+- **Progression**: `We next examined/asked/performed...` (`1,780`), `Next, we...` (`1,354`), `Having established/shown that [X], we next sought to...` (`99`) *(cap `We next/then` at `5–15%` of paras — `2–4×` per Results section; see `08` Scenario 22!)*
 - **Emphasis / Surprise**: `Notably,` (`2,801`), `Interestingly,` (`1,162`), `Importantly,` (`819`), `Strikingly,` / `Remarkably,` *(use ≤1–2× per paper!)*
 - **Addition**: `Furthermore,` (`2,090`), `Moreover,` (`1,780`), `In addition,`
 - **Contrast**: `In contrast,` (`1,648`), `Conversely,` (`769`), `Whereas [A] exhibited..., [B] displayed...`
 - **Concordance / Causal Bridge**: `Consistent with [previous panel/prior report],` (`1,434`), `Given that [X], we hypothesized that...` (`543`), `In line with these observations,` (`401`)
-- **Paragraph Closing Synthesis (Move 3)**: `Together, these findings/results demonstrate/indicate that...` (`947` + `2,084`), `Collectively, these data...` (`672`), `Thus, ...` (`621`), `Overall, ...` (`472`), `Taken together, ...` (`409`)
+- **Subheading-End Closing Synthesis (Use Primarily at Subsection Ends, Cap `≤ 22%` of All Paras!)**: `Together, these findings/results demonstrate/indicate that...` (`947` + `2,084`), `Collectively, these data...` (`672`), `Thus, ...` (`621`), `Overall, ...` (`472`), `Taken together, ...` (`409`)
 
 ---
 
 ## 5. Chinglish → Authentic CNS Results Rewrites
 
-| Chinglish / Weak Draft (❌) | Authentic CNS Rewrite (✅) |
+| Chinglish / Weak Draft (❌) | Authentic CNS Rewrite (✅ — Stat-Light Published Style!) |
 | :--- | :--- |
 | `As can be seen from Figure 2A, the expression of SPP1 was obviously higher in tumor than normal.` | `SPP1 expression was markedly elevated in tumour relative to adjacent normal tissue (Fig. 2a).` |
 | `Figure 3B shows that knockdown of X significantly inhibited cell proliferation.` | `Knockdown of X markedly impaired tumour cell proliferation (Fig. 3b).` |
-| `We did GSEA analysis and got the result that EMT pathway was enriched.` | `Gene set enrichment analysis (GSEA) revealed significant enrichment of epithelial–mesenchymal transition (EMT) signatures (NES = 2.14, FDR = 0.003; Fig. 2d).` |
+| `We did GSEA analysis and got the result that EMT pathway was enriched.` | `Gene set enrichment analysis (GSEA) revealed strong enrichment of epithelial–mesenchymal transition (EMT) programmes in non-responders (Fig. 2d).` *(NES & FDR on figure/legend!)* |
 | `CellChat analysis proved that CAFs activate macrophages through FN1-CD44.` | `Cell–cell communication inference predicted enhanced FN1–CD44 signalling from CAFs to macrophages (Fig. 4c).` *(Tier 3, NOT Tier 1!)* |
-| `There was no significant difference between the two groups (P = 0.42).` *(Acceptable, or upgrade to crisp biological subject)* | `Tumour burden did not differ significantly between control and treated cohorts (P = 0.42; Fig. 5e).` |
+| `There was no significant difference between the two groups (P = 0.42).` *(Acceptable, or upgrade to crisp biological subject)* | `Tumour burden did not differ significantly between control and treated cohorts (Fig. 5e).` |
 | `In order to verify our guess, we constructed knockout mice.` | `To test this hypothesis directly in vivo, we generated conditional X-knockout mice.` |
-| `We found that high gene X is very related to bad prognosis.` | `High X expression was strongly associated with shortened overall survival (HR = 2.18, P = 0.001; Fig. 6a).` |
+| `We found that high gene X is very related to bad prognosis.` | `High X expression was strongly associated with shortened overall survival (HR = 2.18, P = 0.001; Fig. 6a).` *(Primary survival endpoint retains inline HR & P!)* |
 
 ---
 

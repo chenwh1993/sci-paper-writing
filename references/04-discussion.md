@@ -75,6 +75,7 @@ Never leave a reviewer-triggering limitation hanging bare! Structure EVERY limit
 > **[1. Candid Scope Boundary]** → **[2. Internal Mitigation / Contextual Cushion]** → **[3. Actionable Next-Step Resolution]**
 
 ### Ranked Authentic Limitations Openers (`n = 627`)
+> **Anti-Stiffness Rule (`n = 1,401` CNS Discussions)**: Reserve `First, ... Second, ... Third, ...` for **at most ONE paragraph** across the entire Discussion (typically Limitations, or none at all); never repeat `First/Second/Third` across multiple Discussion paragraphs (`0.0%` in *Nat Commun*! Use thematic essay stems from `08` Scenario 25 & `16` Part 2.2).
 - `Our study has several limitations that warrant consideration.` / `Several limitations merit consideration.` / `Despite its comprehensive nature, our study has limitations.`
 - `First, although [cohort size / heterogeneity / retrospective design] limits [specific statistical power], we mitigated this by validating key associations across [external cohorts / orthogonal assays].`
 - `Second, while our mouse models establish causal necessity for [X], our human cohort data remain correlative; prospective clinical trials incorporating [longitudinal biopsies / pharmacodynamic readouts] will be required to confirm causality in patients.`

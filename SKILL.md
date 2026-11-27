@@ -22,7 +22,7 @@ An end-to-end, empirically grounded scientific writing system uniting **strategi
 Empirically distilled and cross-validated across **2020–2026**:
 - **6,665** high-impact tumor-omics titles (`2,725` from 2025–2026 + `3,940` from 2020–2024) & **1,960** full-text manuscripts (`1,464` 2025–2026 derivation + `496` 2020–2024 out-of-time hold-out validation across *Nature*, *Cell*, *Science*, *Cancer Cell*, *Nat Med*, *Nat Cancer*, *Nat Genet*, *Nat Immunol*, *Nat Methods*, *Immunity*, *Sci Transl Med*, *Cancer Discov*, *Cell Rep Med*, *Nat Commun*)
 - **2,990** CNS Figure Captions & **307** complete CNS Methods / STAR★METHODS sections
-- Curated *Nature* Summary Paragraph, MIT/Harvard CommKit *Discussion*, *Science* *Intro/Results*, and Elsevier *Cover Letter* editorial standards.
+- **Single Ground-Truth Hierarchy**: **Empirical published 2020–2026 CNS literature (`n = 1,960` full texts + `2,990` captions + `307` Methods) is ALWAYS the primary authority.** Whenever any generic writing blog or editorial heuristic (e.g., dumping 5 statistical elements into Results prose, endorsing `data not shown`, or SSCI/engineering conventions) diverges from real published CNS manuscripts, follow the empirical CNS standard (`14`, `15`, `16`).
 
 ---
 

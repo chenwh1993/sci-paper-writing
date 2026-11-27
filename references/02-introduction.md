@@ -1,6 +1,6 @@
 # Introduction Writing Rules, Funnel Architecture & Idiomatic Corpus
 
-Empirically distilled from **1,395** 2025–2026 high-impact tumor-omics Introductions, benchmarked against the Inverted-Pyramid, *Science Robotics* 5-part, and Strong-Gap editorial frameworks.
+Empirically distilled from **1,395** 2025–2026 published biomedical & oncology CNS Introductions (real published literature is the single ground truth; engineering/social-science blog conventions such as macro market-size openers or separate Literature Review roadmaps do NOT apply to biomedical CNS articles).
 
 ---
 
@@ -13,7 +13,7 @@ Empirically distilled from **1,395** 2025–2026 high-impact tumor-omics Introdu
 | **Cancer Cell / Nat Cancer** | **469–498w** | **4** | **52.7–58.0%** | Crisp 4-paragraph funnel ending with 1 full summary paragraph |
 | **Cell / Immunity / Sci Transl Med** | **509–530w** | **4** | **54.3%** (*Cell*) | Balanced biological context + explicit final preview |
 | **Nat Genet / Nat Immunol / Cancer Discov** | **520–560w** | **4** | 40–44% | Sharp domain funnel |
-| **Nat Methods / Nat Biotechnol / Nat Commun** | **613–690w** | **4–5** | 43–49% | Needs 1 dedicated paragraph diagnosing existing technical trade-offs |
+| **Nat Methods / Nat Biotechnol / Nat Commun** | **613–723w** | **4–5** | 43–49% | Needs 1 focused paragraph diagnosing existing technical/spatial trade-offs |
 
 ---
 
